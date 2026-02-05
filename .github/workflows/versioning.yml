@@ -100,16 +100,17 @@ jobs:
 
       - name: Create tag message
         id: tag_message
+        env:
+          PR_TITLE: ${{ github.event_name == 'push' && steps.pr_info.outcome == 'success' && fromJson(steps.pr_info.outputs.result).title || '' }}
+          PR_BODY:  ${{ github.event_name == 'push' && steps.pr_info.outcome == 'success' && fromJson(steps.pr_info.outputs.result).body  || '' }}
         run: |
           NEW_VERSION=$(cat ./versioning/VERSION)
 
           if [ "${{ github.event_name }}" == "push" ] && [ "${{ steps.pr_info.outcome }}" == "success" ]; then
-            # Use PR information directly in heredoc to avoid quoting issues
-            cat > tag_message.txt << EOF
-          # v${NEW_VERSION} - ${{ fromJson(steps.pr_info.outputs.result).title }}
-
-          ${{ fromJson(steps.pr_info.outputs.result).body }}
-          EOF
+            {
+              printf '# v%s - %s\n\n' "$NEW_VERSION" "$PR_TITLE"
+              printf '%s\n' "$PR_BODY"
+            } > tag_message.txt
           else
             # Manual dispatch or PR info unavailable - simpler message
             cat > tag_message.txt << EOF
