@@ -102,7 +102,7 @@ jobs:
         id: tag_message
         env:
           PR_TITLE: ${{ github.event_name == 'push' && steps.pr_info.outcome == 'success' && fromJson(steps.pr_info.outputs.result).title || '' }}
-          PR_BODY:  ${{ github.event_name == 'push' && steps.pr_info.outcome == 'success' && fromJson(steps.pr_info.outputs.result).body  || '' }}
+          PR_BODY: ${{ github.event_name == 'push' && steps.pr_info.outcome == 'success' && fromJson(steps.pr_info.outputs.result).body  || '' }}
         run: |
           NEW_VERSION=$(cat ./versioning/VERSION)
 
