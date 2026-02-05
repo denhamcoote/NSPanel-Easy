@@ -213,7 +213,6 @@ class TestWorkflowRobustness:
 
     def test_workflow_commit_message_has_skip_marker(self):
         """Test workflow ensures commits have skip marker"""
-        content = self.WORKFLOW_PATH.read_text()
         script_path = Path("/home/jailuser/git/versioning/bump_version.sh")
         script_content = script_path.read_text()
 
