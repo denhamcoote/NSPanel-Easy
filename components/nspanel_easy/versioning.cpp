@@ -1,0 +1,14 @@
+// versioning.cpp
+
+#ifdef NSPANEL_EASY_VERSIONING
+
+#include "versioning.h"
+
+namespace nspanel_easy {
+
+  uint8_t version_blueprint = 0;
+  uint8_t version_tft = 0;
+
+}  // namespace nspanel_easy
+
+#endif  // NSPANEL_EASY_VERSIONING
