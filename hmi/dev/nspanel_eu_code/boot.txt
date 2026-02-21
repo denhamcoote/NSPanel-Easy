@@ -1,0 +1,667 @@
+Page boot
+    Attributes
+        ID                 : 0
+        Scope              : local
+        Dragging           : 0
+        Send Component ID  : disabled
+        Opacity            : 127
+        Width              : 480
+        Effect             : load
+        Effect Priority    : 0
+        Effect Time        : 300
+        Locked             : no
+        Swide up page ID   : disabled
+        Swide down page ID : disabled
+        Swide left page ID : disabled
+        Swide right page ID: disabled
+        Fill               : solid color
+        Back. Color        : 17430
+    
+    Events
+        Preinitialize Event
+            dim=100
+            covx baud,tmp_baudrate.txt,0,0
+            sys_baudrate.txt="Baud rate: "
+            sys_baudrate.txt+=tmp_baudrate.txt
+            sys_baudrate.txt+=" bps"
+            ver_tft.txt="TFT: "+version.txt
+            sendme
+        
+Variable (string) version
+    Attributes
+        ID            : 7
+        Scope         : global
+        Text          : 1
+        Max. Text Size: 7
+    
+Variable (int32) log_len
+    Attributes
+        ID   : 18
+        Scope: local
+        Value: 0
+    
+Variable (int32) log_pos
+    Attributes
+        ID   : 19
+        Scope: local
+        Value: 0
+    
+Variable (int32) log_line_count
+    Attributes
+        ID   : 20
+        Scope: local
+        Value: 0
+    
+Variable (int32) log_start_pos
+    Attributes
+        ID   : 21
+        Scope: local
+        Value: 0
+    
+Variable (int32) log_end_pos
+    Attributes
+        ID   : 22
+        Scope: local
+        Value: 0
+    
+Variable (string) log_temp
+    Attributes
+        ID            : 23
+        Scope         : local
+        Text          : 
+        Max. Text Size: 2
+    
+Variable (string) tmp_baudrate
+    Attributes
+        ID            : 25
+        Scope         : local
+        Text          : 
+        Max. Text Size: 8
+    
+Variable (int32) log_max_lines
+    Attributes
+        ID   : 26
+        Scope: local
+        Value: 14
+    
+Variable (int32) counter
+    Attributes
+        ID   : 27
+        Scope: local
+        Value: 0
+    
+Variable (string) va0
+    Attributes
+        ID            : 29
+        Scope         : local
+        Text          : 
+        Max. Text Size: 10
+    
+Variable (string) va1
+    Attributes
+        ID            : 30
+        Scope         : local
+        Text          : 
+        Max. Text Size: 10
+    
+Variable (string) csv
+    Attributes
+        ID            : 31
+        Scope         : local
+        Text          : 
+        Max. Text Size: 50
+    
+Text log_body
+    Attributes
+        ID                  : 2
+        Scope               : local
+        Dragging            : 0
+        Send Component ID   : disabled
+        Opacity             : 127
+        x coordinate        : 222
+        y coordinate        : 68
+        Width               : 207
+        Height              : 224
+        Effect              : load
+        Effect Priority     : 0
+        Effect Time         : 300
+        Fill                : solid color
+        Style               : flat
+        Associated Keyboard : none
+        Font ID             : 0
+        Back. Color         : 17430
+        Font Color          : 65535
+        Horizontal Alignment: left
+        Vertical Alignment  : top
+        Input Type          : character
+        Text                : 
+        Max. Text Size      : 800
+        Word wrap           : disabled
+        Horizontal Spacing  : 0
+        Vertical Spacing    : 0
+    
+Text initializing
+    Attributes
+        ID                  : 3
+        Scope               : local
+        Dragging            : 0
+        Send Component ID   : disabled
+        Opacity             : 127
+        x coordinate        : 15
+        y coordinate        : 15
+        Width               : 157
+        Height              : 30
+        Effect              : load
+        Effect Priority     : 0
+        Effect Time         : 300
+        Fill                : solid color
+        Style               : flat
+        Associated Keyboard : none
+        Font ID             : 3
+        Back. Color         : 17430
+        Font Color          : 65535
+        Horizontal Alignment: left
+        Vertical Alignment  : top
+        Input Type          : character
+        Text                : Initializing...
+        Max. Text Size      : 15
+        Word wrap           : disabled
+        Horizontal Spacing  : 0
+        Vertical Spacing    : 0
+    
+Text ver_box
+    Attributes
+        ID                  : 4
+        Scope               : local
+        Dragging            : 0
+        Send Component ID   : disabled
+        Opacity             : 127
+        x coordinate        : 15
+        y coordinate        : 56
+        Width               : 185
+        Height              : 115
+        Effect              : load
+        Effect Priority     : 0
+        Effect Time         : 300
+        Fill                : solid color
+        Style               : border
+        Associated Keyboard : none
+        Border Color        : 65535
+        Border Width        : 2
+        Font ID             : 0
+        Back. Color         : 17430
+        Font Color          : 0
+        Horizontal Alignment: center
+        Vertical Alignment  : center
+        Input Type          : character
+        Text                : 
+        Max. Text Size      : 0
+        Word wrap           : disabled
+        Horizontal Spacing  : 0
+        Vertical Spacing    : 0
+    
+Text ver_title
+    Attributes
+        ID                  : 5
+        Scope               : local
+        Dragging            : 0
+        Send Component ID   : disabled
+        Opacity             : 127
+        x coordinate        : 20
+        y coordinate        : 41
+        Width               : 67
+        Height              : 30
+        Effect              : load
+        Effect Priority     : 0
+        Effect Time         : 300
+        Fill                : solid color
+        Style               : flat
+        Associated Keyboard : none
+        Font ID             : 0
+        Back. Color         : 17430
+        Font Color          : 65535
+        Horizontal Alignment: left
+        Vertical Alignment  : center
+        Input Type          : character
+        Text                :  Versions
+        Max. Text Size      : 9
+        Word wrap           : disabled
+        Horizontal Spacing  : 0
+        Vertical Spacing    : 0
+    
+Text ver_tft
+    Attributes
+        ID                  : 6
+        Scope               : local
+        Dragging            : 0
+        Send Component ID   : disabled
+        Opacity             : 127
+        x coordinate        : 20
+        y coordinate        : 72
+        Width               : 175
+        Height              : 30
+        Effect              : load
+        Effect Priority     : 0
+        Effect Time         : 300
+        Fill                : solid color
+        Style               : flat
+        Associated Keyboard : none
+        Font ID             : 0
+        Back. Color         : 17430
+        Font Color          : 65535
+        Horizontal Alignment: left
+        Vertical Alignment  : center
+        Input Type          : character
+        Text                : TFT: Waiting...
+        Max. Text Size      : 25
+        Word wrap           : disabled
+        Horizontal Spacing  : 0
+        Vertical Spacing    : 0
+    
+Text ver_firmware
+    Attributes
+        ID                  : 8
+        Scope               : local
+        Dragging            : 0
+        Send Component ID   : disabled
+        Opacity             : 127
+        x coordinate        : 20
+        y coordinate        : 102
+        Width               : 175
+        Height              : 30
+        Effect              : load
+        Effect Priority     : 0
+        Effect Time         : 300
+        Fill                : solid color
+        Style               : flat
+        Associated Keyboard : none
+        Font ID             : 0
+        Back. Color         : 17430
+        Font Color          : 65535
+        Horizontal Alignment: left
+        Vertical Alignment  : center
+        Input Type          : character
+        Text                : Firmware: Waiting...
+        Max. Text Size      : 30
+        Word wrap           : disabled
+        Horizontal Spacing  : 0
+        Vertical Spacing    : 0
+    
+Text ver_blueprint
+    Attributes
+        ID                  : 9
+        Scope               : local
+        Dragging            : 0
+        Send Component ID   : disabled
+        Opacity             : 127
+        x coordinate        : 20
+        y coordinate        : 132
+        Width               : 175
+        Height              : 30
+        Effect              : load
+        Effect Priority     : 0
+        Effect Time         : 300
+        Fill                : solid color
+        Style               : flat
+        Associated Keyboard : none
+        Font ID             : 0
+        Back. Color         : 17430
+        Font Color          : 65535
+        Horizontal Alignment: left
+        Vertical Alignment  : center
+        Input Type          : character
+        Text                : Blueprint: Waiting...
+        Max. Text Size      : 30
+        Word wrap           : disabled
+        Horizontal Spacing  : 0
+        Vertical Spacing    : 0
+    
+Text sys_box
+    Attributes
+        ID                  : 10
+        Scope               : local
+        Dragging            : 0
+        Send Component ID   : disabled
+        Opacity             : 127
+        x coordinate        : 15
+        y coordinate        : 186
+        Width               : 185
+        Height              : 115
+        Effect              : load
+        Effect Priority     : 0
+        Effect Time         : 300
+        Fill                : solid color
+        Style               : border
+        Associated Keyboard : none
+        Border Color        : 65535
+        Border Width        : 2
+        Font ID             : 0
+        Back. Color         : 17430
+        Font Color          : 0
+        Horizontal Alignment: center
+        Vertical Alignment  : center
+        Input Type          : character
+        Text                : 
+        Max. Text Size      : 0
+        Word wrap           : disabled
+        Horizontal Spacing  : 0
+        Vertical Spacing    : 0
+    
+Text sys_title
+    Attributes
+        ID                  : 11
+        Scope               : local
+        Dragging            : 0
+        Send Component ID   : disabled
+        Opacity             : 127
+        x coordinate        : 20
+        y coordinate        : 171
+        Width               : 58
+        Height              : 30
+        Effect              : load
+        Effect Priority     : 0
+        Effect Time         : 300
+        Fill                : solid color
+        Style               : flat
+        Associated Keyboard : none
+        Font ID             : 0
+        Back. Color         : 17430
+        Font Color          : 65535
+        Horizontal Alignment: left
+        Vertical Alignment  : center
+        Input Type          : character
+        Text                :  System
+        Max. Text Size      : 9
+        Word wrap           : disabled
+        Horizontal Spacing  : 0
+        Vertical Spacing    : 0
+    
+Text sys_ip
+    Attributes
+        ID                  : 12
+        Scope               : local
+        Dragging            : 0
+        Send Component ID   : disabled
+        Opacity             : 127
+        x coordinate        : 20
+        y coordinate        : 202
+        Width               : 175
+        Height              : 30
+        Effect              : load
+        Effect Priority     : 0
+        Effect Time         : 300
+        Fill                : solid color
+        Style               : flat
+        Associated Keyboard : none
+        Font ID             : 0
+        Back. Color         : 17430
+        Font Color          : 65535
+        Horizontal Alignment: left
+        Vertical Alignment  : center
+        Input Type          : character
+        Text                : IP: Waiting...
+        Max. Text Size      : 20
+        Word wrap           : disabled
+        Horizontal Spacing  : 0
+        Vertical Spacing    : 0
+    
+Text sys_framework
+    Attributes
+        ID                  : 13
+        Scope               : local
+        Dragging            : 0
+        Send Component ID   : disabled
+        Opacity             : 127
+        x coordinate        : 20
+        y coordinate        : 232
+        Width               : 175
+        Height              : 30
+        Effect              : load
+        Effect Priority     : 0
+        Effect Time         : 300
+        Fill                : solid color
+        Style               : flat
+        Associated Keyboard : none
+        Font ID             : 0
+        Back. Color         : 17430
+        Font Color          : 65535
+        Horizontal Alignment: left
+        Vertical Alignment  : center
+        Input Type          : character
+        Text                : Framework: Waiting...
+        Max. Text Size      : 30
+        Word wrap           : disabled
+        Horizontal Spacing  : 0
+        Vertical Spacing    : 0
+    
+Text sys_baudrate
+    Attributes
+        ID                  : 14
+        Scope               : local
+        Dragging            : 0
+        Send Component ID   : disabled
+        Opacity             : 127
+        x coordinate        : 20
+        y coordinate        : 262
+        Width               : 175
+        Height              : 30
+        Effect              : load
+        Effect Priority     : 0
+        Effect Time         : 300
+        Fill                : solid color
+        Style               : flat
+        Associated Keyboard : none
+        Font ID             : 0
+        Back. Color         : 17430
+        Font Color          : 65535
+        Horizontal Alignment: left
+        Vertical Alignment  : center
+        Input Type          : character
+        Text                : Baud rate: Waiting...
+        Max. Text Size      : 30
+        Word wrap           : disabled
+        Horizontal Spacing  : 0
+        Vertical Spacing    : 0
+    
+Text log_box
+    Attributes
+        ID                  : 15
+        Scope               : local
+        Dragging            : 0
+        Send Component ID   : disabled
+        Opacity             : 127
+        x coordinate        : 217
+        y coordinate        : 56
+        Width               : 217
+        Height              : 245
+        Effect              : load
+        Effect Priority     : 0
+        Effect Time         : 300
+        Fill                : solid color
+        Style               : border
+        Associated Keyboard : none
+        Border Color        : 65535
+        Border Width        : 2
+        Font ID             : 0
+        Back. Color         : 17430
+        Font Color          : 0
+        Horizontal Alignment: center
+        Vertical Alignment  : center
+        Input Type          : character
+        Text                : 
+        Max. Text Size      : 0
+        Word wrap           : disabled
+        Horizontal Spacing  : 0
+        Vertical Spacing    : 0
+    
+Text log_title
+    Attributes
+        ID                  : 16
+        Scope               : local
+        Dragging            : 0
+        Send Component ID   : disabled
+        Opacity             : 127
+        x coordinate        : 222
+        y coordinate        : 41
+        Width               : 35
+        Height              : 30
+        Effect              : load
+        Effect Priority     : 0
+        Effect Time         : 300
+        Fill                : solid color
+        Style               : flat
+        Associated Keyboard : none
+        Font ID             : 0
+        Back. Color         : 17430
+        Font Color          : 65535
+        Horizontal Alignment: left
+        Vertical Alignment  : center
+        Input Type          : character
+        Text                :  Log
+        Max. Text Size      : 9
+        Word wrap           : disabled
+        Horizontal Spacing  : 0
+        Vertical Spacing    : 0
+    
+Progress Bar progress
+    Attributes
+        ID                   : 1
+        Scope                : local
+        Dragging             : 0
+        Send Component ID    : disabled
+        Opacity              : 127
+        x coordinate         : 0
+        y coordinate         : 304
+        Width                : 450
+        Height               : 15
+        Effect               : load
+        Effect Priority      : 0
+        Effect Time          : 300
+        Fill                 : solid color
+        Direction            : horizontal
+        Value                : 0
+        Background Picture ID: 65535
+        Foreground Picture ID: 65535
+    
+Dual-state Button bt_reboot
+    Attributes
+        ID                        : 24
+        Scope                     : local
+        Dragging                  : 0
+        Send Component ID         : on press and release
+        Opacity                   : 127
+        x coordinate              : 354
+        y coordinate              : 15
+        Width                     : 80
+        Height                    : 30
+        Effect                    : load
+        Effect Priority           : 0
+        Effect Time               : 300
+        Fill                      : solid color
+        Style                     : 3D auto
+        Font ID                   : 0
+        Back. Color (Unpressed)   : 50712
+        Back. Picture ID (Pressed): 65535
+        Back. Color (Pressed)     : 9375
+        Font Color (Unpressed)    : 0
+        Font Color (Pressed)      : 65535
+        Horizontal Alignment      : center
+        Vertical Alignment        : center
+        State                     : unpressed
+        Text                      : Reboot
+        Max. Text Size            : 6
+        Word wrap                 : disabled
+        Horizontal Spacing        : 0
+        Vertical Spacing          : 0
+    
+    Events
+        Touch Release Event
+            log_body.txt+="Click button 'Reboot'\r"
+            if(api==0)
+            {
+                rest
+            }
+        
+Timer log_scroll
+    Attributes
+        ID         : 17
+        Scope      : local
+        Period (ms): 400
+        Enabled    : yes
+    
+    Events
+        Timer Event
+            strlen log_body.txt,log_len.val
+            log_pos.val=0
+            log_line_count.val=0
+            log_start_pos.val=0
+            log_end_pos.val=0
+            log_temp.txt=""
+            // Count the number of lines (instances of \r)
+            while(log_pos.val<log_len.val)
+            {
+                // Extract each character to find \r
+                substr log_body.txt,log_temp.txt,log_pos.val,2
+                if(log_temp.txt=="\r")
+                {
+                    log_line_count.val++
+                    // Record the position of the first \r
+                    if(log_line_count.val==1)
+                    {
+                        log_start_pos.val=log_pos.val
+                    }
+                    // Record the position of the second \r
+                    if(log_line_count.val==2)
+                    {
+                        log_end_pos.val=log_pos.val
+                    }
+                }
+                log_pos.val++
+            }
+            // Check if the number of lines exceeds the maximum allowed
+            if(log_line_count.val>log_max_lines.val)
+            {
+                // If more than max_lines, remove the first line
+                if(log_end_pos.val>0)
+                {
+                    // Remove the first line including the newline character
+                    substr log_body.txt,log_body.txt,log_start_pos.val+2,log_len.val-log_start_pos.val-2
+                }
+            }
+            doevents
+        
+Timer tm_esphome
+    Attributes
+        ID         : 28
+        Scope      : local
+        Period (ms): 1000
+        Enabled    : yes
+    
+    Events
+        Timer Event
+            counter.val++
+            if(counter.val>60)
+            {
+                rest
+            }
+            covx display_mode,va0.txt,0,0
+            covx charset,va1.txt,0,0
+            csv.txt="boot,params,"+va0.txt+","+va1.txt+","+version.txt
+            printh 92
+            prints "localevent",0
+            printh 00
+            prints csv.txt,0
+            printh 00
+            printh FF FF FF
+            sys0=counter.val%10
+            if(sys0==0)
+            {
+                bauds=115200
+            }
+            covx baud,tmp_baudrate.txt,0,0
+            sys_baudrate.txt="Baud rate: "
+            sys_baudrate.txt+=tmp_baudrate.txt
+            sys_baudrate.txt+=" bps"
+            sendme
+            doevents
+        

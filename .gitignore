@@ -12,7 +12,7 @@ SyncNextion2TXT.cmd
 .idea
 
 # Ignore dev folder
-dev
+/dev
 .esphome
 /components/nspanel_easy/__pycache__
 
