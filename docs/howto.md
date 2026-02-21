@@ -352,10 +352,10 @@ Failing to update both simultaneously can lead to connection issues.
          - priority: 600
            then:
              - lambda: |-
-                 id(my_ota).set_auth_password("Your new Wi-Fi password");
+                 id(ota_std).set_auth_password("Your new Wi-Fi password");
      ota:
-       password: "Your current Wi-Fi password"
-       id: my_ota
+       - id: !extend ota_std
+         password: "Your current Wi-Fi password"
      ```
 
    * Flash your device.
