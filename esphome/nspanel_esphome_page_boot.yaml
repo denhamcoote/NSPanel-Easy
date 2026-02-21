@@ -114,21 +114,20 @@ script:
     mode: single
     then:
       - lambda: |-
-          if (current_page_id == ${PAGE_BOOT_ID} and !version_blueprint->state.empty())
-            disp1->set_component_text_printf("ver_blueprint", "Blueprint: %s", version_blueprint->state.c_str());
+          if (current_page_id == ${PAGE_BOOT_ID} and id(ver_blueprint) > 0)
+            disp1->set_component_text_printf("ver_blueprint", "Blueprint: %" PRIu8, id(ver_blueprint));
 
   - id: page_boot_show_ip
     mode: single
     then:
       - lambda: |-
-          if (wifi_component->is_connected() and current_page_id == ${PAGE_BOOT_ID}) {
-            auto ips = network::get_ip_addresses();
-            if (!ips.empty()) {
-              char ip[16];  // sufficient for IPv4: "255.255.255.255" + '\0'
-              ips[0].str_to(ip);
-              disp1->set_component_text_printf("sys_ip", "IP: %s", ip);
-            }
-          }
+          if (!wifi_component->is_connected()) return;
+          if (current_page_id != ${PAGE_BOOT_ID}) return;
+          auto ips = network::get_ip_addresses();
+          if (ips.empty()) return;
+          char ip[16];  // sufficient for IPv4: "255.255.255.255" + '\0'
+          ips[0].str_to(ip);
+          disp1->set_component_text_printf("sys_ip", "IP: %s", ip);
 
   - id: !extend page_change
     then:
@@ -147,6 +146,12 @@ script:
           page_boot_show_blueprint_version->stop();
           page_boot_show_ip->stop();
 
+  - id: !extend ver_blueprint_set
+    then:
+      - lambda: |-
+          page_boot_show_blueprint_version->execute();
+          wait_to_be_ready->execute();
+
   - id: wait_for_page_boot_exit
     mode: restart
     then:
@@ -163,14 +168,6 @@ script:
       - lambda: |-
           if (current_page_id == ${PAGE_BOOT_ID} and !version_tft->state.empty())
             wakeup->execute(true);
-
-text_sensor:
-  - id: !extend version_blueprint
-    on_value:
-      then:
-        - lambda: |-
-            page_boot_show_blueprint_version->execute();
-            wait_to_be_ready->execute();
 
 wifi:
   on_connect:

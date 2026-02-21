@@ -4436,7 +4436,7 @@ trigger_variables:
     }}
 
 variables:
-  blueprint_version: 2026020
+  blueprint_version: 1
   pages:
     current: '{{ states(currentpage) }}'
     home: "home"
@@ -9072,11 +9072,11 @@ action:
                           - &delay_boot
                             delay:
                               milliseconds: !input delay_boot
-                          - action: 'esphome.{{ nspanel_name }}_component_text'
+                          - action: 'esphome.{{ nspanel_name }}_component_val'
                             data:
                               page: mem
                               id: ver_blueprint
-                              txt: '{{ blueprint_version }}'
+                              val: '{{ blueprint_version | int(0) }}'
                             continue_on_error: true
 
                       - &variables_hardware
@@ -12426,7 +12426,7 @@ action:
                           - action: persistent_notification.create
                             data:
                               notification_id: 'NSPanel_Easy_version_mismatch_{{ nspanel_name }}'
-                              title: NSPanel Easy - Version mismatch - Blueprint
+                              title: "NSPanel Easy - Version mismatch: Blueprint"
                               message: >
                                 Your NSPanel Easy Blueprint version is outdated.
 
@@ -12434,7 +12434,9 @@ action:
 
                                 - Expected version: {{ nspanel_event.esphome if newest[0] == "esphome" else nspanel_event.tft }}, based on the panel **{{
                                     device_attr(nspanel_deviceid, "name") ~ ((" - " ~ nspanel_name) if nspanel_name != device_attr(nspanel_deviceid, "name") else "") }}**.
+
                                 ---
+
 
                                 **How to Resolve This Issue**
 
@@ -12463,7 +12465,7 @@ action:
                           - action: persistent_notification.create
                             data:
                               notification_id: 'NSPanel_Easy_version_mismatch_{{ nspanel_name }}'
-                              title: NSPanel Easy - Version mismatch - ESPHome firmware
+                              title: "NSPanel Easy - Version mismatch: ESPHome firmware"
                               message: >
                                 The NSPanel Easy firmware (ESPHome) is outdated for the panel **{{
                                   device_attr(nspanel_deviceid, "name") ~ ((" (" ~ nspanel_name ~ ")") if nspanel_name != device_attr(nspanel_deviceid, "name") else "") }}**.
@@ -12471,7 +12473,9 @@ action:
                                 - Current firmware version: {{ nspanel_event.esphome if nspanel_event.esphome is string and nspanel_event.esphome | length > 0 else oldest[1] }}
 
                                 - Expected version: {{ blueprint_version if newest[0] == "blueprint" else nspanel_event.tft }}
+
                                 ---
+
 
                                 **How to Resolve This Issue**
 
@@ -12498,7 +12502,7 @@ action:
                           - action: persistent_notification.create
                             data:
                               notification_id: 'NSPanel_Easy_version_mismatch_{{ nspanel_name }}'
-                              title: NSPanel Easy - Version mismatch - TFT display
+                              title: "NSPanel Easy - Version mismatch: TFT display"
                               message: >
                                 The TFT version on your NSPanel is outdated for the panel **{{
                                   device_attr(nspanel_deviceid, "name") ~ ((" (" ~ nspanel_name ~ ")") if nspanel_name != device_attr(nspanel_deviceid, "name") else "") }}**.
@@ -12506,7 +12510,9 @@ action:
                                 - Current TFT version: {{ nspanel_event.tft if nspanel_event.tft is string and nspanel_event.tft | length > 0 else oldest[1] }}
 
                                 - Expected version: {{ blueprint_version if newest[0] == "blueprint" else nspanel_event.esphome }}
+
                                 ---
+
 
                                 **How to Resolve This Issue**
 
