@@ -1,5 +1,6 @@
 # NSPanel Custom with HA Blueprint
 
+[![Version][version-shield]](https://github.com/edwardtfn/NSPanel-Easy/tags)
 [![GitHub Activity][commits-shield]][commits]
 [![Last Commit][last-commit-shield]][commits]
 [![Platform][platform-shield]](https://github.com/esphome)
@@ -227,6 +228,8 @@ And special thanks for the other projects which inspired us:
 Are you happy with this project? Please consider [buying me an icecream](https://buymeacoffee.com/edwardfirmo).
 
 
+[version-shield]: https://img.shields.io/github/v/tag/edwardtfn/NSPanel-Easy?label=version
+[version]: https://github.com/edwardtfn/NSPanel-Easy/tags
 
 [commits-shield]: https://img.shields.io/github/commit-activity/y/edwardtfn/NSPanel-Easy
 [commits]: https://github.com/edwardtfn/NSPanel-Easy/commits/main
