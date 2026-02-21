@@ -2,7 +2,7 @@
 
 [![Version][version-shield]](https://github.com/edwardtfn/NSPanel-Easy/tags)
 [![GitHub Activity][commits-shield]][commits]
-[![Last Commit][last-commit-shield]][commits]
+[![GitHub Last Commit][last-commit-shield]](https://github.com/edwardtfn/NSPanel-Easy/commits/main)
 [![Platform][platform-shield]](https://github.com/esphome)
 [![Discord][discord-shield]](https://discord.gg/XAvac8kQ)
 [![Buy me an ice-cream][buymeacoffee-shield]](https://www.buymeacoffee.com/edwardfirmo)
@@ -237,6 +237,7 @@ Are you happy with this project? Please consider [buying me an icecream](https:/
 [commits]: https://github.com/edwardtfn/NSPanel-Easy/commits/main
 
 [last-commit-shield]: https://img.shields.io/github/last-commit/edwardtfn/NSPanel-Easy
+
 [platform-shield]: https://img.shields.io/badge/platform-Home%20Assistant%20&%20ESPHome-blue
 
 [discord-shield]: https://img.shields.io/discord/1243652421692031016?logo=discord
