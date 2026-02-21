@@ -4,6 +4,8 @@
 [![GitHub Activity][commits-shield]][commits]
 [![Last Commit][last-commit-shield]][commits]
 [![Platform][platform-shield]](https://github.com/esphome)
+[![Discord][discord-shield]](https://discord.gg/XAvac8kQ)
+[![Buy me an ice-cream][buymeacoffee-shield]](https://www.buymeacoffee.com/edwardfirmo)
 
 This innovative solution is designed to revolutionize how you interact with your Sonoff NSPanel.
 Our goal? To make the customization of your NSPanel seamless, intuitive, and free of coding, using an easy user interface from a Home Assistant's blueprint.
@@ -236,3 +238,9 @@ Are you happy with this project? Please consider [buying me an icecream](https:/
 
 [last-commit-shield]: https://img.shields.io/github/last-commit/edwardtfn/NSPanel-Easy
 [platform-shield]: https://img.shields.io/badge/platform-Home%20Assistant%20&%20ESPHome-blue
+
+[discord-shield]: https://img.shields.io/discord/1243652421692031016?logo=discord
+[discord]: https://discord.gg/Db6WJWzWuf
+
+[buymeacoffee-shield]: https://img.shields.io/static/v1?label=Buy%20me%20an%20ice%20cream&message=❄&color=blue
+[buymeacoffee]: https://www.buymeacoffee.com/edwardfirmo
