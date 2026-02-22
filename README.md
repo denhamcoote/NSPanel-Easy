@@ -1,23 +1,23 @@
 # NSPanel Easy
 
-[![Version][version-shield]](https://github.com/edwardtfn/NSPanel-Easy/releases/latest)
+[![Version][version-shield]][version]
 [![GitHub Activity][commits-shield]][commits]
-[![GitHub Last Commit][last-commit-shield]](https://github.com/edwardtfn/NSPanel-Easy/commits/main)
+[![GitHub Last Commit][last-commit-shield]][commits]
 [![Platform][platform-shield]](https://github.com/esphome)
 [![Discord][discord-shield]][discord]
 [![Buy me an ice cream][buymeacoffee-shield]](https://www.buymeacoffee.com/edwardfirmo)
 
 A powerful, code-free customization platform for the Sonoff NSPanel,
 built on [ESPHome](https://esphome.io/) and [Home Assistant](https://www.home-assistant.io/).
-Configure every aspect of your panel through an intuitive Blueprint UI — no programming required.
+Configure every aspect of your panel through an intuitive Blueprint UI - no programming required.
 
 > [!TIP]
 > **Coming from [Blackymas/NSPanel_HA_Blueprint](https://github.com/Blackymas/NSPanel_HA_Blueprint)?**
-> Migrating takes less than 10 minutes — no serial flashing, no reconfiguration.
+> Migrating takes less than 10 minutes - no serial flashing, no reconfiguration.
 > Follow our [Migration Guide](docs/migration_from_blackymas.md) to get started.
 
 *If this project makes your smart home a little smarter,
-consider [buying me an ice cream](https://buymeacoffee.com/edwardfirmo) — it fuels the late-night coding sessions!* 🍦
+consider [buying me an ice cream][buymeacoffee] - it fuels the late-night coding sessions!* 🍦
 
 <!-- markdownlint-disable MD013 -->
 [![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fedwardtfn%2FNSPanel-Easy%2Fblob%2Fmain%2Fnspanel_easy_blueprint.yaml)
@@ -41,15 +41,15 @@ consider [buying me an ice cream](https://buymeacoffee.com/edwardfirmo) — it f
 
 - **No Coding Required:** Customize your NSPanel entirely through a Home Assistant Blueprint UI.
 - **Quick Setup:** Get your panel up and running in minutes with a guided graphical interface.
-- **Fully Local:** All control stays local — no cloud dependencies, no internet required after setup.
+- **Fully Local:** All control stays local - no cloud dependencies, no internet required after setup.
 - **Modular Architecture:** Include only the packages you need, keeping firmware lean and efficient.
 - **Community-Driven:** Built by the community, for the community. Your feedback and contributions shape every release.
 
 ## 📋 Prerequisites
 
-- **Home Assistant** — a running instance (see [home-assistant.io](https://www.home-assistant.io/))
-- **ESPHome** — installed as a Home Assistant add-on or standalone (see [esphome.io](https://esphome.io/))
-- **Sonoff NSPanel** — EU or US model (original, not NSPanel Pro)
+- **Home Assistant** - a running instance (see [home-assistant.io](https://www.home-assistant.io/))
+- **ESPHome** - installed as a Home Assistant add-on or standalone (see [esphome.io](https://esphome.io/))
+- **Sonoff NSPanel** - EU or US model (original, not NSPanel Pro)
 
 > [!NOTE]
 > This project uses the **ESP-IDF** framework exclusively.
@@ -67,12 +67,12 @@ NSPanel Easy comprises three tightly integrated components that must always be k
 
 > [!NOTE]
 > Each component is versioned independently and designed to be compatible across releases.
-> You do not need to update all three at once — update each at your own pace as new versions become available.
+> You do not need to update all three at once - update each at your own pace as new versions become available.
 
 ## 📚 Documentation & Resources
 
 - **Getting Started:** Comprehensive [Documentation and Setup Guide](docs/README.md) with step-by-step instructions.
-- **Migrating from Blackymas?** Check the [Migration Guide](docs/migration_from_blackymas.md) — it only takes a few minutes.
+- **Migrating from Blackymas?** Check the [Migration Guide](docs/migration_from_blackymas.md) - it only takes a few minutes.
 - **Customization:** Explore the [Customization Guide](docs/customization.md) for advanced configurations.
 - **API Reference:** Full list of available ESPHome actions in the [API Documentation](docs/api.md).
 - **Troubleshooting:** Running into issues? See some useful docs:
@@ -107,7 +107,7 @@ NSPanel Easy comprises three tightly integrated components that must always be k
 
 - Full thermostat control with target temperature slider
 - Support for all standard Home Assistant climate modes (`heat`, `cool`, `auto`, `dry`, `fan`)
-- Optional [local relay control](docs/addon_climate.md) for floor heating — works even without Wi-Fi
+- Optional [local relay control](docs/addon_climate.md) for floor heating - works even without Wi-Fi
 - Weather forecast with up to 5 days of data (rain probability, UV index, wind speed, and more)
 
 ### Media & Entertainment
@@ -257,7 +257,7 @@ The Blueprint provides a visual interface for defining what appears on your pane
 
 ## 🤝 Contributing
 
-We welcome contributions of all kinds — code, documentation, translations, and testing.
+We welcome contributions of all kinds - code, documentation, translations, and testing.
 
 - **Pull Requests:** Open a PR against `main`. Each PR gets its own branch for development and review.
 - **Testing:** Browse [open Pull Requests](https://github.com/edwardtfn/NSPanel-Easy/pulls) to find features that need testing and feedback.
@@ -266,11 +266,11 @@ We welcome contributions of all kinds — code, documentation, translations, and
 
 > [!TIP]
 > Not a developer? You can still help by improving documentation, translating strings, testing open PRs,
-> or [buying me an ice cream](https://buymeacoffee.com/edwardfirmo) 🍦
+> or [buying me an ice cream][buymeacoffee] 🍦
 
 ## 🌍 Community & Support
 
-Whether you need help, want to share your setup, or just want to follow along — we'd love to have you.
+Whether you need help, want to share your setup, or just want to follow along - we'd love to have you.
 
 - **[GitHub Issues & Feature Requests](https://github.com/edwardtfn/NSPanel-Easy/issues)**
 - **[Discord Server][discord]**
@@ -282,7 +282,7 @@ Your feedback, testing, and code contributions have been invaluable.
 
 Special thanks to the projects that inspired and informed this work:
 
-- [Blackymas](https://github.com/Blackymas/NSPanel_HA_Blueprint) — the original repository from which this project is derived
+- [Blackymas](https://github.com/Blackymas/NSPanel_HA_Blueprint) - the original repository from which this project is derived
 - [Hellis81](https://github.com/Hellis81/NS-panel)
 - [Jimmyboy83](https://github.com/Jimmyboy83/nspanel)
 - [joBr99](https://github.com/joBr99/Generate-HASP-Fonts)
@@ -296,7 +296,7 @@ Special thanks to the projects that inspired and informed this work:
 
 This project is built with love and maintained in my spare time.
 If NSPanel Easy has made your life easier,
-consider [buying me an ice cream](https://buymeacoffee.com/edwardfirmo) — every scoop keeps the project going! 🍦
+consider [buying me an ice cream][buymeacoffee] - every scoop keeps the project going! 🍦
 
 <!-- Link References -->
 [version-shield]: https://img.shields.io/github/v/release/edwardtfn/NSPanel-Easy?label=version
