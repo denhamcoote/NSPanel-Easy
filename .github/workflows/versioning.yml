@@ -1,10 +1,11 @@
-# This GitHub Actions workflow handles version bumping and tag updates.
+# This GitHub Actions workflow handles version bumping, releases, and tag updates.
 # It can be triggered either by:
-# 1. Pushing to main branch - automatically bumps version and updates tags
+# 1. Pushing to main branch - automatically bumps version, creates a GitHub Release,
+#    and updates stable/latest tags
 # 2. Manual dispatch - allows independent control over stable and latest tags
 
 ---
-name: Version and Tags
+name: Version, Release & Tags
 
 on:  # yamllint disable-line rule:truthy
   push:
@@ -28,7 +29,7 @@ on:  # yamllint disable-line rule:truthy
         type: boolean
 
 jobs:
-  version-and-tag:
+  version-and-release:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -123,13 +124,22 @@ jobs:
           # Store the message for use in subsequent steps
           echo "TAG_MESSAGE_FILE=tag_message.txt" >> $GITHUB_ENV
 
-      - name: Push Changes and Tags
+      - name: Push changes and version tag
+        id: push_tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           NEW_VERSION=$(cat ./versioning/VERSION)
+          echo "version=${NEW_VERSION}" >> $GITHUB_OUTPUT
           git push origin main
           git push origin "v${NEW_VERSION}"
+
+      - name: Create GitHub Release
+        if: github.event_name == 'push' && steps.push_tag.outcome == 'success'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.push_tag.outputs.version }}
+          generate_release_notes: true
 
       - name: Update stable tag
         if: |
