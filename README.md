@@ -57,7 +57,7 @@ consider [buying me an ice cream][buymeacoffee] - it fuels the late-night coding
 
 ## 🏗 Architecture
 
-NSPanel Easy comprises three tightly integrated components that must always be kept in sync:
+NSPanel Easy comprises three tightly integrated components that work together:
 
 | Component | Description |
 |-----------|-------------|
