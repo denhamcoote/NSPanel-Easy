@@ -75,7 +75,11 @@ NSPanel Easy comprises three tightly integrated components that must always be k
 - **Migrating from Blackymas?** Check the [Migration Guide](docs/migration_from_blackymas.md) — it only takes a few minutes.
 - **Customization:** Explore the [Customization Guide](docs/customization.md) for advanced configurations.
 - **API Reference:** Full list of available ESPHome actions in the [API Documentation](docs/api.md).
-- **Troubleshooting:** Running into issues? See our [Troubleshooting Guide](docs/install.md) or [TFT Upload Guide](docs/tft_upload.md).
+- **Troubleshooting:** Running into issues? See some useful docs:
+    - [Installation Guide](docs/install.md)
+    - [Error Compiling Guide](docs/error_compiling.md)
+    - [Error Initializing Guide](docs/error_initializing.md).
+    - [TFT Upload Guide](docs/tft_upload.md)
 - **Feature Requests:** Share your ideas [here](https://github.com/edwardtfn/NSPanel-Easy/labels/new%20feature%20request).
 - **Changelog:** Every merged PR automatically generates a [GitHub Release](https://github.com/edwardtfn/NSPanel-Easy/releases) with detailed notes.
 
