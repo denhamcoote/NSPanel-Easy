@@ -334,15 +334,6 @@ script:
           }
 
           App.feed_wdt();
-
-          // Release all BT memory (Classic + BLE) back to the heap
-          ESP_LOGD("${TAG_UPLOAD_TFT}", "Releasing all Bluetooth memory (BTDM)");
-          err = esp_bt_controller_mem_release(ESP_BT_MODE_BTDM);
-          if (err == ESP_OK) {
-            ESP_LOGI("${TAG_UPLOAD_TFT}", "Bluetooth memory released successfully");
-          } else {
-            ESP_LOGW("${TAG_UPLOAD_TFT}", "Bluetooth memory release failed: %s", esp_err_to_name(err));
-          }
           #else
           ESP_LOGD("${TAG_UPLOAD_TFT}", "Bluetooth stack not enabled in build");
           #endif  // BLE_TRACKER || BLE_SERVER || BLE_CLIENT || BLUETOOTH_PROXY
