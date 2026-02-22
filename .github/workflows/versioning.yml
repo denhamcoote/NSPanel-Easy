@@ -31,6 +31,9 @@ on:  # yamllint disable-line rule:truthy
 jobs:
   version-and-release:
     runs-on: ubuntu-latest
+    concurrency:
+      group: version-and-release
+      cancel-in-progress: false
     permissions:
       contents: write
       pull-requests: read
