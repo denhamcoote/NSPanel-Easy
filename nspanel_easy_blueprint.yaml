@@ -12432,7 +12432,7 @@ action:
                               title: NSPanel Easy - Communication Issue
                               message: >
                                 The ESPHome firmware is unable to verify the Blueprint version for the NSPanel.
-                                  - Panel Details: **{{ device_attr(nspanel_deviceid, "name") ~ ((" (" ~ nspanel_name ~ ")") if nspanel_name != device_attr(nspanel_deviceid, "name") else "Unknown") }}**
+                                  - Panel Details: **{{ device_attr(nspanel_deviceid, "name") ~ ((" (" ~ nspanel_name ~ ")") if nspanel_name != device_attr(nspanel_deviceid, "name") else "") }}**
 
                                   - Reported Blueprint version: {{ versions.blueprint if versions.blueprint > 0 else "Unknown" }}
 
