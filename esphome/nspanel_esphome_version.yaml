@@ -13,7 +13,6 @@ substitutions:
   min_tft_version: 1
   min_esphome_compiler_version: 2026.1.0
   TAG_VERSIONING: nspanel.versioning
-  ref_name: v${version}
   ##############################
 
 esphome:
