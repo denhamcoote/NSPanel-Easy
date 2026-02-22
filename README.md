@@ -10,7 +10,12 @@
 This innovative solution is designed to revolutionize how you interact with your Sonoff NSPanel.
 Our goal? To make the customization of your NSPanel seamless, intuitive, and free of coding, using an easy user interface from a Home Assistant's blueprint.
 
-*Are you happy with this project? Please consider [buying me an ice cream](https://buymeacoffee.com/edwardfirmo).*
+> [!TIP]
+> **Coming from [Blackymas/NSPanel_HA_Blueprint](https://github.com/Blackymas/NSPanel_HA_Blueprint)?**
+> Migrating takes less than 10 minutes — no serial flashing, no reconfiguration.
+> Follow our [Migration Guide](docs/migration_from_blackymas.md) and you'll be up and running in no time!
+
+*If this project makes your smart home a little smarter, consider [buying me an ice cream](https://buymeacoffee.com/edwardfirmo) — it fuels the late-night coding sessions!* 🍦
 
 [![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fedwardtfn%2FNSPanel-Easy%2Fblob%2Fmain%2Fnspanel_blueprint.yaml)
 
@@ -35,6 +40,7 @@ Our goal? To make the customization of your NSPanel seamless, intuitive, and fre
 ## 📚 Documentation & Resources
 
 - **Getting Started:** Dive into our comprehensive [Documentation and Setup Guide](docs/README.md) for detailed instructions.
+- **Migrating from Blackymas?** Already using NSPanel_HA_Blueprint? Check our [Migration Guide](docs/migration_from_blackymas.md) — it only takes a few minutes.
 - **Video Tutorial:** Prefer visual learning? Check out our [Step-by-Step Setup Video](docs/README.md).
 - **Troubleshooting:** Encounter an issue? Here's how to report it: [HowTo](docs/README.md).
 - **Feature Requests:** Got ideas? Share them [here](https://github.com/edwardtfn/NSPanel-Easy/labels/new%20feature%20request).
@@ -226,7 +232,8 @@ And special thanks for the other projects which inspired us:
 
 ## 💖 Donations
 
-Are you happy with this project? Please consider [buying me an ice cream](https://buymeacoffee.com/edwardfirmo).
+This project is built with love and maintained in my spare time.
+If NSPanel Easy has made your life easier, consider [buying me an ice cream](https://buymeacoffee.com/edwardfirmo) — every scoop keeps the project going! 🍦
 
 
 [version-shield]: https://img.shields.io/github/v/tag/edwardtfn/NSPanel-Easy?label=version
