@@ -239,7 +239,7 @@ Are you happy with this project? Please consider [buying me an ice cream](https:
 
 [platform-shield]: https://img.shields.io/badge/platform-Home%20Assistant%20&%20ESPHome-blue
 
-[discord-shield]: https://img.shields.io/discord/1243652421692031016?logo=discord
+[discord-shield]: https://img.shields.io/discord/1464682227068698724?logo=discord
 [discord]: https://discord.gg/KyVPd33znv
 
 [buymeacoffee-shield]: https://img.shields.io/static/v1?label=Buy%20me%20an%20ice%20cream&message=❄&color=blue
