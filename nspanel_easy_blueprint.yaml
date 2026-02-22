@@ -12404,152 +12404,153 @@ action:
                             if nspanel_event.min_blueprint_version is defined
                             else 0
                           }}
-                  - alias: All versions OK
-                    if:
-                      - '{{ versions.blueprint > 0 and versions.blueprint_min > 0 }}'
-                      - '{{ versions.blueprint >= versions.blueprint_min }}'
-                      - '{{ versions.blueprint == blueprint_version }}'
-                      - '{{ versions.tft > 0 and versions.tft_min > 0 }}'
-                      - '{{ versions.tft >= versions.tft_min }}'
-                    then:
-                      - action: persistent_notification.dismiss
-                        data:
-                          notification_id: 'NSPanel_Easy_version_mismatch_{{ nspanel_name }}'
-                        continue_on_error: true
+                  - choose:
+                      # yamllint disable rule:line-length
+                      - alias: All versions OK
+                        conditions:
+                          - '{{ versions.blueprint > 0 and versions.blueprint_min > 0 }}'
+                          - '{{ versions.blueprint >= versions.blueprint_min }}'
+                          - '{{ versions.blueprint == blueprint_version }}'
+                          - '{{ versions.tft > 0 and versions.tft_min > 0 }}'
+                          - '{{ versions.tft >= versions.tft_min }}'
+                        sequence:
+                          - action: persistent_notification.dismiss
+                            data:
+                              notification_id: 'NSPanel_Easy_version_mismatch_{{ nspanel_name }}'
+                            continue_on_error: true
 
-                  # yamllint disable rule:line-length
-                  - alias: Blueprint version not detected
-                    if:
-                      - or:
-                          - '{{ versions.blueprint == 0 }}'
-                          - '{{ versions.blueprint_min == 0 }}'
-                          - '{{ versions.blueprint != blueprint_version }}'
-                    then:
-                      - action: persistent_notification.create
-                        data:
-                          notification_id: 'NSPanel_Easy_version_mismatch_{{ nspanel_name }}'
-                          title: NSPanel Easy - Communication Issue
-                          message: >
-                            The ESPHome firmware is unable to verify the Blueprint version for the NSPanel.
-                              - Panel Details: **{{ device_attr(nspanel_deviceid, "name") ~ ((" (" ~ nspanel_name ~ ")") if nspanel_name != device_attr(nspanel_deviceid, "name") else "Unknown") }}**
+                      - alias: Blueprint version not detected
+                        conditions:
+                          - or:
+                              - '{{ versions.blueprint == 0 }}'
+                              - '{{ versions.blueprint_min == 0 }}'
+                              - '{{ versions.blueprint != blueprint_version }}'
+                        sequence:
+                          - action: persistent_notification.create
+                            data:
+                              notification_id: 'NSPanel_Easy_version_mismatch_{{ nspanel_name }}'
+                              title: NSPanel Easy - Communication Issue
+                              message: >
+                                The ESPHome firmware is unable to verify the Blueprint version for the NSPanel.
+                                  - Panel Details: **{{ device_attr(nspanel_deviceid, "name") ~ ((" (" ~ nspanel_name ~ ")") if nspanel_name != device_attr(nspanel_deviceid, "name") else "Unknown") }}**
 
-                              - Installed Blueprint version: {{ blueprint_version }}
-
-
-                            Troubleshooting steps and more information are available in the online documentation: [Panel startup issues - Blueprint is not detected](https://github.com/edwardtfn/NSPanel-Easy/blob/main/docs/error_initializing.md#blueprint-is-not-detected).
-                        continue_on_error: true
-
-                  - alias: Blueprint newer than ESPHome
-                    if:
-                      - '{{ versions.blueprint_min > 0 }}'
-                      - '{{ versions.blueprint_min < versions.blueprint }}'
-                    then:
-                      - action: persistent_notification.create
-                        data:
-                          notification_id: 'NSPanel_Easy_version_mismatch_{{ nspanel_name }}'
-                          title: "NSPanel Easy - Version mismatch: ESPHome firmware"
-                          message: >
-                            The NSPanel Easy firmware (ESPHome) is outdated for the panel **{{
-                              device_attr(nspanel_deviceid, "name") ~ ((" (" ~ nspanel_name ~ ")") if nspanel_name != device_attr(nspanel_deviceid, "name") else "") }}**.
-
-                            - Current firmware version: {{ nspanel_event.esphome if nspanel_event.esphome is string and nspanel_event.esphome | length > 0 else "Unknown" }}
-
-                            ---
-
-                            **How to Resolve This Issue**
-
-                            1. Go to your ESPHome Dashboard.
-
-                            2. Locate the panel named {{ device_attr(nspanel_deviceid, "name") ~ ((" (" ~ nspanel_name ~ ")") if nspanel_name != device_attr(nspanel_deviceid, "name") else "") }}.
-
-                            3. Click on the corresponding 3-dot menu.
-
-                            4. Choose "**Clean Build Files**".
-
-                            5. In the pop-up dialog, wait for the cleaning to finish, then click "**Install**".
-
-                            6. Select "**Wirelessly**".
+                                  - Installed Blueprint version: {{ blueprint_version }}
 
 
-                            *For more detailed instructions, please refer to the online documentation: [How to Update ESPHome](https://github.com/edwardtfn/NSPanel-Easy/blob/main/docs/howto.md#update-esphome).*
-                        continue_on_error: true
+                                Troubleshooting steps and more information are available in the online documentation: [Panel startup issues - Blueprint is not detected](https://github.com/edwardtfn/NSPanel-Easy/blob/main/docs/error_initializing.md#blueprint-is-not-detected).
+                            continue_on_error: true
 
-                  - alias: Blueprint version mismatch
-                    if:
-                      - '{{ versions.blueprint > 0 }}'
-                      - '{{ versions.blueprint_min > 0 }}'
-                      - '{{ versions.blueprint_min != versions.blueprint }}'
-                    then:
-                      - action: persistent_notification.create
-                        data:
-                          notification_id: 'NSPanel_Easy_version_mismatch_{{ nspanel_name }}'
-                          title: "NSPanel Easy - Version mismatch: Blueprint"
-                          message: >
-                            Your NSPanel Easy Blueprint version is outdated.
+                      - alias: Blueprint newer than ESPHome
+                        conditions:
+                          - '{{ versions.blueprint_min > 0 }}'
+                          - '{{ versions.blueprint_min < versions.blueprint }}'
+                        sequence:
+                          - action: persistent_notification.create
+                            data:
+                              notification_id: 'NSPanel_Easy_version_mismatch_{{ nspanel_name }}'
+                              title: "NSPanel Easy - Version mismatch: ESPHome firmware"
+                              message: >
+                                The NSPanel Easy firmware (ESPHome) is outdated for the panel **{{
+                                  device_attr(nspanel_deviceid, "name") ~ ((" (" ~ nspanel_name ~ ")") if nspanel_name != device_attr(nspanel_deviceid, "name") else "") }}**.
 
-                            - Current Blueprint version: {{ blueprint_version }}
+                                - Current firmware version: {{ nspanel_event.esphome if nspanel_event.esphome is string and nspanel_event.esphome | length > 0 else "Unknown" }}
 
-                            - Expected version: {{ versions.blueprint_min }}, based on the panel **{{
-                                device_attr(nspanel_deviceid, "name") ~ ((" - " ~ nspanel_name) if nspanel_name != device_attr(nspanel_deviceid, "name") else "") }}**.
+                                ---
 
-                            ---
+                                **How to Resolve This Issue**
 
-                            **How to Resolve This Issue**
+                                1. Go to your ESPHome Dashboard.
 
-                            1. Navigate to your [Blueprint Dashboard](/config/blueprint/dashboard).
+                                2. Locate the panel named {{ device_attr(nspanel_deviceid, "name") ~ ((" (" ~ nspanel_name ~ ")") if nspanel_name != device_attr(nspanel_deviceid, "name") else "") }}.
 
-                            2. Locate the blueprint named "**NSPanel Configuration**".
+                                3. Click on the corresponding 3-dot menu.
 
-                            3. Click on the corresponding 3-dot menu.
+                                4. Choose "**Clean Build Files**".
 
-                            4. Choose "**Re-import blueprint**".
+                                5. In the pop-up dialog, wait for the cleaning to finish, then click "**Install**".
 
-                            5. Select the "**Re-import**" button.
-
-                            6. Navigate to [YAML configuration reloading dashboard](/developer-tools/yaml).
-
-                            7. Select "**Automations**" to reload the automations.
+                                6. Select "**Wirelessly**".
 
 
-                            *For more detailed instructions, please refer to the online documentation: [How to Update Blueprint](https://github.com/edwardtfn/NSPanel-Easy/blob/main/docs/howto.md#update-blueprint).*
-                        continue_on_error: true
+                                *For more detailed instructions, please refer to the online documentation: [How to Update ESPHome](https://github.com/edwardtfn/NSPanel-Easy/blob/main/docs/howto.md#update-esphome).*
+                            continue_on_error: true
 
-                  - alias: TFT is older than expected
-                    if:
-                      - '{{ versions.tft > 0 }}'
-                      - '{{ versions.tft_min > 0 }}'
-                      - '{{ versions.tft_min > versions.tft }}'
-                    then:
-                      - action: persistent_notification.create
-                        data:
-                          notification_id: 'NSPanel_Easy_version_mismatch_{{ nspanel_name }}'
-                          title: "NSPanel Easy - Version mismatch: TFT display"
-                          message: >
-                            The TFT version on your NSPanel is outdated for the panel **{{
-                              device_attr(nspanel_deviceid, "name") ~ ((" (" ~ nspanel_name ~ ")") if nspanel_name != device_attr(nspanel_deviceid, "name") else "") }}**.
+                      - alias: Blueprint version mismatch
+                        conditions:
+                          - '{{ versions.blueprint > 0 }}'
+                          - '{{ versions.blueprint_min > 0 }}'
+                          - '{{ versions.blueprint_min != versions.blueprint }}'
+                        sequence:
+                          - action: persistent_notification.create
+                            data:
+                              notification_id: 'NSPanel_Easy_version_mismatch_{{ nspanel_name }}'
+                              title: "NSPanel Easy - Version mismatch: Blueprint"
+                              message: >
+                                Your NSPanel Easy Blueprint version is outdated.
 
-                            - Current TFT version: {{ nspanel_event.tft }}
+                                - Current Blueprint version: {{ blueprint_version }}
 
-                            - Expected version: {{ versions.tft_min }}
+                                - Expected version: {{ versions.blueprint_min }}, based on the panel **{{
+                                    device_attr(nspanel_deviceid, "name") ~ ((" - " ~ nspanel_name) if nspanel_name != device_attr(nspanel_deviceid, "name") else "") }}**.
 
-                            ---
+                                ---
 
-                            **How to Resolve This Issue**
+                                **How to Resolve This Issue**
 
-                            1. Navigate to the [device page](/config/devices/device/{{ nspanel_deviceid }}).
+                                1. Navigate to your [Blueprint Dashboard](/config/blueprint/dashboard).
 
-                            2. In the "**Configuration**" section, find the option labeled "**Update TFT Display - Model**".
+                                2. Locate the blueprint named "**NSPanel Configuration**".
 
-                            3. Click "**Update TFT Display**" to initiate the update process.
+                                3. Click on the corresponding 3-dot menu.
 
-                            4. Please wait patiently until your panel restarts, indicating the update is complete.
+                                4. Choose "**Re-import blueprint**".
+
+                                5. Select the "**Re-import**" button.
+
+                                6. Navigate to [YAML configuration reloading dashboard](/developer-tools/yaml).
+
+                                7. Select "**Automations**" to reload the automations.
 
 
-                            *For more detailed instructions, please refer to the online documentation: [How to Update TFT](https://github.com/edwardtfn/NSPanel-Easy/blob/main/docs/howto.md#update-tft).*
-                        continue_on_error: true
-                  # yamllint disable rule:comments-indentation
-                  # yamllint enable rule:line-length
-                  # yamllint enable rule:comments-indentation
+                                *For more detailed instructions, please refer to the online documentation: [How to Update Blueprint](https://github.com/edwardtfn/NSPanel-Easy/blob/main/docs/howto.md#update-blueprint).*
+                            continue_on_error: true
+
+                      - alias: TFT is older than expected
+                        conditions:
+                          - '{{ versions.tft > 0 }}'
+                          - '{{ versions.tft_min > 0 }}'
+                          - '{{ versions.tft_min > versions.tft }}'
+                        sequence:
+                          - action: persistent_notification.create
+                            data:
+                              notification_id: 'NSPanel_Easy_version_mismatch_{{ nspanel_name }}'
+                              title: "NSPanel Easy - Version mismatch: TFT display"
+                              message: >
+                                The TFT version on your NSPanel is outdated for the panel **{{
+                                  device_attr(nspanel_deviceid, "name") ~ ((" (" ~ nspanel_name ~ ")") if nspanel_name != device_attr(nspanel_deviceid, "name") else "") }}**.
+
+                                - Current TFT version: {{ nspanel_event.tft }}
+
+                                - Expected version: {{ versions.tft_min }}
+
+                                ---
+
+                                **How to Resolve This Issue**
+
+                                1. Navigate to the [device page](/config/devices/device/{{ nspanel_deviceid }}).
+
+                                2. In the "**Configuration**" section, find the option labeled "**Update TFT Display - Model**".
+
+                                3. Click "**Update TFT Display**" to initiate the update process.
+
+                                4. Please wait patiently until your panel restarts, indicating the update is complete.
+
+
+                                *For more detailed instructions, please refer to the online documentation: [How to Update TFT](https://github.com/edwardtfn/NSPanel-Easy/blob/main/docs/howto.md#update-tft).*
+                            continue_on_error: true
+                      # yamllint disable rule:comments-indentation
+                      # yamllint enable rule:line-length
+                      # yamllint enable rule:comments-indentation
 
               ##### Other events #####
               - alias: Other events
