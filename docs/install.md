@@ -115,7 +115,7 @@ Follow these steps to add a new device in the ESPHome Dashboard:
      friendly_name: "Your panel's friendly name"
      wifi_ssid: !secret wifi_ssid
      wifi_password: !secret wifi_password
-     nextion_update_url: "http://homeassistant.local:8123/local/nspanel_eu.tft"  # Optional
+     ota_password: ""  # Optional: set OTA password, or use ${wifi_password} for backward compatibility (see migration guide)
      boot_sound: false
      # Add-on configuration (if needed)
      ## Upload TFT
@@ -137,7 +137,7 @@ Follow these steps to add a new device in the ESPHome Dashboard:
          - nspanel_esphome.yaml # Basic package
          # Optional advanced and add-on configurations
          # - esphome/nspanel_esphome_addon_climate_cool.yaml
-         - esphome/nspanel_esphome_addon_climate_heat.yaml
+         # - esphome/nspanel_esphome_addon_climate_heat.yaml
          # - esphome/nspanel_esphome_addon_climate_dual.yaml
          # - esphome/nspanel_esphome_addon_cover.yaml
          # - esphome/nspanel_esphome_addon_display_light.yaml  # Show the display as a light in Home Assistant
@@ -505,6 +505,7 @@ substitutions:
   friendly_name: "Your Panel Name"
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
+  ota_password: ""  # Optional: set OTA password, or use ${wifi_password} for backward compatibility (see migration guide)
   boot_sound: false
   # Add-on configuration (if needed)
   ## Upload TFT
@@ -561,6 +562,7 @@ substitutions:
   friendly_name: "Your Panel Name"
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
+  ota_password: ""  # Optional: set OTA password, or use ${wifi_password} for backward compatibility (see migration guide)
   boot_sound: false
   # Add-on configuration (if needed)
   ## Upload TFT
@@ -604,6 +606,7 @@ substitutions:
   friendly_name: "Your Panel Name"
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
+  ota_password: ""  # Optional: set OTA password, or use ${wifi_password} for backward compatibility (see migration guide)
   boot_sound: false
   # Add-on configuration (if needed)
   ## Upload TFT
@@ -666,6 +669,7 @@ Here's a complete workflow for integrating Bluetooth Proxy while managing memory
      friendly_name: "Your Panel Name"
      wifi_ssid: !secret wifi_ssid
      wifi_password: !secret wifi_password
+     ota_password: ""  # Optional: set OTA password, or use ${wifi_password} for backward compatibility (see migration guide)
      boot_sound: false
      # Add-on configuration (if needed)
      ## Upload TFT
@@ -695,6 +699,7 @@ Here's a complete workflow for integrating Bluetooth Proxy while managing memory
      friendly_name: "Your Panel Name"
      wifi_ssid: !secret wifi_ssid
      wifi_password: !secret wifi_password
+     ota_password: ""  # Optional: set OTA password, or use ${wifi_password} for backward compatibility (see migration guide)
      boot_sound: false
      # Add-on configuration (if needed)
      ## Upload TFT
@@ -743,7 +748,7 @@ substitutions:
   friendly_name: "Your Panel Name"
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
-  nextion_update_url: "http://homeassistant.local:8123/local/nspanel_eu.tft"
+  ota_password: ""  # Optional: set OTA password, or use ${wifi_password} for backward compatibility (see migration guide)
   boot_sound: false
   # Add-on configuration (if needed)
   ## Upload TFT
