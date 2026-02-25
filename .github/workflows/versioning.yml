@@ -142,10 +142,10 @@ jobs:
         id: versions
         if: github.event_name == 'workflow_dispatch' || steps.skip_check.outputs.skip == 'false'
         run: |
-          # Extract versions from version.yaml and nspanel_esphome_version.yaml
+          # Extract versions from version.yaml and esphome/nspanel_esphome_version.yaml
           VERSION=$(yq eval '.version' ./versioning/version.yaml)
-          MIN_BLUEPRINT_VERSION=$(yq eval '.substitutions.min_blueprint_version' ./esphome/nspanel_esphome_version.yaml)
-          MIN_TFT_VERSION=$(yq eval '.substitutions.min_tft_version' ./esphome/nspanel_esphome_version.yaml)
+          MIN_BLUEPRINT_VERSION=$(yq eval '.substitutions.min_blueprint_version' esphome/nspanel_esphome_version.yaml)
+          MIN_TFT_VERSION=$(yq eval '.substitutions.min_tft_version' esphome/nspanel_esphome_version.yaml)
 
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
           echo "min_blueprint_version=${MIN_BLUEPRINT_VERSION}" >> $GITHUB_OUTPUT
@@ -159,17 +159,17 @@ jobs:
           MIN_TFT_VERSION: ${{ steps.versions.outputs.min_tft_version }}
         run: |
           # Update TFT Version placeholder
-          yq eval '.body[3].attributes.placeholder = "e.g., ${MIN_TFT_VERSION}"' -i .github/ISSUE_TEMPLATE/bug.yml
+          yq eval '.body[3].attributes.placeholder = strenv(MIN_TFT_VERSION) | "e.g., " + .' -i .github/ISSUE_TEMPLATE/bug.yml
 
           # Update Firmware Version placeholder
-          yq eval '.body[4].attributes.placeholder = "e.g., ${VERSION}"' -i .github/ISSUE_TEMPLATE/bug.yml
+          yq eval '.body[4].attributes.placeholder = strenv(VERSION) | "e.g., " + .' -i .github/ISSUE_TEMPLATE/bug.yml
 
           # Update Blueprint Version placeholder
-          yq eval '.body[5].attributes.placeholder = "e.g., ${MIN_BLUEPRINT_VERSION}"' -i .github/ISSUE_TEMPLATE/bug.yml
+          yq eval '.body[5].attributes.placeholder = strenv(MIN_BLUEPRINT_VERSION) | "e.g., " + .' -i .github/ISSUE_TEMPLATE/bug.yml
 
       - name: Commit version and template changes
         id: commit
-        if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && steps.skip_check.outputs.skip == 'false')
+        if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && steps.skip_check.outputs.skip == 'false')
         env:
           NEW_VERSION: ${{ steps.next_version.outputs.version }}
         run: |
