@@ -20,6 +20,11 @@ on:  # yamllint disable-line rule:truthy
 
   workflow_dispatch:
     inputs:
+      bump_and_release:
+        description: "Bump version, create release, and update tags?"
+        required: true
+        default: true
+        type: boolean
       update_stable:
         description: "Update stable tag?"
         required: true
@@ -160,18 +165,18 @@ jobs:
           MIN_BLUEPRINT_VERSION: ${{ steps.versions.outputs.min_blueprint_version }}
           MIN_TFT_VERSION: ${{ steps.versions.outputs.min_tft_version }}
         run: |
-          # Update TFT Version placeholder
-          yq eval '.body[3].attributes.placeholder = strenv(MIN_TFT_VERSION) | "e.g., " + .' -i .github/ISSUE_TEMPLATE/bug.yml
+          # Update TFT Version placeholder (index 2)
+          yq eval '.body[2].attributes.placeholder = ("e.g., " + strenv(MIN_TFT_VERSION))' -i .github/ISSUE_TEMPLATE/bug.yml
 
-          # Update Firmware Version placeholder
-          yq eval '.body[4].attributes.placeholder = strenv(VERSION) | "e.g., " + .' -i .github/ISSUE_TEMPLATE/bug.yml
+          # Update Firmware Version placeholder (index 3)
+          yq eval '.body[3].attributes.placeholder = ("e.g., " + strenv(VERSION))' -i .github/ISSUE_TEMPLATE/bug.yml
 
-          # Update Blueprint Version placeholder
-          yq eval '.body[5].attributes.placeholder = strenv(MIN_BLUEPRINT_VERSION) | "e.g., " + .' -i .github/ISSUE_TEMPLATE/bug.yml
+          # Update Blueprint Version placeholder (index 4)
+          yq eval '.body[4].attributes.placeholder = ("e.g., " + strenv(MIN_BLUEPRINT_VERSION))' -i .github/ISSUE_TEMPLATE/bug.yml
 
       - name: Commit version and template changes
         id: commit
-        if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && steps.skip_check.outputs.skip == 'false')
+        if: (github.event_name == 'workflow_dispatch' && inputs.bump_and_release) || (github.event_name == 'pull_request' && steps.skip_check.outputs.skip == 'false')
         env:
           NEW_VERSION: ${{ steps.next_version.outputs.version }}
         run: |
@@ -207,15 +212,17 @@ jobs:
           echo "PR_TITLE=${PR_TITLE}" >> $GITHUB_ENV
 
       - name: Push changes
-        if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && steps.skip_check.outputs.skip == 'false')
+        if: (github.event_name == 'workflow_dispatch' && inputs.bump_and_release) || (github.event_name == 'pull_request' && steps.skip_check.outputs.skip == 'false')
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          git fetch origin main
+          git rebase origin/main
           git push origin HEAD:main
 
       - name: Create version tag and push
         id: push_tag
-        if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && steps.skip_check.outputs.skip == 'false')
+        if: (github.event_name == 'workflow_dispatch' && inputs.bump_and_release) || (github.event_name == 'pull_request' && steps.skip_check.outputs.skip == 'false')
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -226,7 +233,7 @@ jobs:
 
       - name: Build release name
         id: release_name
-        if: (github.event_name == 'pull_request' && steps.skip_check.outputs.skip == 'false' || github.event_name == 'workflow_dispatch') && steps.push_tag.outcome == 'success'
+        if: ((github.event_name == 'workflow_dispatch' && inputs.bump_and_release) || (github.event_name == 'pull_request' && steps.skip_check.outputs.skip == 'false')) && steps.push_tag.outcome == 'success'
         run: |
           VERSION="v${{ steps.push_tag.outputs.version }}"
           if [ -n "$PR_TITLE" ]; then
@@ -236,7 +243,7 @@ jobs:
           fi
 
       - name: Create GitHub Release
-        if: (github.event_name == 'pull_request' && steps.skip_check.outputs.skip == 'false' || github.event_name == 'workflow_dispatch') && steps.push_tag.outcome == 'success'
+        if: ((github.event_name == 'workflow_dispatch' && inputs.bump_and_release) || (github.event_name == 'pull_request' && steps.skip_check.outputs.skip == 'false')) && steps.push_tag.outcome == 'success'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.push_tag.outputs.version }}
