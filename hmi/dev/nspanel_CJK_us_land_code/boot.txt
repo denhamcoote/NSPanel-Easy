@@ -149,7 +149,7 @@ Text log_body
         Opacity                 : 127
         x coordinate            : 222
         y coordinate            : 68
-        Width                   : 228
+        Width                   : 226
         Height                  : 224
         Effect                  : load
         Effect Priority         : 0
