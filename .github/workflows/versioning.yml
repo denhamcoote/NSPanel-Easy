@@ -182,6 +182,17 @@ jobs:
             '.body[4].attributes.placeholder = ("e.g., " + strenv(MIN_BLUEPRINT_VERSION))' \
             -i "$TEMPLATE"
 
+      - name: Restore YAML document end markers
+        if: steps.skip_check.outputs.skip == 'false'
+        run: |
+          # yq strips the YAML document end marker (...) on in-place edits.
+          # Re-append it to all files modified by yq.
+          for file in ./versioning/version.yaml .github/ISSUE_TEMPLATE/bug.yml; do
+            if [ -f "$file" ] && ! tail -1 "$file" | grep -qx '\.\.\.'; then
+              echo '...' >> "$file"
+            fi
+          done
+
       # -------------------------------------------------------------------
       # Commit, tag, and release
       # -------------------------------------------------------------------
