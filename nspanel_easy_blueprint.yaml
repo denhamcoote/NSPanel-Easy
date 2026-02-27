@@ -10,7 +10,7 @@ blueprint:
   description: >
     # NSPanel Easy Configuration via Blueprint
 
-    **Blueprint release**: 1
+    **Blueprint release**: 2
 
 
     This project enables comprehensive configuration of your NSPanel through a Blueprint featuring a user interface.
@@ -3992,7 +3992,7 @@ trigger_variables:
     }}
 
 variables:
-  blueprint_version: 1
+  blueprint_version: 2
   pages:
     current: '{{ states(currentpage) }}'
     home: "home"
@@ -11924,6 +11924,7 @@ action:
                   - '{{ nspanel_event.type == "version"}}'
                 sequence:
                   - variables:
+                      nspanel_full_name: '{{ device_attr(nspanel_deviceid, "name") ~ ((" (" ~ nspanel_name ~ ")") if nspanel_name != device_attr(nspanel_deviceid, "name") else "") }}'
                       versions:
                         blueprint: '{{ nspanel_event.blueprint | int(0) }}'
                         esphome: '{{ nspanel_event.esphome }}'
@@ -11968,7 +11969,7 @@ action:
                               title: NSPanel Easy - Communication Issue
                               message: >
                                 The ESPHome firmware is unable to verify the Blueprint version for the NSPanel.
-                                  - Panel Details: **{{ device_attr(nspanel_deviceid, "name") ~ ((" (" ~ nspanel_name ~ ")") if nspanel_name != device_attr(nspanel_deviceid, "name") else "") }}**
+                                  - Panel Details: **{{ nspanel_full_name }}**
 
                                   - Reported Blueprint version: {{ versions.blueprint if versions.blueprint > 0 else "Unknown" }}
 
@@ -11990,8 +11991,7 @@ action:
                               notification_id: 'NSPanel_Easy_version_mismatch_{{ nspanel_name }}'
                               title: "NSPanel Easy - Version mismatch: ESPHome firmware"
                               message: >
-                                The NSPanel Easy firmware (ESPHome) is outdated for the panel **{{
-                                  device_attr(nspanel_deviceid, "name") ~ ((" (" ~ nspanel_name ~ ")") if nspanel_name != device_attr(nspanel_deviceid, "name") else "") }}**.
+                                The NSPanel Easy firmware (ESPHome) is outdated for the panel **{{ nspanel_full_name }}**.
 
                                 - Current firmware version: {{ versions.esphome if versions.esphome is string and versions.esphome | length > 0 else "Unknown" }}
 
@@ -12003,7 +12003,7 @@ action:
 
                                 1. Go to your ESPHome Dashboard.
 
-                                2. Locate the panel named {{ device_attr(nspanel_deviceid, "name") ~ ((" (" ~ nspanel_name ~ ")") if nspanel_name != device_attr(nspanel_deviceid, "name") else "") }}.
+                                2. Locate the panel named **{{ nspanel_full_name }}**.
 
                                 3. Click on the corresponding 3-dot menu.
 
@@ -12063,33 +12063,88 @@ action:
                           - '{{ versions.tft_min > 0 }}'
                           - '{{ versions.tft_min > versions.tft }}'
                         sequence:
-                          - action: persistent_notification.create
-                            data:
-                              notification_id: 'NSPanel_Easy_version_mismatch_{{ nspanel_name }}'
-                              title: "NSPanel Easy - Version mismatch: TFT display"
-                              message: >
-                                The TFT version on your NSPanel is outdated for the panel **{{
-                                  device_attr(nspanel_deviceid, "name") ~ ((" (" ~ nspanel_name ~ ")") if nspanel_name != device_attr(nspanel_deviceid, "name") else "") }}**.
+                          - choose:
+                              - alias: TFT Upload add-on missing
+                                conditions:
+                                  - '{{ nspanel_event.upload_tft_installed is defined }}'
+                                  - '{{ not (nspanel_event.upload_tft_installed | bool) }}'
+                                sequence:
+                                  - action: persistent_notification.create
+                                    data:
+                                      notification_id: 'NSPanel_Easy_version_mismatch_{{ nspanel_name }}'
+                                      title: "NSPanel Easy - Version mismatch: Missing TFT upload add-on"
+                                      message: >
+                                        The TFT version on your NSPanel is outdated for the panel **{{ nspanel_full_name }}**,
+                                        and you don't have installed the add-on TFT Upload required to fix this.
 
-                                - Current TFT version: {{ nspanel_event.tft }}
+                                        - Current TFT version: {{ nspanel_event.tft }}
 
-                                - Expected version: {{ versions.tft_min }}
+                                        - Expected version: {{ versions.tft_min }}
 
-                                ---
+                                        ---
 
-                                **How to Resolve This Issue**
+                                        To resolve this issue, please flash your device including the add-on Upload TFT.
+                                        For instructions, please [click here](https://github.com/edwardtfn/NSPanel-Easy/blob/main/docs/addon_upload_tft.md).
+                                    continue_on_error: true
+                              - alias: TFT Upload auto-upload enabled
+                                conditions:
+                                  - '{{ nspanel_event.upload_tft_installed is defined }}'
+                                  - '{{ nspanel_event.upload_tft_installed | bool }}'
+                                  - '{{ nspanel_event.upload_tft_auto is defined }}'
+                                  - '{{ nspanel_event.upload_tft_auto | bool }}'
+                                sequence:
+                                  - action: persistent_notification.create
+                                    data:
+                                      notification_id: 'NSPanel_Easy_version_mismatch_{{ nspanel_name }}'
+                                      title: "NSPanel Easy - Version mismatch: TFT display"
+                                      message: >
+                                        The TFT version on your NSPanel is outdated for the panel **{{ nspanel_full_name }}**.
 
-                                1. Navigate to the [device page](/config/devices/device/{{ nspanel_deviceid }}).
+                                        - Current TFT version: {{ nspanel_event.tft }}
 
-                                2. In the "**Configuration**" section, find the option labeled "**Update TFT Display - Model**".
+                                        - Expected version: {{ versions.tft_min }}
 
-                                3. Click "**Update TFT Display**" to initiate the update process.
+                                        ---
 
-                                4. Please wait patiently until your panel restarts, indicating the update is complete.
+                                        Your panel is set to auto-update the TFT.
+                                        {%- if nspanel_event.upload_tft_wait_ms is defined -%}
+                                        The update will start approximately {{ (nspanel_event.upload_tft_wait_ms | int / 1000) | round(0) | int }} seconds after boot.
+                                        {%- endif -%}
+
+                                        You can also press "**Update TFT Display**" on the [device page](/config/devices/device/{{ nspanel_deviceid }})
+                                        to start the update immediately.
+
+                                        If this message persists after the update completes,
+                                        please report an [issue on GitHub](https://github.com/edwardtfn/NSPanel-Easy/issues).
+                                    continue_on_error: true
+                            default:
+                              - action: persistent_notification.create
+                                data:
+                                  notification_id: 'NSPanel_Easy_version_mismatch_{{ nspanel_name }}'
+                                  title: "NSPanel Easy - Version mismatch: TFT display"
+                                  message: >
+                                    The TFT version on your NSPanel is outdated for the panel **{{ nspanel_full_name }}**.
+
+                                    - Current TFT version: {{ nspanel_event.tft }}
+
+                                    - Expected version: {{ versions.tft_min }}
+
+                                    ---
+
+                                    **How to Resolve This Issue**
+
+                                    1. Navigate to the [device page](/config/devices/device/{{ nspanel_deviceid }}).
+
+                                    2. In the "**Configuration**" section, find the option labeled "**Update TFT Display - Model**".
+
+                                    3. Click "**Update TFT Display**" to initiate the update process.
+
+                                    4. Please wait patiently until your panel restarts, indicating the update is complete.
 
 
-                                *For more detailed instructions, please refer to the online documentation: [How to Update TFT](https://github.com/edwardtfn/NSPanel-Easy/blob/main/docs/howto.md#update-tft).*
-                            continue_on_error: true
+                                    *For more detailed instructions, please refer to the online documentation:
+                                    [How to Update TFT](https://github.com/edwardtfn/NSPanel-Easy/blob/main/docs/howto.md#update-tft).*
+                                continue_on_error: true
                       # yamllint disable rule:comments-indentation
                       # yamllint enable rule:line-length
                       # yamllint enable rule:comments-indentation

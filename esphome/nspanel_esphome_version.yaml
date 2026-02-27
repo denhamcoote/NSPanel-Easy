@@ -11,7 +11,7 @@ substitutions:
   # Value is imported from versioning/version.yaml
   <<: !include ../versioning/version.yaml
   # Minimum required versions for compatibility
-  min_blueprint_version: 1
+  min_blueprint_version: 2
   min_tft_version: 2
   min_esphome_compiler_version: 2026.1.0
   TAG_VERSIONING: nspanel.versioning
@@ -90,7 +90,14 @@ script:
             {"min_blueprint_version", "${min_blueprint_version}"},
             {"esphome", "${version}"},
             {"tft", std::to_string(static_cast<unsigned int>(version_tft))},
-            {"min_tft_version", "${min_tft_version}"}
+            {"min_tft_version", "${min_tft_version}"},
+          #ifdef NSPANEL_EASY_ADDON_UPLOAD_TFT
+            {"upload_tft_installed", "true"},
+            {"upload_tft_auto", "${upload_tft_automatically}"},
+            {"upload_tft_wait_ms", "${upload_tft_wait_ms_after_boot}"}
+          #else   // Upload TFT add-on is not installed
+            {"upload_tft_installed", "false"}
+          #endif  // NSPANEL_EASY_ADDON_UPLOAD_TFT
           });
           ESP_LOGD("${TAG_VERSIONING}", "Check version completed");
 
