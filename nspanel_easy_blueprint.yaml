@@ -7,6 +7,7 @@
 ---
 blueprint:
   name: NSPanel Easy Configuration
+  author: Edward Firmo (https://github.com/edwardtfn)
   description: >
     # NSPanel Easy Configuration via Blueprint
 
