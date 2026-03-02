@@ -25,6 +25,7 @@ Page fan
                 page home_page_id
             }
             vis bt_oscillate,0
+            button_back.font=button_back_font
             sendme
         
 Variable (string) fansetting
@@ -370,7 +371,7 @@ Button button_back
         x coordinate                        : 385
         y coordinate                        : 0
         Width                               : 95
-        Height                              : 40
+        Height                              : 48
         Effect                              : load
         Effect Priority                     : 0
         Effect Time                         : 300
