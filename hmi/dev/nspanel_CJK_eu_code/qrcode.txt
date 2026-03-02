@@ -20,6 +20,7 @@ Page qrcode
     Events
         Preinitialize Event
             dim=brightness
+            button_back.font=button_back_font
             sendme
         
 Text qrcode_label
@@ -59,7 +60,7 @@ Button button_back
         x coordinate                        : 385
         y coordinate                        : 0
         Width                               : 95
-        Height                              : 40
+        Height                              : 48
         Effect                              : load
         Effect Priority                     : 0
         Effect Time                         : 300

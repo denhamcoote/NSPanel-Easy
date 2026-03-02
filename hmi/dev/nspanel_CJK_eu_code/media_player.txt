@@ -24,6 +24,7 @@ Page media_player
             {
                 page home_page_id
             }
+            button_back.font=button_back_font
             sendme
         
 Variable (string) lastclick

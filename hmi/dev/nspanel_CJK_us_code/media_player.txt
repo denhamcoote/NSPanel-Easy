@@ -24,6 +24,7 @@ Page media_player
             {
                 page home_page_id
             }
+            button_back.font=button_back_font
             sendme
         
 Variable (string) lastclick
@@ -575,7 +576,7 @@ Button button_back
         x coordinate                        : 260
         y coordinate                        : 0
         Width                               : 60
-        Height                              : 40
+        Height                              : 47
         Effect                              : load
         Effect Priority                     : 0
         Effect Time                         : 300

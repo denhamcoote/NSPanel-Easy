@@ -83,6 +83,7 @@ Page debug
             system_vars.txt+="\r- dim: "
             covx dim,aux.txt,0,0
             system_vars.txt+=aux.txt
+            button_back.font=button_back_font
             sendme
         
 Variable (string) aux
@@ -210,7 +211,7 @@ Button button_back
         x coordinate                        : 385
         y coordinate                        : 0
         Width                               : 95
-        Height                              : 40
+        Height                              : 48
         Effect                              : load
         Effect Priority                     : 0
         Effect Time                         : 300
