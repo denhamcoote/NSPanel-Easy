@@ -60,7 +60,7 @@ Variable (string) version
     Attributes
         ID            : 6
         Scope         : global
-        Text          : 2
+        Text          : 3
         Max. Text Size: 7
     
 Variable (int32) log_len
@@ -176,7 +176,7 @@ Text nspanel_easy
         Opacity                 : 127
         x coordinate            : 15
         y coordinate            : 15
-        Width                   : 157
+        Width                   : 200
         Height                  : 30
         Effect                  : load
         Effect Priority         : 0

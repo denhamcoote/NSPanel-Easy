@@ -27,6 +27,7 @@ Page utilities
             vis 255,0
             vis title_icon,1
             vis title,1
+            button_back.font=button_back_font
             vis button_back,1
             sendme
         

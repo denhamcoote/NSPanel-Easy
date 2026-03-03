@@ -7,10 +7,11 @@
 ---
 blueprint:
   name: NSPanel Easy Configuration
+  author: Edward Firmo (https://github.com/edwardtfn)
   description: >
     # NSPanel Easy Configuration via Blueprint
 
-    **Blueprint release**: 2
+    **Blueprint release**: 3
 
 
     This project enables comprehensive configuration of your NSPanel through a Blueprint featuring a user interface.
@@ -3832,6 +3833,23 @@ blueprint:
             *Which default color should be used fo icons when the state is **OFF**?*
           default: [92, 92, 92]
           selector: *color_selector
+        button_back_font_size:
+          name: Back/Close Button Icon Size
+          description: >-
+            `Optional`
+
+            Select the size of the icon displayed on the Back/Close button in the top-right corner of each page.
+          default: '8'
+          selector:
+            select:
+              multiple: false
+              options:
+                - label: 24px
+                  value: '7'
+                - label: 32px
+                  value: '8'
+                - label: 48px
+                  value: '10'
         delay:
           name: Command Delay to Prevent Overload
           description: >
@@ -3992,7 +4010,7 @@ trigger_variables:
     }}
 
 variables:
-  blueprint_version: 2
+  blueprint_version: 3
   pages:
     current: '{{ states(currentpage) }}'
     home: "home"
@@ -9321,6 +9339,14 @@ action:
                               page: mem
                               id: temp_unit
                               txt: !input temperature_unit
+                            continue_on_error: true
+
+                          - *delay_boot
+                          - action: 'esphome.{{ nspanel_name }}_component_val'
+                            data:
+                              page: mem
+                              id: button_back_font
+                              val: !input button_back_font_size
                             continue_on_error: true
 
                       - alias: Entity pages alignment

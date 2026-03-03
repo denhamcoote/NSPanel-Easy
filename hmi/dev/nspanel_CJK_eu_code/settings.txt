@@ -28,6 +28,7 @@ Page settings
             dim_text.txt+="%"
             vis lbl_sleep,0
             vis bt_sleep,0
+            button_back.font=button_back_font
             sendme
         
         Touch Press Event
@@ -315,7 +316,7 @@ Button button_back
         x coordinate                        : 385
         y coordinate                        : 0
         Width                               : 95
-        Height                              : 40
+        Height                              : 48
         Effect                              : load
         Effect Priority                     : 0
         Effect Time                         : 300

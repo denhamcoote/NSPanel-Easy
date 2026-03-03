@@ -71,8 +71,8 @@ Variable (string) version
     Attributes
         ID            : 14
         Scope         : local
-        Text          : 2026020
-        Max. Text Size: 7
+        Text          : 2026.2.0
+        Max. Text Size: 8
     
 Text nspanel_easy
     Attributes
@@ -164,7 +164,7 @@ Text tft_version
         Associated Keyboard     : none
         Font ID                 : 0
         Cropped Back. Picture ID: 0
-        Horizontal Alignment    : left
+        Horizontal Alignment    : right
         Vertical Alignment      : center
         Input Type              : character
         Text                    : TFT version
@@ -296,8 +296,8 @@ QR Code qr0
         Effect Priority  : 0
         Effect Time      : 300
         Logo overlay     : no
-        Text             : https://github.com/Blackymas/NSPanel_HA_Blueprint/blob/main/docs/nspanel_blank.md#what-to-do-after-installing-nspanel_blanktft
-        Max. Text Size   : 150
+        Text             : https://github.com/edwardtfn/NSPanel-Easy/blob/main/docs/nspanel_blank.md
+        Max. Text Size   : 73
     
     Events
         Touch Press Event
