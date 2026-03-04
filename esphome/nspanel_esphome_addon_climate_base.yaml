@@ -393,8 +393,10 @@ script:
 
           // Determine visibility based on user preference and current climate state
           const auto visibility = static_cast<nspanel_easy::ClimateChipVisibility>(id(climate_chip_visibility));
-          const bool is_active = (action >= nspanel_easy::CLIMATE_ACTION_COOLING &&
-                                  action <= nspanel_easy::CLIMATE_ACTION_FAN);
+          const bool is_active = (action == nspanel_easy::CLIMATE_ACTION_COOLING ||
+                                  action == nspanel_easy::CLIMATE_ACTION_HEATING ||
+                                  action == nspanel_easy::CLIMATE_ACTION_DRYING ||
+                                  action == nspanel_easy::CLIMATE_ACTION_FAN);
 
           bool visible = false;
           if (visibility == nspanel_easy::CLIMATE_CHIP_NEVER) {
