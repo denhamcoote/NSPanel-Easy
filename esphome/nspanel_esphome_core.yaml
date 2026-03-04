@@ -192,7 +192,7 @@ script:  # Scripts
                 const uint8_t current_flags_count = blueprint_status_flags.count_active_flags_set();
                 if (is_verbose_log || current_flags_count != last_flags_count || counter % 5 == 0) {
                   last_flags_count = current_flags_count;
-                  ESP_LOGD("${TAG_CORE}", "Blueprint progress: %0.1f%%",
+                  ESP_LOGD("${TAG_CORE}", "Receiving settings from Blueprint: %0.1f%%",
                                             blueprint_status_flags.get_completion_percentage());
                   ESP_LOGV("${TAG_CORE}", "  Page home: %s", YESNO(blueprint_status_flags.page_home));
                   ESP_LOGV("${TAG_CORE}", "  Page qrcode: %s", YESNO(blueprint_status_flags.page_qrcode));
