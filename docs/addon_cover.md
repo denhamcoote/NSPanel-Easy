@@ -11,7 +11,6 @@ using its relays to drive the motor to open or close a cover.
   and Home Assistant still needs to process the open/close commands.
   We want to change this in the future so it could be fully controlled locally.
 
-<!-- markdownlint-disable MD028 -->
 > [!WARNING]
 > The NSPanel is limited to 2A per relay.
 > Don't use it to directly power your cover's motor if it exceeds the panel specifications:
@@ -19,10 +18,11 @@ using its relays to drive the motor to open or close a cover.
 > - 150W/110V/Gang, 300W/110V/Total
 > - 300W/220V/Gang, 600W/220V/Total
 
+<!-- blockquote separator - to avoid markdown lint 028 error -->
+
 > [!NOTE]
 > More details on the [Sonoff NSPanel's page](https://sonoff.tech/product/central-control-panel/nspanel/)
 > and the [product specifications document](https://sonoff.tech/wp-content/uploads/2021/11/%E4%BA%A7%E5%93%81%E5%8F%82%E6%95%B0%E8%A1%A8-NSPanel-20210831.pdf).
-<!-- markdownlint-enable MD028 -->
 
 ## Installation
 
