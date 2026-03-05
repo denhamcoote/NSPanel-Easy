@@ -8748,7 +8748,7 @@ action:
                               - variables:
                                   climate_chip_visibility: !input climate_chip_visibility
                               - *delay_boot
-                              - action: 'esphome.{{ device_name }}_component_val'
+                              - action: 'esphome.{{ nspanel_name }}_component_val'
                                 data:
                                   page: mem
                                   id: climate_chip_visibility
