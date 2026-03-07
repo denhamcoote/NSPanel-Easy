@@ -5194,6 +5194,7 @@ action:
             updater: "\uE166"                  # mdi:cloud-upload
             vacuum: "\uE70C"                   # mdi:robot-vacuum
             wake_word: "\uF2D0"                # mdi:chat-sleep
+            water_heater: "\uEF91"             # mdi:water-boiler
             weather: "\uEF34"                  # mdi:weather-partly-snowy-rainy
             zone: "\uE351"                     # mdi:map-marker-radius
             unknown: "\uE027"                  # mdi:alert-circle
@@ -8680,6 +8681,19 @@ action:
                   {%- else -%}
                     {{ all_icons["lock-alert"] }}
                   {%- endif -%}
+                {%- elif entity_domain == "water_heater" -%}
+                  {%- set wh_mode = state_attr(entity_id, "operation_mode") | default(entity_state) -%}
+                  {%- set wh_icon_map = {
+                    'off': all_icons["water-boiler-off"],
+                    'on': all_icons["water-boiler"],
+                    'eco': all_icons.leaf,
+                    'electric': all_icons["lightning-bolt"],
+                    'gas': all_icons.fire,
+                    'heat_pump': all_icons["heat-pump"],
+                    'performance': all_icons["heat-wave"],
+                    'high_demand': all_icons.speedometer
+                  } -%}
+                  {{ wh_icon_map.get(wh_mode, icon_domain) }}
                 {#- Priority 3: Use entity's custom icon if available -#}
                 {%- elif entity_icon_valid -%}
                   {%- set icon_parts = entity_icon.split(":") -%}
@@ -8760,6 +8774,19 @@ action:
                   {%- else -%}
                     {{ entity_icon_color }}
                   {%- endif -%}
+                {%- elif entity_domain == "water_heater" -%}
+                  {%- set wh_mode = state_attr(entity_id, "operation_mode") | default(entity_state) -%}
+                  {%- set wh_color_map = {
+                    'off': nextion.color.off,
+                    'on': nextion.color.orange,
+                    'eco': nextion.color.green,
+                    'electric': nextion.color.amber,
+                    'gas': nextion.color.deep_orange,
+                    'heat_pump': nextion.color.blue,
+                    'performance': nextion.color.red,
+                    'high_demand': nextion.color.red
+                  } -%}
+                  {{ wh_color_map.get(wh_mode, entity_icon_color) }}
                 {#- Default: use entity_icon_color for all other domains -#}
                 {%- else -%}
                   {{ entity_icon_color }}
@@ -12374,15 +12401,15 @@ action:
                           - choose:
                               - alias: Long click
                                 conditions:
-                                  - '{{ nspanel_event.command == "long_click" or entity_domain in ["alarm_control_panel", "climate", "media_player"] }}'
-                                  - '{{ entity_domain in ["alarm_control_panel", "climate", "cover", "light", "fan", "media_player"] }}'
+                                  - '{{ nspanel_event.command == "long_click" or entity_domain in ["alarm_control_panel", "climate", "media_player", "water_heater"] }}'
+                                  - '{{ entity_domain in ["alarm_control_panel", "climate", "cover", "light", "fan", "media_player", "water_heater"] }}'
                                 sequence:
                                   - variables:
                                       back_page: '{{ nspanel_event.page }}'
                                   - *entity_details_show
                               - alias: Short click
                                 conditions:
-                                  - '{{ nspanel_event.command == "short_click" and entity_domain not in ["alarm_control_panel", "climate", "media_player"] }}'
+                                  - '{{ nspanel_event.command == "short_click" and entity_domain not in ["alarm_control_panel", "climate", "media_player", "water_heater"] }}'
                                   - '{{ entity_domain not in ["unknown", "person", "binary_sensor", "sensor"] }}'
                                 sequence:
                                   - *short_press-service_call
@@ -12448,7 +12475,7 @@ action:
                           - condition: '{{ entity_id_valid }}'
                           - if: >
                               {{
-                                entity_domain in ["alarm_control_panel", "climate", "media_player"] or
+                                entity_domain in ["alarm_control_panel", "climate", "media_player", "water_heater"] or
                                 (entity_domain == "cover" and supported_features | bitwise_and(4) > 0) or
                                 (entity_domain == "fan" and (supported_features | bitwise_and(1) > 0 or supported_features | bitwise_and(2) > 0)) or
                                 (entity_domain == "light" and (color_mode_brightness or color_mode_color or color_mode_temp))
