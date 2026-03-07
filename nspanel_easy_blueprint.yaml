@@ -8460,7 +8460,7 @@ action:
               component: button02
             - mode: electric
               icon: lightning-bolt
-              color: yellow_golden
+              color: amber
               component: button03
             - mode: gas
               icon: fire
