@@ -20,31 +20,31 @@ Page water_heater
     Events
         Preinitialize Event
             dim=brightness
-            if(api==1)
-            {
-                vis target_icon,0
-                vis current_temp,0
-                vis slider,0
-                vis button01,0
-                vis button02,0
-                vis button03,0
-                vis button04,0
-                vis button05,0
-                vis button06,0
-                vis button07,0
-                vis button08,0
-                button01.font=button_font.val
-                button02.font=button_font.val
-                button03.font=button_font.val
-                button04.font=button_font.val
-                button05.font=button_font.val
-                button06.font=button_font.val
-                button07.font=button_font.val
-                button08.font=button_font.val
-            }else
+            if(api!=1)
             {
                 page home_page_id
             }
+            vis target_icon,0
+            vis current_temp,0
+            vis slider,0
+            vis decrease_temp,0
+            vis increase_temp,0
+            vis button01,0
+            vis button02,0
+            vis button03,0
+            vis button04,0
+            vis button05,0
+            vis button06,0
+            vis button07,0
+            vis button08,0
+            button01.font=button_font.val
+            button02.font=button_font.val
+            button03.font=button_font.val
+            button04.font=button_font.val
+            button05.font=button_font.val
+            button06.font=button_font.val
+            button07.font=button_font.val
+            button08.font=button_font.val
             button_back.font=button_back_font
             sendme
         
@@ -93,7 +93,7 @@ Variable (int32) temp_step
     Attributes
         ID   : 28
         Scope: local
-        Value: 0
+        Value: 1
     
 Variable (int32) temp_number0
     Attributes

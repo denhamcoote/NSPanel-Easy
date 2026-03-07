@@ -11339,7 +11339,6 @@ action:
                                   for_each: '{{ page_water_heater.buttons.operation_mode }}'
                                   sequence:
                                     - condition: '{{ repeat.item.mode in operation_list }}'
-                                    - *delay_default
                                     ### ICON Font Color ###
                                     - *delay_default
                                     - action: 'esphome.{{ nspanel_name }}_component_color'
