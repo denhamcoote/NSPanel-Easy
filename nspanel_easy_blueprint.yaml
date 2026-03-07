@@ -10933,7 +10933,11 @@ action:
                                   temp_offset: '{{ temp_offset_raw if (temp_offset_raw % temp_step) == 0 else temp_offset_raw + temp_step - (temp_offset_raw % temp_step) }}'
                                   max_temp_raw: '{{ (state_attr(climate_entity, "max_temp") | float(35) * 10) | round(0) | int }}'
                                   max_temp: '{{ (max_temp_raw / temp_step) | round * temp_step }}'
-                                  total_steps: '{{ ((max_temp-temp_offset)/temp_step) | round(0) | int }}'
+                                  total_steps: >
+                                    {{
+                                      (((max_temp_raw - temp_offset) / temp_step) | round(0) | int)
+                                      if max_temp_raw >= temp_offset and temp_step > 0 else 0
+                                    }}
                                   climate_state: '{{ states(climate_entity) | default("unavailable") if climate_entity is string else "unavailable" }}'
                                   hvac_action: '{{ state_attr(climate_entity, "hvac_action") | default("") }}'
                                   hvac_modes: '{{ state_attr(climate_entity, "hvac_modes") }}'
@@ -11088,7 +11092,12 @@ action:
                                     water_heater_entity.split(".") | count > 0
                                   else "unknown"
                                 }}
-                              operation_list: '{{ state_attr(water_heater_entity, "operation_list") if settings_entity_domain == "water_heater" }}'
+                              operation_list: >
+                                {{
+                                  state_attr(water_heater_entity, "operation_list") | default([], true)
+                                  if settings_entity_domain == "water_heater"
+                                  else []
+                                }}
                               friendly_name_raw: '{{ state_attr(water_heater_entity, "friendly_name") }}'
                               friendly_name: '{{ friendly_name_raw if friendly_name_raw and friendly_name_raw is string else "" }}'
                           - if:
@@ -11204,7 +11213,11 @@ action:
                                   temp_offset: '{{ temp_offset_raw if (temp_offset_raw % temp_step) == 0 else temp_offset_raw + temp_step - (temp_offset_raw % temp_step) }}'
                                   max_temp_raw: '{{ (state_attr(water_heater_entity, "max_temp") | float(35) * 10) | round(0) | int }}'
                                   max_temp: '{{ (max_temp_raw / temp_step) | round * temp_step }}'
-                                  total_steps: '{{ ((max_temp - temp_offset) / temp_step) | round(0) | int }}'
+                                  total_steps: >
+                                    {{
+                                      (((max_temp_raw - temp_offset) / temp_step) | round(0) | int)
+                                      if max_temp_raw >= temp_offset and temp_step > 0 else 0
+                                    }}
                                   water_heater_state: '{{ states(water_heater_entity) | default("unavailable") if water_heater_entity is string else "unavailable" }}'
                                   operation_mode: '{{ state_attr(water_heater_entity, "operation_mode") | default(water_heater_state) }}'
                                   use_decimal: '{{ temp_step % 10 != 0 }}'
@@ -11315,6 +11328,13 @@ action:
                           - &water_heater_update_buttons
                             alias: water_heater_update_buttons
                             sequence:
+                              - *delay_default
+                              - action: 'esphome.{{ nspanel_name }}_components_visibility'
+                                data:
+                                  page: water_heater
+                                  ids: '{{ page_water_heater.buttons.operation_mode | map(attribute="component") | list }}'
+                                  visible: false
+                                continue_on_error: true
                               - repeat:
                                   for_each: '{{ page_water_heater.buttons.operation_mode }}'
                                   sequence:
@@ -11329,7 +11349,7 @@ action:
                                         color: >
                                           {{
                                             nextion.color[repeat.item.color]
-                                            if states(water_heater_entity) == repeat.item.mode
+                                            if operation_mode == repeat.item.mode
                                             else nextion.color.disabled
                                           }}
                                       continue_on_error: true
