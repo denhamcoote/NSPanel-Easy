@@ -10958,12 +10958,11 @@ action:
                                     {{ ((10 * target_temp_step) | round(0) | int) if is_number(target_temp_step) and target_temp_step > 0 else 10 }}
                                   temp_offset_raw: '{{ (state_attr(climate_entity, "min_temp") | float(7) * 10) | round(0) | int }}'
                                   temp_offset: '{{ temp_offset_raw if (temp_offset_raw % temp_step) == 0 else temp_offset_raw + temp_step - (temp_offset_raw % temp_step) }}'
-                                  max_temp_raw: '{{ (state_attr(climate_entity, "max_temp") | float(35) * 10) | round(0) | int }}'
-                                  max_temp: '{{ (max_temp_raw / temp_step) | round * temp_step }}'
+                                  max_temp: '{{ (state_attr(climate_entity, "max_temp") | float(35) * 10) | round(0) | int }}'
                                   total_steps: >
                                     {{
-                                      (((max_temp_raw - temp_offset) / temp_step) | int)
-                                      if max_temp_raw >= temp_offset and temp_step > 0 else 0
+                                      (((max_temp - temp_offset) / temp_step) | int)
+                                      if max_temp >= temp_offset and temp_step > 0 else 0
                                     }}
                                   climate_state: '{{ states(climate_entity) | default("unavailable") if climate_entity is string else "unavailable" }}'
                                   hvac_action: '{{ state_attr(climate_entity, "hvac_action") | default("") }}'
@@ -11238,12 +11237,11 @@ action:
                                     {{ ((10 * target_temp_step) | round(0) | int) if is_number(target_temp_step) and target_temp_step > 0 else 10 }}
                                   temp_offset_raw: '{{ (state_attr(water_heater_entity, "min_temp") | float(7) * 10) | round(0) | int }}'
                                   temp_offset: '{{ temp_offset_raw if (temp_offset_raw % temp_step) == 0 else temp_offset_raw + temp_step - (temp_offset_raw % temp_step) }}'
-                                  max_temp_raw: '{{ (state_attr(water_heater_entity, "max_temp") | float(35) * 10) | round(0) | int }}'
-                                  max_temp: '{{ (max_temp_raw / temp_step) | round * temp_step }}'
+                                  max_temp: '{{ (state_attr(water_heater_entity, "max_temp") | float(35) * 10) | round(0) | int }}'
                                   total_steps: >
                                     {{
-                                      (((max_temp_raw - temp_offset) / temp_step) | int)
-                                      if max_temp_raw >= temp_offset and temp_step > 0 else 0
+                                      (((max_temp - temp_offset) / temp_step) | int)
+                                      if max_temp >= temp_offset and temp_step > 0 else 0
                                     }}
                                   water_heater_state: '{{ states(water_heater_entity) | default("unavailable") if water_heater_entity is string else "unavailable" }}'
                                   operation_mode: '{{ state_attr(water_heater_entity, "operation_mode") | default(water_heater_state) }}'
