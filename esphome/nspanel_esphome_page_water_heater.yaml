@@ -1,0 +1,65 @@
+#####################################################################################################
+#####                 NSPanel Easy - https://github.com/edwardtfn/NSPanel-Easy                  #####
+#####################################################################################################
+##### ESPHOME - Page water heater                                                               #####
+##### PLEASE only make changes if it is necessary and also the required knowledge is available. #####
+##### For normal use with the Blueprint, no changes are necessary.                              #####
+#####################################################################################################
+---
+substitutions:
+  PAGE_WATER_HEATER_ID: 30
+  TAG_PAGE_WATER_HEATER: nspanel.page.water_heater
+
+esphome:
+  platformio_options:
+    build_flags:
+      - -D NSPANEL_EASY_PAGE_WATER_HEATER
+
+script:
+  - id: !extend event_from_display  # Defined by hw_display
+    then:
+      - lambda: |-
+          if (params[0] != "water_heater") return;
+
+          // CSV Format: water_heater,key,value
+          // params[0]=page, params[1]=key, params[2]=value
+          if (params_count != 3) {
+            ESP_LOGW("${TAG_PAGE_WATER_HEATER}", "Bad params");
+            return;
+          }
+
+          const std::string& key = params[1];
+          const std::string& value = params[2];
+
+          if (key == "operation_mode") {
+            fire_ha_event("action_call", {
+              {"action", "water_heater.set_operation_mode"},
+              {"key", "operation_mode"},
+              {"value", value.c_str()},
+              {"entity", detailed_entity->state.c_str()}
+            });
+            return;
+          }  // endif operation_mode
+
+          if (key == "temperature") {
+            fire_ha_event("action_call", {
+              {"action", "water_heater.set_temperature"},
+              {"key", key.c_str()},
+              {"value", to_string(atof(value.c_str()) / 10)},
+              {"entity", detailed_entity->state.c_str()}
+            });
+            return;
+          }  // endif temperature
+
+  - id: !extend page_change
+    then:
+      - lambda: if (new_page_id == ${PAGE_WATER_HEATER_ID}) page_water_heater->execute();
+
+  - id: page_water_heater
+    mode: single
+    then:  # Page rendering handled entirely by blueprint
+
+  - id: !extend stop_page_constructors
+    then:
+      - lambda: page_water_heater->stop();
+...

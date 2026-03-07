@@ -58,7 +58,7 @@ Page climate
             {
                 timer0.en=0
                 covx temp_number0.val,va1.txt,0,0
-                climatesetting.txt="page,climate.temperature,"+va1.txt+","+va2.txt
+                climatesetting.txt="climate,temperature,"+va1.txt+","+va2.txt
                 printh 92
                 prints "localevent",0
                 printh 00
