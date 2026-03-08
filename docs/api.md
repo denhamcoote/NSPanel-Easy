@@ -12,8 +12,7 @@ This document provides details on custom actions designed for integration with H
   - [Component Value Action (`component_val`)](#component-value-action-component_val): Updates the value of a specified component on the display.
   - [Components Visibility Action (`components_visibility`)](#components-visibility-action-components_visibility): Hides or shows a specified component on the display.
   - [Entity Details Show Action (`entity_details_show`)](#entity-details-show-action-entity_details_show): Displays detailed information for a specific entity.
-  - [Hardware Button State Indication Action (`hw_button_state`)](#hardware-button-state-indication-action-hw_button_state):
-Updates the visual state (on/off) of the left and right hardware button indicators on the panel.
+  - [Hardware Button State Indication Action (`hw_button_state`)](#hardware-button-state-indication-action-hw_button_state): Updates the visual state (on/off) of the left and right hardware button indicators on the panel.
   - [Icon Action (`icon`)](#icon-action-icon): Updates a chip or custom button's icon, color, and visibility.
   - [Notification Clear Action (`notification_clear`)](#notification-clear-action-notification_clear): Clears the current notification from the screen.
   - [Notification Show Action (`notification_show`)](#notification-show-action-notification_show): Displays a notification-message on the screen.
@@ -44,6 +43,19 @@ Please validate inputs on the caller side; otherwise this can crash the ESPHome 
 
 One example is colors. In almost all cases, an array of three unsigned integers between 0 and 255 is expected.
 If you send anything different, the conversion to the RGB565 used by Nextion will crash.
+
+
+#### Action naming and `<your_panel_name>`
+
+All examples use `esphome.<your_panel_name>_<action>` as a placeholder.
+The actual action name in Home Assistant is derived from your ESPHome device name, slugified (lowercase, spaces replaced with underscores).
+How the name is derived depends on the Home Assistant version that discovered the device:
+
+- **Newer Home Assistant versions** use the `friendly_name` substitution (e.g., `friendly_name: "Living Room Panel"` → `living_room_panel`).
+- **Older Home Assistant versions** used the `name` substitution instead (e.g., `name: "livingroompanel"` → `livingroompanel`).
+
+You can look up the action names available on your Home Assistant instance under
+**Settings** > **Developer tools** > **Actions**, then search for your panel name.
 
 ### Table of Contents
 <!-- markdownlint-disable MD013 -->
@@ -108,7 +120,7 @@ data:
 ```
 
 > [!NOTE]
-> Replace `<your_panel_name>` with the specific name of your panel configured in Home Assistant.
+> Replace `<your_panel_name>` with the slugified name of your panel (see [Action naming](#action-naming-and-your_panel_name)).
 > This action dynamically updates the specified button's properties to match the provided parameters.
 
 ### Command Action: `command`
@@ -133,7 +145,7 @@ data:
 ```
 
 > [!NOTE]
-> Replace `<your_panel_name>` with your specific panel name as configured in Home Assistant to ensure correct action execution.
+> Replace `<your_panel_name>` with the slugified name of your panel (see [Action naming](#action-naming-and-your_panel_name)).
 >
 > Ensure the command string (`cmd`) is properly formatted according to your display's command processing capabilities.
 
@@ -186,7 +198,7 @@ data:
 ```
 
 > [!NOTE]
-> Replace `<your_panel_name>` with your specific panel name as configured in Home Assistant to ensure correct action execution.
+> Replace `<your_panel_name>` with the slugified name of your panel (see [Action naming](#action-naming-and-your_panel_name)).
 >
 > Ensure the `id` and color parameters accurately target and define the new color for the component.
 
@@ -236,7 +248,7 @@ data:
 ```
 
 > [!NOTE]
-> Replace `<your_panel_name>` with your specific panel name as configured in Home Assistant to ensure correct action execution.
+> Replace `<your_panel_name>` with the slugified name of your panel (see [Action naming](#action-naming-and-your_panel_name)).
 >
 > Make sure the `id` corresponds to the correct component on your display for the text update to work as intended.
 
@@ -287,7 +299,7 @@ data:
 ```
 
 > [!NOTE]
-> Replace `<your_panel_name>` with your specific panel name as configured in Home Assistant to ensure correct action execution.
+> Replace `<your_panel_name>` with the slugified name of your panel (see [Action naming](#action-naming-and-your_panel_name)).
 >
 > Ensure the `id` accurately matches the component on your display to successfully update its value.
 
@@ -316,7 +328,7 @@ data:
 ```
 <!-- markdownlint-disable MD028 -->
 > [!NOTE]
-> Replace <your_panel_name> with your specific panel name as configured in Home Assistant to ensure correct action execution.
+> Replace `<your_panel_name>` with the slugified name of your panel (see [Action naming](#action-naming-and-your_panel_name)).
 >
 > Ensure the ids match the components on your display you wish to hide or show.
 
@@ -340,9 +352,12 @@ ensuring they can easily access detailed information and return to their initial
 **Parameters:**
 
 - `entity` (string): The unique identifier of the entity (`entity_id` in Home Assistant) for which details are displayed.
+  The domain is used to select the corresponding detail page.
+  Supported domains are: `alarm_control_panel`, `climate`, `cover`, `fan`, `light`, `media_player`, and `water_heater`.
+  Use the special value `embedded_climate` to open the built-in climate control page for the panel's relay-based thermostat.
 - `back_page` (string): The page identifier to return to after viewing entity details.
-Valid options are `home` for the home page or `buttonpage01` to `buttonpage04` for button pages.
-No other pages are supported to maintain navigation consistency.
+  Valid options are `home` for the home page or `buttonpage01` to `buttonpage04` for button pages.
+  No other pages are supported to maintain navigation consistency.
 
 **Home Assistant Example:**
 
@@ -354,7 +369,7 @@ data:
 ```
 
 > [!NOTE]
-> Ensure to replace <your_panel_name> with the specific name of your panel configured in Home Assistant.
+> Replace `<your_panel_name>` with the slugified name of your panel (see [Action naming](#action-naming-and-your_panel_name)).
 > This setup provides a direct and user-friendly way to access and return from detailed entity information, enhancing the interface's usability.
 
 ### Hardware Button State Indication Action: `hw_button_state`
@@ -363,11 +378,11 @@ This action dynamically updates the on-screen indication bars for the hardware b
 It's designed to provide immediate visual feedback,
 enhancing the user interface by showing the active/inactive state of the left and right hardware button indicators on the panel.
 
-**Usage:**  
+**Usage:**
 Utilize this action to modify the visual state (on/off) of hardware button indicators on the panel, corresponding to the state of entities controlled by these buttons.
 This allows for visual feedback that matches the operational state of the buttons.
 
-**Parameters:**  
+**Parameters:**
 
 - `button_mask` (int): A bitwise identifier for buttons. Use `1` for the left button, `2` for the right button, and `3` for both buttons.
 - `state` (bool): The state to apply to the button(s) indicated by `button_mask`. True for on (active), false for off (inactive).
@@ -382,7 +397,7 @@ data:
 ```
 
 > [!NOTE]
-> Replace `<your_panel_name>` with your specific panel name as configured in Home Assistant.
+> Replace `<your_panel_name>` with the slugified name of your panel (see [Action naming](#action-naming-and-your_panel_name)).
 > This action leverages a bitmask (`button_mask`) for flexible control over multiple hardware buttons simultaneously,
 > offering a streamlined method for updating their visual states.
 
@@ -416,7 +431,7 @@ data:
 ```
 
 > [!NOTE]
-> Ensure the placeholder `<your_panel_name>` is replaced with the specific panel name you will need to reference in your Home Assistant configuration.
+> Replace `<your_panel_name>` with the slugified name of your panel (see [Action naming](#action-naming-and-your_panel_name)).
 
 ### Notification Clear Action: `notification_clear`
 
@@ -433,7 +448,7 @@ action: esphome.<your_panel_name>_notification_clear
 ```
 
 > [!NOTE]
-> Replace `<your_panel_name>` with the specific name of your panel configured in Home Assistant to ensure the action executes correctly.
+> Replace `<your_panel_name>` with the slugified name of your panel (see [Action naming](#action-naming-and-your_panel_name)).
 This simple action clears the current notification from the display, maintaining a tidy interface.
 
 ### Notification Show Action: `notification_show`
@@ -461,7 +476,7 @@ data:
 ```
 
 > [!NOTE]
-> Replace `<your_panel_name>` with the specific name of your panel configured in Home Assistant.
+> Replace `<your_panel_name>` with the slugified name of your panel (see [Action naming](#action-naming-and-your_panel_name)).
 > This ensures the action executes correctly, displaying the notification with the specified `label` and `message`.
 >
 > Utilize `\r` within the message for custom line breaks, offering precise formatting control.
@@ -511,7 +526,7 @@ data:
 ```
 
 > [!NOTE]
-> Ensure to replace `<your_panel_name>` with the actual name of your panel configured in Home Assistant.
+> Replace `<your_panel_name>` with the slugified name of your panel (see [Action naming](#action-naming-and-your_panel_name)).
 > This action configuration allows for the alarm settings page to dynamically reflect the current features, state,
 > and control options of your alarm system, enhancing the overall user experience.
 
@@ -571,10 +586,10 @@ data:
   climate_icon: "\uE392"     # mdi:thermostat
   embedded_climate: true
   entity: "climate.living_room"
-  ```
+```
 
-  > [!NOTE]
-> Replace `<your_panel_name>` with the specific name of your panel configured in Home Assistant.
+> [!NOTE]
+> Replace `<your_panel_name>` with the slugified name of your panel (see [Action naming](#action-naming-and-your_panel_name)).
 > This action ensures the climate page reflects the latest in climate control settings, enhancing the user experience by providing up-to-date information.
 
 #### Supported features of the climate entity
@@ -635,7 +650,7 @@ data:
 ```
 
 > [!NOTE]
-> Replace `<your_panel_name>` with the specific name of your panel configured in Home Assistant.
+> Replace `<your_panel_name>` with the slugified name of your panel (see [Action naming](#action-naming-and-your_panel_name)).
 > This action ensures the media player page reflects the latest in media playback settings and status,
 > enhancing the user experience by providing up-to-date information.
 
@@ -689,7 +704,7 @@ data:
 ```
 <!-- markdownlint-disable MD028 -->
 > [!NOTE]
-> Replace `<your_panel_name>` with the specific name of your panel configured in Home Assistant.
+> Replace `<your_panel_name>` with the slugified name of your panel (see [Action naming](#action-naming-and-your_panel_name)).
 > This action will generate and display the QR code based on the provided data, navigating to the QR code page if `show` is set to `true`.
 
 > [!NOTE]
@@ -725,7 +740,7 @@ data:
 ```
 
 > [!NOTE]
-> Replace `<your_panel_name>` with your specific panel name as configured in Home Assistant to ensure correct action execution.
+> Replace `<your_panel_name>` with the slugified name of your panel (see [Action naming](#action-naming-and-your_panel_name)).
 >
 > Ensure the `tone` parameter contains a valid RTTTL string to successfully play the melody.
 
@@ -753,10 +768,10 @@ data:
 ```
 <!-- markdownlint-disable MD028 -->
 > [!NOTE]
-> Replace `<your_panel_name>` with your specific panel name as configured in Home Assistant.
+> Replace `<your_panel_name>` with the slugified name of your panel (see [Action naming](#action-naming-and-your_panel_name)).
 > Using "default" fetches the URL associated with the selected display model in Home Assistant settings, simplifying updates or customizations.
 
-> [!ATTENTION]
+> [!WARNING]
 > The "Upload TFT" add-on must be installed for this action to be available, enhancing the panel's flexibility for interface customization or troubleshooting.
 <!-- markdownlint-enable MD028 -->
 
@@ -788,7 +803,7 @@ data:
 ```
 
 > [!NOTE]
-> Replace `<your_panel_name>` with the specific name of your panel configured in Home Assistant to ensure correct action execution.
+> Replace `<your_panel_name>` with the slugified name of your panel (see [Action naming](#action-naming-and-your_panel_name)).
 
 This action updates utility group display elements with the specified values and direction indicators dynamically.
 
@@ -825,7 +840,7 @@ data:
 ```
 
 > [!NOTE]
-> Replace `<your_panel_name>` with your specific panel name as configured in Home Assistant to ensure correct action execution.
+> Replace `<your_panel_name>` with the slugified name of your panel (see [Action naming](#action-naming-and-your_panel_name)).
 
 ### Wake Up Action: `wake_up`
 
@@ -849,7 +864,7 @@ data:
 ```
 
 > [!NOTE]
-> Replace `<your_panel_name>` with the specific name of your panel configured in Home Assistant.
+> Replace `<your_panel_name>` with the slugified name of your panel (see [Action naming](#action-naming-and-your_panel_name)).
 > This ensures the action executes correctly,
 > waking the display and optionally resetting timers based on the `reset_timer` parameter.
 
