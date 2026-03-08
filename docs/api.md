@@ -12,7 +12,8 @@ This document provides details on custom actions designed for integration with H
   - [Component Value Action (`component_val`)](#component-value-action-component_val): Updates the value of a specified component on the display.
   - [Components Visibility Action (`components_visibility`)](#components-visibility-action-components_visibility): Hides or shows a specified component on the display.
   - [Entity Details Show Action (`entity_details_show`)](#entity-details-show-action-entity_details_show): Displays detailed information for a specific entity.
-  - [Hardware Button State Indication Action (`hw_button_state`)](#hardware-button-state-indication-action-hw_button_state): Updates the visual state (on/off) of the left and right hardware button indicators on the panel.
+  - [Hardware Button State Indication Action (`hw_button_state`)](#hardware-button-state-indication-action-hw_button_state):
+    Updates the visual state (on/off) of the left and right hardware button indicators on the panel.
   - [Icon Action (`icon`)](#icon-action-icon): Updates a chip or custom button's icon, color, and visibility.
   - [Notification Clear Action (`notification_clear`)](#notification-clear-action-notification_clear): Clears the current notification from the screen.
   - [Notification Show Action (`notification_show`)](#notification-show-action-notification_show): Displays a notification-message on the screen.
