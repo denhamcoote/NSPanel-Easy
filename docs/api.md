@@ -45,7 +45,6 @@ Please validate inputs on the caller side; otherwise this can crash the ESPHome 
 One example is colors. In almost all cases, an array of three unsigned integers between 0 and 255 is expected.
 If you send anything different, the conversion to the RGB565 used by Nextion will crash.
 
-
 #### Action naming and `<your_panel_name>`
 
 All examples use `esphome.<your_panel_name>_<action>` as a placeholder.
