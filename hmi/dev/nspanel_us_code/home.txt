@@ -1,7 +1,7 @@
 Page home
     Attributes
         ID                 : 0
-        Scope              : local
+        Scope              : global
         Dragging           : 0
         Send Component ID  : on press and release
         Opacity            : 127
@@ -21,18 +21,11 @@ Page home
         Preinitialize Event
             dim=brightness
             back_page_id=home_page_id
-            is_entitypages=is_entitypage01|is_entitypage02|is_entitypage03|is_entitypage04
             vis bt_entities,is_entitypages
             if(display_mode==3)
             {
                 vis left_bt_text,0
                 vis right_bt_text,0
-            }
-            // set background image to all components
-            b[0].pic=pic_background_main
-            for(index=0;index<=last_component.id;index++)
-            {
-                b[index].picc=pic_background_main
             }
             sendme
         
@@ -52,7 +45,7 @@ Variable (string) click_comp
     
 Variable (int32) last_component
     Attributes
-        ID   : 48
+        ID   : 49
         Scope: local
         Value: 0
     
@@ -807,7 +800,7 @@ Text bt_entities
         Horizontal Alignment    : center
         Vertical Alignment      : center
         Input Type              : character
-        Text                    : 
+        Text                    : \xee\xb7\x8f
         Max. Text Size          : 3
         Word wrap               : disabled
         Horizontal Spacing      : 0
@@ -1319,6 +1312,30 @@ Timer short_click_tm
             printh 00
             printh FF FF FF
             short_click_tm.en=0
+        
+Timer theme_updt
+    Attributes
+        ID         : 48
+        Scope      : global
+        Period (ms): 50
+        Enabled    : yes
+    
+    Events
+        Timer Event
+            // set background image to all components
+            home.pic=pic_background_main
+            for(index=0;index<=last_component.id;index++)
+            {
+                b[index].picc=pic_background_main
+                b[index].pco=color_pco_secondary
+            }
+            time.pco=color_pco_main
+            date.pco=color_pco_main
+            meridiem.pco=color_pco_main
+            outdoor_temp.pco=color_pco_main
+            indr_temp.pco=color_pco_main
+            indr_temp_icon.pco=color_pco_main
+            theme_updt.en=0
         
 TouchCap swipe
     Attributes

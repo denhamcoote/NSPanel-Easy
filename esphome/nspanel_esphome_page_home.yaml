@@ -212,14 +212,16 @@ script:
 
   - id: !extend theme_update_all
     then:
+      - lambda: |-
+          disp1->send_command("home.theme_updt.en=1");  // Enable timer to update components on home page
       - script.execute: theme_update_all_weather_pic
       - script.wait: theme_update_all_weather_pic
 
   - id: theme_update_all_weather_pic
     then:
       - lambda: |-
-          disp1->set_component_pic("home.weather", id(weather_pic) +
-                                  (current_theme == ThemeMode::LIGHT) ?
-                                  ${THEME_LIGHT_PIC_PAGE_HOME_WEATHER_FIRST - THEME_DARK_PIC_PAGE_HOME_WEATHER_FIRST} :
-                                  0);
+          const uint8_t weather_pic_corrected = id(weather_pic) + (current_theme == ThemeMode::LIGHT) ?
+                              ${THEME_LIGHT_PIC_PAGE_HOME_WEATHER_FIRST - THEME_DARK_PIC_PAGE_HOME_WEATHER_FIRST} : 0;
+          ESP_LOGD("${TAG_PAGE_HOME}", "Update weather pic: %" PRIu8, weather_pic_corrected);
+          disp1->set_component_pic("home.weather", weather_pic_corrected);
 ...

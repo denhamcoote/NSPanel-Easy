@@ -192,6 +192,7 @@ script:
       # Report Nextion status
       - lambda: |-
           ESP_LOGCONFIG("${TAG_HW_DISPLAY}", "Nextion:");
+          ESP_LOGCONFIG("${TAG_HW_DISPLAY}", "  Theme: %s", background_type->current_option());
           ESP_LOGCONFIG("${TAG_HW_DISPLAY}", "  Queue size:  %d", disp1->queue_size());
           if (disp1->is_setup())
             ESP_LOGCONFIG("${TAG_HW_DISPLAY}", "  Is setup: True");
@@ -351,7 +352,7 @@ script:
             disp1->set_backlight_brightness(brightness / 100.0f);
           }
 
-  - id: set_component_font_color
+  - id: set_component_font_color_DEPRECATED
     mode: single
     parameters:
       component_id: string
@@ -367,7 +368,7 @@ script:
           goto_page->stop();
           page_change->stop();
           set_brightness->stop();
-          set_component_font_color->stop();
+          set_component_font_color_DEPRECATED->stop();
           theme_update->stop();
           theme_update_all->stop();
           theme_update_dark->stop();
@@ -401,7 +402,8 @@ script:
       - script.wait: theme_update_light
 
       - lambda: |-
-          disp1->send_command("page dp");  // Reload current page
+          if (current_page_id != ${PAGE_BOOT_ID})
+            disp1->send_command("page dp");  // Reload current page
 
   - id: theme_update_all
     then:

@@ -9694,6 +9694,21 @@ action:
                                   }}
                               continue_on_error: true
 
+                      - alias: Entity pages button visibility
+                        action: 'esphome.{{ nspanel_name }}_component_val'
+                        data:
+                          page: mem
+                          id: is_entitypages
+                          val: >-
+                            {{
+                              entities_pages.entities
+                              | selectattr("entity", "defined")
+                              | rejectattr("entity", "eq", [])
+                              | list
+                              | count
+                            }}
+                        continue_on_error: true
+
                       - *refresh-date  # Update Date & Time before showing the Home page
 
               ##### Action call #####
