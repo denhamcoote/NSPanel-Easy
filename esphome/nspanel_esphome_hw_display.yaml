@@ -407,10 +407,13 @@ script:
 
   - id: theme_update_all
     then:
+      - lambda: |-
+          ESP_LOGI("${TAG_HW_DISPLAY}", "Applying theme: %s", (current_theme == ThemeMode::LIGHT) ? "LIGHT" : "DARK");
 
   - id: theme_update_dark
     then:
       - lambda: |-
+          ESP_LOGI("${TAG_HW_DISPLAY}", "Applying DARK theme");
           disp1->send_command("pic_background_main=${THEME_DARK_PIC_BACKGROUND_MAIN}");
           disp1->send_command("color_pco_main=${THEME_DARK_COLOR_PCO_MAIN}");
           disp1->send_command("color_pco_secondary=${THEME_DARK_COLOR_PCO_SECONDARY}");
@@ -420,6 +423,7 @@ script:
   - id: theme_update_light
     then:
       - lambda: |-
+          ESP_LOGI("${TAG_HW_DISPLAY}", "Applying LIGHT theme");
           disp1->send_command("pic_background_main=${THEME_LIGHT_PIC_BACKGROUND_MAIN}");
           disp1->send_command("color_pco_main=${THEME_LIGHT_COLOR_PCO_MAIN}");
           disp1->send_command("color_pco_secondary=${THEME_LIGHT_COLOR_PCO_SECONDARY}");

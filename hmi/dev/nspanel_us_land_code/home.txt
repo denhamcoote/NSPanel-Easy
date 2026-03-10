@@ -1318,7 +1318,7 @@ Timer theme_updt
         ID         : 48
         Scope      : global
         Period (ms): 50
-        Enabled    : yes
+        Enabled    : no
     
     Events
         Timer Event
