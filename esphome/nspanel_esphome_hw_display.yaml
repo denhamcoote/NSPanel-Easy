@@ -417,6 +417,7 @@ script:
     then:
       - lambda: |-
           ESP_LOGI("${TAG_HW_DISPLAY}", "Applying theme: %s", (current_theme == ThemeMode::LIGHT) ? "LIGHT" : "DARK");
+          disp1->send_command_printf("theme=%" PRIu8, (current_theme == ThemeMode::LIGHT) ? 1 : 0);
 
   - id: theme_update_dark
     then:
