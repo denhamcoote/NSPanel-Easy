@@ -9,8 +9,6 @@
 substitutions:
   BOOT_STEP_PAGE_CLIMATE: 12
   PAGE_CLIMATE_ID: 7
-  THEME_DARK_PIC_BACKGROUND_PAGE_CLIMATE: 37
-  THEME_LIGHT_PIC_BACKGROUND_PAGE_CLIMATE: 64
   TAG_PAGE_CLIMATE: nspanel.page.climate
 
 api:
@@ -298,11 +296,4 @@ script:
       - lambda: |-
           page_climate->stop();
           set_climate->stop();
-
-  - id: !extend theme_update_all
-    then:
-      - lambda: |-
-          disp1->set_component_pic("climate", current_theme == ThemeMode::LIGHT ?
-                                              ${THEME_LIGHT_PIC_BACKGROUND_PAGE_CLIMATE} :
-                                              ${THEME_DARK_PIC_BACKGROUND_PAGE_CLIMATE});
 ...

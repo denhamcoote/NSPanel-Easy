@@ -12,13 +12,11 @@ substitutions:
   ## local yaml substitutions ##
   ##############################
   THEME_DARK_LABEL: Dark
-  THEME_DARK_PIC_BACKGROUND_MAIN: 0                        # Background picture to be used on pages by default
   THEME_DARK_COLOR_PCO_MAIN: ${COLOR_WHITE}                # Foreground font color for main information
   THEME_DARK_COLOR_PCO_SECONDARY: ${COLOR_GRAY_LIGHT}      # Foreground font color for secondary information
   THEME_DARK_COLOR_PCO_NAVIGATION: ${COLOR_GRAY_MOSS}      # Foreground font color for navigation components, like back button or page index
   THEME_DARK_COLOR_PCO_UNSUPPORTED: ${COLOR_GRAY_DARKEST}  #  Foreground font color for unsupported or unavailable components
   THEME_LIGHT_LABEL: Light (Under construction)
-  THEME_LIGHT_PIC_BACKGROUND_MAIN: 48                      # Background picture to be used on pages by default
   THEME_LIGHT_COLOR_PCO_MAIN: ${COLOR_BLACK}               # BLACK - main text on white bg
   THEME_LIGHT_COLOR_PCO_SECONDARY: ${COLOR_GRAY_MEDIUM}    # Mid gray for secondary
   THEME_LIGHT_COLOR_PCO_NAVIGATION: ${COLOR_GRAY_DARK}     # Colors::GRAY_DARK for navigation
@@ -112,6 +110,11 @@ globals:
     type: uint8_t
     restore_value: true
     initial_value: ${bytes_per_char}
+
+  - id: theme_pending_apply
+    type: bool
+    restore_value: false
+    initial_value: 'false'
 
 number:
   - id: display_brightness  # Screen brightness when in use
@@ -402,8 +405,13 @@ script:
       - script.wait: theme_update_light
 
       - lambda: |-
-          if (current_page_id != ${PAGE_BOOT_ID})
-            disp1->send_command("page dp");  // Reload current page
+          if (current_page_id == ${PAGE_BOOT_ID} or current_page_id == ${PAGE_SCREENSAVER_ID}) {
+            id(theme_pending_apply) = true;
+            return;
+          }
+          // Call page theme_apply
+          disp1->send_command("theme_apply.previous_page.val=dp");
+          disp1->send_command("page theme_apply");
 
   - id: theme_update_all
     then:
@@ -414,7 +422,6 @@ script:
     then:
       - lambda: |-
           ESP_LOGI("${TAG_HW_DISPLAY}", "Applying DARK theme");
-          disp1->send_command("pic_background_main=${THEME_DARK_PIC_BACKGROUND_MAIN}");
           disp1->send_command("color_pco_main=${THEME_DARK_COLOR_PCO_MAIN}");
           disp1->send_command("color_pco_secondary=${THEME_DARK_COLOR_PCO_SECONDARY}");
           disp1->send_command("color_pco_navigation=${THEME_DARK_COLOR_PCO_NAVIGATION}");
@@ -424,7 +431,6 @@ script:
     then:
       - lambda: |-
           ESP_LOGI("${TAG_HW_DISPLAY}", "Applying LIGHT theme");
-          disp1->send_command("pic_background_main=${THEME_LIGHT_PIC_BACKGROUND_MAIN}");
           disp1->send_command("color_pco_main=${THEME_LIGHT_COLOR_PCO_MAIN}");
           disp1->send_command("color_pco_secondary=${THEME_LIGHT_COLOR_PCO_SECONDARY}");
           disp1->send_command("color_pco_navigation=${THEME_LIGHT_COLOR_PCO_NAVIGATION}");
@@ -541,7 +547,13 @@ script:
               detailed_entity->publish_state((id(is_embedded_thermostat)) ? "embedded_climate" : "");
               disp1->set_component_value("climate.embedded", id(is_embedded_thermostat) ? 1 : 0);
             }
-            goto_page->execute(wakeup_page_id);
+            if (id(theme_pending_apply)) {
+              // Call page theme_apply
+              disp1->send_command_printf("theme_apply.previous_page.val=%" PRIu8, wakeup_page_id);
+              disp1->send_command("page theme_apply");
+            } else {
+              goto_page->execute(wakeup_page_id);
+            }
           }
           if (reset_timer) {
             timer_reset_all->execute();

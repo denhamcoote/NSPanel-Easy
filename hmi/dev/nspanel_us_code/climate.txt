@@ -1,7 +1,7 @@
 Page climate
     Attributes
         ID                 : 0
-        Scope              : global
+        Scope              : local
         Dragging           : 0
         Send Component ID  : on press and release
         Opacity            : 127
@@ -23,7 +23,6 @@ Page climate
             {
                 page home_page_id
             }
-            dim=brightness
             vis target_icon,0
             vis target_high,0
             vis target_low,0
@@ -48,17 +47,16 @@ Page climate
             button08.font=button_font.val
             button09.font=button_font.val
             // set background image and fg color to all components
-            b[0].pic=pic_background_main
-            for(index=0;index<=last_component.id;index++)
+            for(index=1;index<=last_component.id;index++)
             {
-                b[index].picc=b[0].pic
+                b[index].picc=climate.pic
             }
-            slider_high.picc1=b[0].pic
-            slider_low.picc1=b[0].pic
-            climateslider.picc1=b[0].pic
+            slider_high.picc1=climate.pic
+            slider_low.picc1=climate.pic
+            climateslider.picc1=climate.pic
             button_back.font=button_back_font
             button_back.pco=color_pco_navigation
-            button_back.picc2=pic_background_main
+            button_back.picc2=climate.pic
             page_label.pco=color_pco_main
             current_temp.pco=color_pco_main
             target_icon.pco=color_pco_main
@@ -81,6 +79,7 @@ Page climate
             button07.pco=color_pco_unsupported
             button08.pco=color_pco_secondary
             button09.pco=color_pco_secondary
+            dim=brightness
             sendme
         
         Page Exit Event

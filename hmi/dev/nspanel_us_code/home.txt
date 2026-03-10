@@ -43,12 +43,6 @@ Variable (string) click_comp
         Text          : 
         Max. Text Size: 14
     
-Variable (int32) last_component
-    Attributes
-        ID   : 49
-        Scope: local
-        Value: 0
-    
 Text time
     Attributes
         ID                      : 3
@@ -1312,30 +1306,6 @@ Timer short_click_tm
             printh 00
             printh FF FF FF
             short_click_tm.en=0
-        
-Timer theme_updt
-    Attributes
-        ID         : 48
-        Scope      : global
-        Period (ms): 50
-        Enabled    : no
-    
-    Events
-        Timer Event
-            // set background image to all components
-            home.pic=pic_background_main
-            for(index=0;index<=last_component.id;index++)
-            {
-                b[index].picc=pic_background_main
-                b[index].pco=color_pco_secondary
-            }
-            time.pco=color_pco_main
-            date.pco=color_pco_main
-            meridiem.pco=color_pco_main
-            outdoor_temp.pco=color_pco_main
-            indr_temp.pco=color_pco_main
-            indr_temp_icon.pco=color_pco_main
-            theme_updt.en=0
         
 TouchCap swipe
     Attributes

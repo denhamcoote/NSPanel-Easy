@@ -19,12 +19,24 @@ Page notification
     
     Events
         Preinitialize Event
-            dim=brightness
             if(api==0)
             {
                 page home_page_id
             }
+            notification.pic=pic_background_main
             button_back.font=button_back_font
+            button_back.picc=pic_background_main
+            button_back.picc2=pic_background_main
+            button_back.pco=color_pco_navigation
+            notifi_label.picc=pic_background_main
+            notifi_label.pco=color_pco_main
+            notifi_text01.picc=pic_background_main
+            notifi_text01.pco=color_pco_main
+            bt_accept.picc=pic_background_main
+            bt_accept.picc2=pic_background_main
+            bt_clear.picc=pic_background_main
+            bt_clear.picc2=pic_background_main
+            dim=brightness
             sendme
         
 Variable (string) lastclick

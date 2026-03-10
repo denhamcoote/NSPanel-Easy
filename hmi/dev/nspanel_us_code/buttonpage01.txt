@@ -23,7 +23,6 @@ Page buttonpage01
             {
                 page home_page_id
             }
-            dim=brightness
             vis 255,0
             vis button_back,1
             vis page_label,1
@@ -56,6 +55,7 @@ Page buttonpage01
             button_back.picc2=pic_background_main
             page_index.pco=color_pco_navigation
             page_label.pco=color_pco_main
+            dim=brightness
             sendme
         
 Variable (string) lastclick
