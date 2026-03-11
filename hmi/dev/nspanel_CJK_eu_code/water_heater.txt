@@ -19,32 +19,46 @@ Page water_heater
     
     Events
         Preinitialize Event
-            dim=brightness
-            if(api!=1)
+            if(api==0)
             {
                 page home_page_id
             }
+            water_heater.pic=climate.b[0].pic
+            // page_label
+            page_label.picc=water_heater.pic
+            page_label.pco=color_pco_main
+            // button_back
+            button_back.picc=water_heater.pic
+            button_back.picc2=water_heater.pic
+            button_back.pco=color_pco_navigation
+            // current_temp
+            current_temp.picc=water_heater.pic
+            current_temp.pco=color_pco_main
+            // target_icon
             vis target_icon,0
+            target_icon.picc=water_heater.pic
+            target_icon.pco=color_pco_main
+            // target
+            target.picc=water_heater.pic
+            target.pco=color_pco_main
+            // values 01-04
+            for(index=8;index<=15;index++)
+            {
+                b[index].picc=water_heater.pic
+                b[index].pco=color_pco_secondary
+            }
+            // buttons 01-08
+            for(index=16;index<=23;index++)
+            {
+                vis b[index],0
+                b[index].picc=water_heater.pic
+                b[index].font=button_font.val
+            }
+            // other
             vis slider,0
             vis decrease_temp,0
             vis increase_temp,0
-            vis button01,0
-            vis button02,0
-            vis button03,0
-            vis button04,0
-            vis button05,0
-            vis button06,0
-            vis button07,0
-            vis button08,0
-            button01.font=button_font.val
-            button02.font=button_font.val
-            button03.font=button_font.val
-            button04.font=button_font.val
-            button05.font=button_font.val
-            button06.font=button_font.val
-            button07.font=button_font.val
-            button08.font=button_font.val
-            button_back.font=button_back_font
+            dim=brightness
             sendme
         
         Page Exit Event
@@ -61,88 +75,88 @@ Page water_heater
                 printh FF FF FF
             }
         
-Variable (string) va1
-    Attributes
-        ID            : 23
-        Scope         : local
-        Text          : 
-        Max. Text Size: 10
-    
-Variable (string) climatesetting
-    Attributes
-        ID            : 24
-        Scope         : local
-        Text          : 
-        Max. Text Size: 50
-    
-Variable (string) lastclick
-    Attributes
-        ID            : 25
-        Scope         : local
-        Text          : 
-        Max. Text Size: 255
-    
-Variable (int32) temp_offset
-    Attributes
-        ID   : 27
-        Scope: local
-        Value: 0
-    
-Variable (int32) temp_step
-    Attributes
-        ID   : 28
-        Scope: local
-        Value: 1
-    
 Variable (int32) temp_number0
     Attributes
-        ID   : 30
+        ID   : 24
         Scope: local
         Value: 0
     
 Variable (int32) va0
     Attributes
-        ID   : 31
+        ID   : 25
         Scope: local
         Value: 0
     
 Variable (int32) temp_number1
     Attributes
-        ID   : 34
+        ID   : 28
         Scope: local
         Value: 0
     
 Variable (int32) temp_number2
     Attributes
-        ID   : 35
+        ID   : 29
         Scope: local
         Value: 0
     
 Variable (string) temp_unit
     Attributes
-        ID            : 36
+        ID            : 30
         Scope         : local
         Text          : \xc2\xb0
         Max. Text Size: 10
     
 Variable (int32) temp_gap
     Attributes
-        ID   : 37
+        ID   : 31
         Scope: local
         Value: 0
     
 Variable (string) dec_separator
     Attributes
-        ID            : 38
+        ID            : 32
         Scope         : local
         Text          : .
         Max. Text Size: 5
     
 Variable (int32) button_font
     Attributes
-        ID   : 39
+        ID   : 33
         Scope: global
         Value: 8
+    
+Variable (string) va1
+    Attributes
+        ID            : 35
+        Scope         : local
+        Text          : 
+        Max. Text Size: 10
+    
+Variable (string) climatesetting
+    Attributes
+        ID            : 36
+        Scope         : local
+        Text          : 
+        Max. Text Size: 50
+    
+Variable (string) lastclick
+    Attributes
+        ID            : 37
+        Scope         : local
+        Text          : 
+        Max. Text Size: 255
+    
+Variable (int32) temp_offset
+    Attributes
+        ID   : 39
+        Scope: local
+        Value: 0
+    
+Variable (int32) temp_step
+    Attributes
+        ID   : 40
+        Scope: local
+        Value: 1
     
 Text current_temp
     Attributes
@@ -702,7 +716,7 @@ Text button07
         
 Text button08
     Attributes
-        ID                      : 29
+        ID                      : 23
         Scope                   : local
         Dragging                : 0
         Send Component ID       : on press and release
@@ -739,7 +753,7 @@ Text button08
         
 Text target
     Attributes
-        ID                      : 40
+        ID                      : 34
         Scope                   : local
         Dragging                : 0
         Send Component ID       : on press and release
@@ -766,7 +780,7 @@ Text target
     
 Slider slider
     Attributes
-        ID                             : 33
+        ID                             : 27
         Scope                          : local
         Dragging                       : 0
         Send Component ID              : on press and release
@@ -812,7 +826,7 @@ Slider slider
         
 Button button_back
     Attributes
-        ID                                  : 32
+        ID                                  : 26
         Scope                               : local
         Dragging                            : 0
         Send Component ID                   : on press and release
@@ -922,7 +936,7 @@ Timer swipestore
         
 Timer timer0
     Attributes
-        ID         : 26
+        ID         : 38
         Scope      : local
         Period (ms): 1000
         Enabled    : no

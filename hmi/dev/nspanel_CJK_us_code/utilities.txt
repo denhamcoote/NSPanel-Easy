@@ -24,10 +24,22 @@ Page utilities
                 page home_page_id
             }
             vis 255,0
+            // set background image and fg color to all component
+            utilities.pic=pic_background_main
+            for(index=1;index<=last_component.id;index++)
+            {
+                b[index].picc=pic_background_main
+                b[index].pco=color_pco_secondary
+            }
+            title_icon.pco=color_pco_main
             vis title_icon,1
+            title.pco=color_pco_main
             vis title,1
             button_back.font=button_back_font
+            button_back.pco=color_pco_navigation
+            button_back.picc2=pic_background_main
             vis button_back,1
+            dim=brightness
             sendme
         
 Variable (int32) home_line_d
@@ -71,6 +83,12 @@ Variable (int32) group06_line_d
         ID   : 51
         Scope: local
         Value: 4294967295
+    
+Variable (int32) last_component
+    Attributes
+        ID   : 52
+        Scope: local
+        Value: 0
     
 Text unavailable
     Attributes
