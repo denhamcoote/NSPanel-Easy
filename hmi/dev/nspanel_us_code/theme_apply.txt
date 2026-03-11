@@ -90,6 +90,7 @@ Page theme_apply
                 home.b[index].picc=pic_background_main
                 home.b[index].pco=color_pco_secondary
             }
+            home.bt_icon.picc=pic_background_main
             home.time.pco=color_pco_main
             home.date.pco=color_pco_main
             home.meridiem.pco=color_pco_main

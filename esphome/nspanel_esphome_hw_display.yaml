@@ -394,13 +394,14 @@ script:
           current_theme = (background_type->current_option() == "${THEME_LIGHT_LABEL}") ?
                                                                 ThemeMode::LIGHT : ThemeMode::DARK;
           theme_update_all->execute();
+      - script.wait: theme_update_all
+
+      - lambda: |-
           if (current_theme == ThemeMode::LIGHT) {
             theme_update_light->execute();
           } else {
             theme_update_dark->execute();
           }
-
-      - script.wait: theme_update_all
       - script.wait: theme_update_dark
       - script.wait: theme_update_light
 
@@ -414,12 +415,14 @@ script:
           disp1->send_command("page theme_apply");
 
   - id: theme_update_all
+    mode: restart
     then:
       - lambda: |-
           ESP_LOGI("${TAG_HW_DISPLAY}", "Applying theme: %s", (current_theme == ThemeMode::LIGHT) ? "LIGHT" : "DARK");
           disp1->send_command_printf("theme=%" PRIu8, (current_theme == ThemeMode::LIGHT) ? 1 : 0);
 
   - id: theme_update_dark
+    mode: restart
     then:
       - lambda: |-
           ESP_LOGI("${TAG_HW_DISPLAY}", "Applying DARK theme");
@@ -429,6 +432,7 @@ script:
           disp1->send_command("color_pco_unsupported=${THEME_DARK_COLOR_PCO_UNSUPPORTED}");
 
   - id: theme_update_light
+    mode: restart
     then:
       - lambda: |-
           ESP_LOGI("${TAG_HW_DISPLAY}", "Applying LIGHT theme");
