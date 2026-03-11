@@ -111,13 +111,18 @@ Page theme_apply
             home.wifi_icon.pco=color_pco_secondary
             home.bt_icon.picc=pic_background_main
             // home values 01-04
-            for(index=21;index<=25;index++)
-            {
-                home.b[index].picc=pic_background_main
-                home.b[index].pco=color_pco_secondary
-            }
             home.value01.picc=pic_background_main
             home.value01.pco=color_pco_secondary
+            home.value01_icon.picc=pic_background_main
+            home.value01_icon.pco=color_pco_secondary
+            home.value02.picc=pic_background_main
+            home.value02.pco=color_pco_secondary
+            home.value02_icon.picc=pic_background_main
+            home.value02_icon.pco=color_pco_secondary
+            home.value03.picc=pic_background_main
+            home.value03.pco=color_pco_secondary
+            home.value03_icon.picc=pic_background_main
+            home.value03_icon.pco=color_pco_secondary
             home.value04.picc=pic_background_main
             home.value04.pco=color_pco_secondary
             home.value04_icon.picc=pic_background_main
