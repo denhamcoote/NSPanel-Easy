@@ -4175,818 +4175,846 @@ variables:
       else ("sensor." ~ device_name ~ "_detailed_entity")
     }}
 
-# yamllint disable rule:indentation rule:comments-indentation
 triggers:
-  ##### Trigger - General #################################################################################################################
-
-    ##### Panel Event - This is the new main event handler introduced on v4.0 to get info from the panel #####
-    - id: nspanel_event
-      platform: event
-      event_type: esphome.nspanel_easy
-      event_data:
-        device_id: !input nspanel_name
-
-    ##### Automation reload or HA started
-    - platform: event
-      event_type: automation_reloaded
-      id: automation_reloaded
-    - platform: homeassistant
-      event: start
-      id: ha_started
-
-      ##### Wake-up sensor
-    - platform: state
-      entity_id: !input wake_up_sensors
-      to: "on"
-      id: wake_up_sensors
-
-  ##### Trigger - Buttons - State change #################################################################################################################
-    ##### Button01 Sync #####
-    - platform: state
-      entity_id: !input 'entity01'
-      id: trigger_buttonpage_state
-
-    ##### Button02 Sync #####
-    - platform: state
-      entity_id: !input 'entity02'
-      id: trigger_buttonpage_state
-
-    ##### Button03 Sync #####
-    - platform: state
-      entity_id: !input 'entity03'
-      id: trigger_buttonpage_state
-
-    ##### Button04 Sync #####
-    - platform: state
-      entity_id: !input 'entity04'
-      id: trigger_buttonpage_state
-
-    ##### Button05 Sync #####
-    - platform: state
-      entity_id: !input 'entity05'
-      id: trigger_buttonpage_state
-
-    ##### Button06 Sync #####
-    - platform: state
-      entity_id: !input 'entity06'
-      id: trigger_buttonpage_state
-
-    ##### Button07 Sync #####
-    - platform: state
-      entity_id: !input 'entity07'
-      id: trigger_buttonpage_state
-
-    ##### Button08 Sync #####
-    - platform: state
-      entity_id: !input 'entity08'
-      id: trigger_buttonpage_state
-
-    ##### Button09 Sync #####
-    - platform: state
-      entity_id: !input 'entity09'
-      id: trigger_buttonpage_state
-
-    ##### Button10 Sync #####
-    - platform: state
-      entity_id: !input 'entity10'
-      id: trigger_buttonpage_state
-
-    ##### Button11 Sync #####
-    - platform: state
-      entity_id: !input 'entity11'
-      id: trigger_buttonpage_state
-
-    ##### Button12 Sync #####
-    - platform: state
-      entity_id: !input 'entity12'
-      id: trigger_buttonpage_state
-
-    ##### Button13 Sync #####
-    - platform: state
-      entity_id: !input 'entity13'
-      id: trigger_buttonpage_state
-
-    ##### Button14 Sync #####
-    - platform: state
-      entity_id: !input 'entity14'
-      id: trigger_buttonpage_state
-
-    ##### Button15 Sync #####
-    - platform: state
-      entity_id: !input 'entity15'
-      id: trigger_buttonpage_state
-
-    ##### Button16 Sync #####
-    - platform: state
-      entity_id: !input 'entity16'
-      id: trigger_buttonpage_state
-
-    ##### Button17 Sync #####
-    - platform: state
-      entity_id: !input 'entity17'
-      id: trigger_buttonpage_state
-
-    ##### Button18 Sync #####
-    - platform: state
-      entity_id: !input 'entity18'
-      id: trigger_buttonpage_state
-
-    ##### Button19 Sync #####
-    - platform: state
-      entity_id: !input 'entity19'
-      id: trigger_buttonpage_state
-
-    ##### Button20 Sync #####
-    - platform: state
-      entity_id: !input 'entity20'
-      id: trigger_buttonpage_state
-
-    ##### Button21 Sync #####
-    - platform: state
-      entity_id: !input 'entity21'
-      id: trigger_buttonpage_state
-
-    ##### Button22 Sync #####
-    - platform: state
-      entity_id: !input 'entity22'
-      id: trigger_buttonpage_state
-
-    ##### Button23 Sync #####
-    - platform: state
-      entity_id: !input 'entity23'
-      id: trigger_buttonpage_state
-
-    ##### Button24 Sync #####
-    - platform: state
-      entity_id: !input 'entity24'
-      id: trigger_buttonpage_state
-
-    ##### Button25 Sync #####
-    - platform: state
-      entity_id: !input 'entity25'
-      id: trigger_buttonpage_state
-
-    ##### Button26 Sync #####
-    - platform: state
-      entity_id: !input 'entity26'
-      id: trigger_buttonpage_state
-
-    ##### Button27 Sync #####
-    - platform: state
-      entity_id: !input 'entity27'
-      id: trigger_buttonpage_state
-
-    ##### Button28 Sync #####
-    - platform: state
-      entity_id: !input 'entity28'
-      id: trigger_buttonpage_state
-
-    ##### Button29 Sync #####
-    - platform: state
-      entity_id: !input 'entity29'
-      id: trigger_buttonpage_state
-
-    ##### Button30 Sync #####
-    - platform: state
-      entity_id: !input 'entity30'
-      id: trigger_buttonpage_state
-
-    ##### Button31 Sync #####
-    - platform: state
-      entity_id: !input 'entity31'
-      id: trigger_buttonpage_state
-
-    ##### Button32 Sync #####
-    - platform: state
-      entity_id: !input 'entity32'
-      id: trigger_buttonpage_state
-
-  ##### Trigger - Entity pages - State change ###############################################################################################
-    - alias: entities_entity01
-      platform: state
-      entity_id: !input 'entities_entity01'
-      id: trigger_entitypage_state
-
-    - alias: entities_entity02
-      platform: state
-      entity_id: !input 'entities_entity02'
-      id: trigger_entitypage_state
-
-    - alias: entities_entity03
-      platform: state
-      entity_id: !input 'entities_entity03'
-      id: trigger_entitypage_state
-
-    - alias: entities_entity04
-      platform: state
-      entity_id: !input 'entities_entity04'
-      id: trigger_entitypage_state
-
-    - alias: entities_entity05
-      platform: state
-      entity_id: !input 'entities_entity05'
-      id: trigger_entitypage_state
-
-    - alias: entities_entity06
-      platform: state
-      entity_id: !input 'entities_entity06'
-      id: trigger_entitypage_state
-
-    - alias: entities_entity07
-      platform: state
-      entity_id: !input 'entities_entity07'
-      id: trigger_entitypage_state
-
-    - alias: entities_entity08
-      platform: state
-      entity_id: !input 'entities_entity08'
-      id: trigger_entitypage_state
-
-    - alias: entities_entity09
-      platform: state
-      entity_id: !input 'entities_entity09'
-      id: trigger_entitypage_state
-
-    - alias: entities_entity10
-      platform: state
-      entity_id: !input 'entities_entity10'
-      id: trigger_entitypage_state
-
-    - alias: entities_entity11
-      platform: state
-      entity_id: !input 'entities_entity11'
-      id: trigger_entitypage_state
-
-    - alias: entities_entity12
-      platform: state
-      entity_id: !input 'entities_entity12'
-      id: trigger_entitypage_state
-
-    - alias: entities_entity13
-      platform: state
-      entity_id: !input 'entities_entity13'
-      id: trigger_entitypage_state
-
-    - alias: entities_entity14
-      platform: state
-      entity_id: !input 'entities_entity14'
-      id: trigger_entitypage_state
-
-    - alias: entities_entity15
-      platform: state
-      entity_id: !input 'entities_entity15'
-      id: trigger_entitypage_state
-
-    - alias: entities_entity16
-      platform: state
-      entity_id: !input 'entities_entity16'
-      id: trigger_entitypage_state
-
-    - alias: entities_entity17
-      platform: state
-      entity_id: !input 'entities_entity17'
-      id: trigger_entitypage_state
-
-    - alias: entities_entity18
-      platform: state
-      entity_id: !input 'entities_entity18'
-      id: trigger_entitypage_state
-
-    - alias: entities_entity19
-      platform: state
-      entity_id: !input 'entities_entity19'
-      id: trigger_entitypage_state
-
-    - alias: entities_entity20
-      platform: state
-      entity_id: !input 'entities_entity20'
-      id: trigger_entitypage_state
-
-    - alias: entities_entity21
-      platform: state
-      entity_id: !input 'entities_entity21'
-      id: trigger_entitypage_state
-
-    - alias: entities_entity22
-      platform: state
-      entity_id: !input 'entities_entity22'
-      id: trigger_entitypage_state
-
-    - alias: entities_entity23
-      platform: state
-      entity_id: !input 'entities_entity23'
-      id: trigger_entitypage_state
-
-    - alias: entities_entity24
-      platform: state
-      entity_id: !input 'entities_entity24'
-      id: trigger_entitypage_state
-
-    - alias: entities_entity25
-      platform: state
-      entity_id: !input 'entities_entity25'
-      id: trigger_entitypage_state
-
-    - alias: entities_entity26
-      platform: state
-      entity_id: !input 'entities_entity26'
-      id: trigger_entitypage_state
-
-    - alias: entities_entity27
-      platform: state
-      entity_id: !input 'entities_entity27'
-      id: trigger_entitypage_state
-
-    - alias: entities_entity28
-      platform: state
-      entity_id: !input 'entities_entity28'
-      id: trigger_entitypage_state
-
-    - alias: entities_entity29
-      platform: state
-      entity_id: !input 'entities_entity29'
-      id: trigger_entitypage_state
-
-    - alias: entities_entity30
-      platform: state
-      entity_id: !input 'entities_entity30'
-      id: trigger_entitypage_state
-
-    - alias: entities_entity31
-      platform: state
-      entity_id: !input 'entities_entity31'
-      id: trigger_entitypage_state
-
-    - alias: entities_entity32
-      platform: state
-      entity_id: !input 'entities_entity32'
-      id: trigger_entitypage_state
-
-  ##### Trigger - Home - Chips - State change #################################################################################################################
-    ##### Chip 01 #####
-    - platform: event
-      event_type: state_changed
-      event_data:
-        entity_id: !input 'chip01'
-      id: trigger_chip_state
-
-    ##### Chip 02 #####
-    - platform: event
-      event_type: state_changed
-      event_data:
-        entity_id: !input 'chip02'
-      id: trigger_chip_state
-
-    ##### Chip 03 #####
-    - platform: event
-      event_type: state_changed
-      event_data:
-        entity_id: !input 'chip03'
-      id: trigger_chip_state
-
-    ##### Chip 04 #####
-    - platform: event
-      event_type: state_changed
-      event_data:
-        entity_id: !input 'chip04'
-      id: trigger_chip_state
-
-    ##### Chip 05 #####
-    - platform: event
-      event_type: state_changed
-      event_data:
-        entity_id: !input 'chip05'
-      id: trigger_chip_state
-
-    ##### Chip 06 #####
-    - platform: event
-      event_type: state_changed
-      event_data:
-        entity_id: !input 'chip06'
-      id: trigger_chip_state
-
-    ##### Chip 07 #####
-    - platform: event
-      event_type: state_changed
-      event_data:
-        entity_id: !input 'chip07'
-      id: trigger_chip_state
-
-  ##### Trigger - Home - Values - State change #################################################################################################################
-
-    ##### HOME Value 01 #####
-    - platform: state
-      entity_id: !input home_value01
-      not_to:
-        - unknown
-        - unavailable
-      for:
-        seconds: 1
-      id: home_values_state
-
-    ##### HOME Value 02 #####
-    - platform: state
-      entity_id: !input home_value02
-      not_to:
-        - unknown
-        - unavailable
-      for:
-        seconds: 1
-      id: home_values_state
-
-    ##### HOME Value 03 #####
-    - platform: state
-      entity_id: !input home_value03
-      not_to:
-        - unknown
-        - unavailable
-      for:
-        seconds: 1
-      id: home_values_state
-
-    ##### HOME Value 04 #####
-    - platform: state
-      entity_id: !input home_value04
-      not_to:
-        - unknown
-        - unavailable
-      for:
-        seconds: 1
-      id: home_values_state
-
-  ##### Trigger - Home - Custom buttons - State change #################################################################################################################
-    ##### Custom button 01 #####
-    - platform: event
-      event_type: state_changed
-      event_data:
-        entity_id: !input 'home_custom_button01'
-      id: home_custom_buttons
-    ##### Custom button 02 #####
-    - platform: event
-      event_type: state_changed
-      event_data:
-        entity_id: !input 'home_custom_button02'
-      id: home_custom_buttons
-    ##### Custom button 03 #####
-    - platform: event
-      event_type: state_changed
-      event_data:
-        entity_id: !input 'home_custom_button03'
-      id: home_custom_buttons
-    ##### Custom button 04 #####
-    - platform: event
-      event_type: state_changed
-      event_data:
-        entity_id: !input 'home_custom_button04'
-      id: home_custom_buttons
-    ##### Custom button 05 #####
-    - platform: event
-      event_type: state_changed
-      event_data:
-        entity_id: !input 'home_custom_button05'
-      id: home_custom_buttons
-    ##### Custom button 06 #####
-    - platform: event
-      event_type: state_changed
-      event_data:
-        entity_id: !input 'home_custom_button06'
-      id: home_custom_buttons
-    ##### Custom button 07 #####
-    - platform: event
-      event_type: state_changed
-      event_data:
-        entity_id: !input 'alarm'
-      id: home_custom_buttons
-
-  ##### Trigger - Relays - State change #################################################################################################################
-
-    ##### Relay01 - Trigger 'relay01_state' #####
-    - platform: event
-      event_type: state_changed
-      event_data:
-        entity_id: '{{ relay01_entity }}'
-      id: relay01_state
-
-    ##### Relay02 - Trigger 'relay02_state' #####
-    - platform: event
-      event_type: state_changed
-      event_data:
-        entity_id: '{{ relay02_entity }}'
-      id: relay02_state
-
-  ##### Trigger - Climate - State change #################################################################################################################
-    ##### Climate - Trigger 'climate_state' #####
-    - platform: event
-      event_type: state_changed
-      event_data:
-        entity_id: !input 'climate'
-      id: climate_state
-
-  ##### Trigger - Climate - Values - State change #################################################################################################################
-    ##### Climate Value 01 #####
-    - platform: state
-      entity_id: !input 'climate_value01'
-      not_to:
-        - unknown
-        - unavailable
-      for:
-        seconds: 1
-      id: trigger_climatepage_value_state
-    ##### Climate Value 02 #####
-    - platform: state
-      entity_id: !input 'climate_value02'
-      not_to:
-        - unknown
-        - unavailable
-      for:
-        seconds: 1
-      id: trigger_climatepage_value_state
-    ##### Climate Value 03 #####
-    - platform: state
-      entity_id: !input 'climate_value03'
-      not_to:
-        - unknown
-        - unavailable
-      for:
-        seconds: 1
-      id: trigger_climatepage_value_state
-    ##### Climate Value 04 #####
-    - platform: state
-      entity_id: !input 'climate_value04'
-      not_to:
-        - unknown
-        - unavailable
-      for:
-        seconds: 1
-      id: trigger_climatepage_value_state
-
-  ##### Trigger - Climate - Custom buttons - State change #################################################################################################################
-    ##### Climate Button page 1, Button 8 #####
-    - platform: state
-      entity_id: !input climate_button08
-      not_to:
-        - unknown
-        - unavailable
-      for:
-        seconds: 1
-      id: climate_button08_state
-    ##### Climate Button page 2, Button 1 #####
-    - platform: state
-      entity_id: !input climate_button09
-      not_to:
-        - unknown
-        - unavailable
-      for:
-        seconds: 1
-      id: climate_button09_state
-
-  ##### Trigger - Water Heater page - Values - State change ########################################################################################
-    ##### Water Heater page - Value 01 #####
-    - platform: state
-      entity_id: !input water_heater_value01
-      not_to:
-        - unknown
-        - unavailable
-      for:
-        seconds: 1
-      id: trigger_water_heater_page_value_state
-    ##### Water Heater page - Value 02 #####
-    - platform: state
-      entity_id: !input water_heater_value02
-      not_to:
-        - unknown
-        - unavailable
-      for:
-        seconds: 1
-      id: trigger_water_heater_page_value_state
-    ##### Water Heater page - Value 03 #####
-    - platform: state
-      entity_id: !input water_heater_value03
-      not_to:
-        - unknown
-        - unavailable
-      for:
-        seconds: 1
-      id: trigger_water_heater_page_value_state
-    ##### Water Heater page - Value 04 #####
-    - platform: state
-      entity_id: !input water_heater_value04
-      not_to:
-        - unknown
-        - unavailable
-      for:
-        seconds: 1
-      id: trigger_water_heater_page_value_state
-
-  ##### Trigger - Hardware buttons #################################################################################################################
-
-    ##### Left Button - State #####
-    - platform: state
-      entity_id: !input left_button_entity
-      id: left_button_state
-    - platform: state
-      entity_id: !input left_button_state_entity
-      id: left_button_alt_state
-
-    ##### Right Button - State #####
-    - platform: state
-      entity_id: !input right_button_entity
-      id: right_button_state
-    - platform: state
-      entity_id: !input right_button_state_entity
-      id: right_button_alt_state
-
-  ##### Trigger - Page QRcode - State change
-    #### QR Code changed ###
-    - platform: state
-      entity_id: !input "qrcode_entity"
-      id: qrcode_changed
-
-  ##### Trigger - Page utilities - State change #################################################################################################################
-    ##### Page utilities - Main line #####
-    - platform: template
-      value_template: >
-        {% set line_ref_id = utilities_line_reference.page01.main %}
-        {% set line_ref_state = (states(line_ref_id) | float(0)) if line_ref_id is string and line_ref_id.split(".") == 2 else 0 %}
-        {{ ((line_ref_state > 0) - (line_ref_state < 0)) }}
-      id: utilities_page
-      for:
-        seconds: 1
-    ##### Page utilities - Home #####
-    - platform: state
-      entity_id: !input utilities_page01_home_value1
-      id: utilities_page
-      for:
-        seconds: 1
-    - platform: state
-      entity_id: !input utilities_page01_home_value2
-      id: utilities_page
-      for:
-        seconds: 1
-    ##### Page utilities - Grid #####
-    - platform: state
-      entity_id: !input utilities_page01_grid_value1
-      id: utilities_page
-      for:
-        seconds: 1
-    - platform: state
-      entity_id: !input utilities_page01_grid_value2
-      id: utilities_page
-      for:
-        seconds: 1
-    ##### Page utilities - Group 01 #####
-    - platform: state
-      entity_id: !input utilities_page01_group01_value1
-      id: utilities_page
-      for:
-        seconds: 1
-    - platform: state
-      entity_id: !input utilities_page01_group01_value2
-      id: utilities_page
-      for:
-        seconds: 1
-    - platform: template
-      value_template: >
-        {% set line_ref_id = utilities_line_reference.page01.group01 %}
-        {% set line_ref_state = (states(line_ref_id) | float(0)) if line_ref_id is string and line_ref_id.split(".") == 2 else 0 %}
-        {{ ((line_ref_state > 0) - (line_ref_state < 0)) }}
-      id: utilities_page
-      for:
-        seconds: 1
-    ##### Page utilities - Group 02 #####
-    - platform: state
-      entity_id: !input utilities_page01_group02_value1
-      id: utilities_page
-      for:
-        seconds: 1
-    - platform: state
-      entity_id: !input utilities_page01_group02_value2
-      id: utilities_page
-      for:
-        seconds: 1
-    - platform: template
-      value_template: >
-        {% set line_ref_id = utilities_line_reference.page01.group02 %}
-        {% set line_ref_state = (states(line_ref_id) | float(0)) if line_ref_id is string and line_ref_id.split(".") == 2 else 0 %}
-        {{ ((line_ref_state > 0) - (line_ref_state < 0)) }}
-      id: utilities_page
-      for:
-        seconds: 1
-    ##### Page utilities - Group 03 #####
-    - platform: state
-      entity_id: !input utilities_page01_group03_value1
-      id: utilities_page
-      for:
-        seconds: 1
-    - platform: state
-      entity_id: !input utilities_page01_group03_value2
-      id: utilities_page
-      for:
-        seconds: 1
-    - platform: template
-      value_template: >
-        {% set line_ref_id = utilities_line_reference.page01.group03 %}
-        {% set line_ref_state = (states(line_ref_id) | float(0)) if line_ref_id is string and line_ref_id.split(".") == 2 else 0 %}
-        {{ ((line_ref_state > 0) - (line_ref_state < 0)) }}
-      id: utilities_page
-      for:
-        seconds: 1
-    ##### Page utilities - Group 04 #####
-    - platform: state
-      entity_id: !input utilities_page01_group04_value1
-      id: utilities_page
-      for:
-        seconds: 1
-    - platform: state
-      entity_id: !input utilities_page01_group04_value2
-      id: utilities_page
-      for:
-        seconds: 1
-    - platform: template
-      value_template: >
-        {% set line_ref_id = utilities_line_reference.page01.group04 %}
-        {% set line_ref_state = (states(line_ref_id) | float(0)) if line_ref_id is string and line_ref_id.split(".") == 2 else 0 %}
-        {{ ((line_ref_state > 0) - (line_ref_state < 0)) }}
-      id: utilities_page
-      for:
-        seconds: 1
-    ##### Page utilities - Group 05 #####
-    - platform: state
-      entity_id: !input utilities_page01_group05_value1
-      id: utilities_page
-      for:
-        seconds: 1
-    - platform: state
-      entity_id: !input utilities_page01_group05_value2
-      id: utilities_page
-      for:
-        seconds: 1
-    - platform: template
-      value_template: >
-        {% set line_ref_id = utilities_line_reference.page01.group05 %}
-        {% set line_ref_state = (states(line_ref_id) | float(0)) if line_ref_id is string and line_ref_id.split(".") == 2 else 0 %}
-        {{ ((line_ref_state > 0) - (line_ref_state < 0)) }}
-      id: utilities_page
-      for:
-        seconds: 1
-    ##### Page utilities - Group 06 #####
-    - platform: state
-      entity_id: !input utilities_page01_group06_value1
-      id: utilities_page
-      for:
-        seconds: 1
-    - platform: state
-      entity_id: !input utilities_page01_group06_value2
-      id: utilities_page
-      for:
-        seconds: 1
-    - platform: template
-      value_template: >
-        {% set line_ref_id = utilities_line_reference.page01.group06 %}
-        {% set line_ref_state = (states(line_ref_id) | float(0)) if line_ref_id is string and line_ref_id.split(".") == 2 else 0 %}
-        {{ ((line_ref_state > 0) - (line_ref_state < 0)) }}
-      id: utilities_page
-      for:
-        seconds: 1
-
-  ##### Trigger - Time #################################################################################################################
-
-    ##### Time - Trigger 'time_state' #####
-    - platform: time_pattern
-      minutes: 0
-      seconds: 0
-      id: time_state
-
-  ##### Trigger - Temperatures #################################################################################################################
-
-    ##### Outdoor Temp - Trigger 'outdoortemp_state' #####
-    - platform: event
-      event_type: state_changed
-      event_data:
-        entity_id: !input 'outdoortemp'
-      id: outdoortemp_state
-
-    ##### indoor Temp Sensor - Trigger 'indoortemp_state' #####
-    - platform: event
-      event_type: state_changed
-      event_data:
-        entity_id: !input indoortemp
-      id: indoortemp_state
-
-  ##### Trigger - Weather #################################################################################################################
-    #### Weather state changed #######
-    - platform: event
-      event_type: state_changed
-      event_data:
-        entity_id: !input weather_entity
-      id: weather_state_change
-    - platform: template
-      value_template: '{{ sun_is_up }}'
-      id: sun_state_change
-# yamllint enable rule:indentation rule:comments-indentation
+  - triggers:  # General
+      - alias: Panel Event  # This is the new main event handler introduced on v4.0 to get info from the panel
+        id: nspanel_event
+        trigger: event
+        event_type: esphome.nspanel_easy
+        event_data:
+          device_id: !input nspanel_name
+
+      - alias: Time pattern  # Triggers every minute to update the date
+        id: time_state
+        trigger: time_pattern
+        minutes: 0
+        seconds: 0
+
+      - alias: Automation reloaded
+        id: automation_reloaded
+        trigger: event
+        event_type: automation_reloaded
+
+      - alias: Home Assistant has started
+        id: ha_started
+        trigger: homeassistant
+        event: start
+
+      - alias: Wake-up sensor
+        id: wake_up_sensors
+        trigger: state
+        entity_id: !input wake_up_sensors
+        to: "on"
+
+  - triggers: # Button page 01
+      - alias: Button 01
+        id: trigger_buttonpage_state
+        trigger: state
+        entity_id: !input entity01
+
+      - alias:  Button 02
+        id: trigger_buttonpage_state
+        trigger: state
+        entity_id: !input entity02
+
+      - alias: Button 03
+        id: trigger_buttonpage_state
+        trigger: state
+        entity_id: !input entity03
+
+      - alias: Button 04
+        id: trigger_buttonpage_state
+        trigger: state
+        entity_id: !input entity04
+
+      - alias: Button 05
+        id: trigger_buttonpage_state
+        trigger: state
+        entity_id: !input entity05
+
+      - alias: Button 06
+        id: trigger_buttonpage_state
+        trigger: state
+        entity_id: !input entity06
+
+      - alias: Button 07
+        id: trigger_buttonpage_state
+        trigger: state
+        entity_id: !input entity07
+
+      - alias: Button 08
+        id: trigger_buttonpage_state
+        trigger: state
+        entity_id: !input entity08
+
+  - triggers: # Button page 02
+      - alias: Button 01
+        id: trigger_buttonpage_state
+        trigger: state
+        entity_id: !input entity09
+
+      - alias:  Button 02
+        id: trigger_buttonpage_state
+        trigger: state
+        entity_id: !input entity10
+
+      - alias: Button 03
+        id: trigger_buttonpage_state
+        trigger: state
+        entity_id: !input entity11
+
+      - alias: Button 04
+        id: trigger_buttonpage_state
+        trigger: state
+        entity_id: !input entity12
+
+      - alias: Button 05
+        id: trigger_buttonpage_state
+        trigger: state
+        entity_id: !input entity13
+
+      - alias: Button 06
+        id: trigger_buttonpage_state
+        trigger: state
+        entity_id: !input entity14
+
+      - alias: Button 07
+        id: trigger_buttonpage_state
+        trigger: state
+        entity_id: !input entity15
+
+      - alias: Button 08
+        id: trigger_buttonpage_state
+        trigger: state
+        entity_id: !input entity16
+
+  - triggers: # Button page 03
+      - alias: Button 01
+        id: trigger_buttonpage_state
+        trigger: state
+        entity_id: !input entity17
+
+      - alias:  Button 02
+        id: trigger_buttonpage_state
+        trigger: state
+        entity_id: !input entity18
+
+      - alias: Button 03
+        id: trigger_buttonpage_state
+        trigger: state
+        entity_id: !input entity19
+
+      - alias: Button 04
+        id: trigger_buttonpage_state
+        trigger: state
+        entity_id: !input entity20
+
+      - alias: Button 05
+        id: trigger_buttonpage_state
+        trigger: state
+        entity_id: !input entity21
+
+      - alias: Button 06
+        id: trigger_buttonpage_state
+        trigger: state
+        entity_id: !input entity22
+
+      - alias: Button 07
+        id: trigger_buttonpage_state
+        trigger: state
+        entity_id: !input entity23
+
+      - alias: Button 08
+        id: trigger_buttonpage_state
+        trigger: state
+        entity_id: !input entity24
+
+  - triggers: # Button page 04
+      - alias: Button 01
+        id: trigger_buttonpage_state
+        trigger: state
+        entity_id: !input entity25
+
+      - alias:  Button 02
+        id: trigger_buttonpage_state
+        trigger: state
+        entity_id: !input entity26
+
+      - alias: Button 03
+        id: trigger_buttonpage_state
+        trigger: state
+        entity_id: !input entity27
+
+      - alias: Button 04
+        id: trigger_buttonpage_state
+        trigger: state
+        entity_id: !input entity28
+
+      - alias: Button 05
+        id: trigger_buttonpage_state
+        trigger: state
+        entity_id: !input entity29
+
+      - alias: Button 06
+        id: trigger_buttonpage_state
+        trigger: state
+        entity_id: !input entity30
+
+      - alias: Button 07
+        id: trigger_buttonpage_state
+        trigger: state
+        entity_id: !input entity31
+
+      - alias: Button 08
+        id: trigger_buttonpage_state
+        trigger: state
+        entity_id: !input entity32
+
+  - triggers: # Entities page 01
+      - alias: Entity 01
+        id: trigger_entitypage_state
+        trigger: state
+        entity_id: !input entities_entity01
+
+      - alias: Entity 02
+        id: trigger_entitypage_state
+        trigger: state
+        entity_id: !input entities_entity02
+
+      - alias: Entity 03
+        id: trigger_entitypage_state
+        trigger: state
+        entity_id: !input entities_entity03
+
+      - alias: Entity 04
+        id: trigger_entitypage_state
+        trigger: state
+        entity_id: !input entities_entity04
+
+      - alias: Entity 05
+        id: trigger_entitypage_state
+        trigger: state
+        entity_id: !input entities_entity05
+
+      - alias: Entity 06
+        id: trigger_entitypage_state
+        trigger: state
+        entity_id: !input entities_entity06
+
+      - alias: Entity 07
+        id: trigger_entitypage_state
+        trigger: state
+        entity_id: !input entities_entity07
+
+      - alias: Entity 08
+        id: trigger_entitypage_state
+        trigger: state
+        entity_id: !input entities_entity08
+
+  - triggers: # Entities page 02
+      - alias: Entity 01
+        id: trigger_entitypage_state
+        trigger: state
+        entity_id: !input entities_entity09
+
+      - alias: Entity 02
+        id: trigger_entitypage_state
+        trigger: state
+        entity_id: !input entities_entity10
+
+      - alias: Entity 03
+        id: trigger_entitypage_state
+        trigger: state
+        entity_id: !input entities_entity11
+
+      - alias: Entity 04
+        id: trigger_entitypage_state
+        trigger: state
+        entity_id: !input entities_entity12
+
+      - alias: Entity 05
+        id: trigger_entitypage_state
+        trigger: state
+        entity_id: !input entities_entity13
+
+      - alias: Entity 06
+        id: trigger_entitypage_state
+        trigger: state
+        entity_id: !input entities_entity14
+
+      - alias: Entity 07
+        id: trigger_entitypage_state
+        trigger: state
+        entity_id: !input entities_entity15
+
+      - alias: Entity 08
+        id: trigger_entitypage_state
+        trigger: state
+        entity_id: !input entities_entity16
+
+  - triggers: # Entities page 03
+      - alias: Entity 01
+        id: trigger_entitypage_state
+        trigger: state
+        entity_id: !input entities_entity17
+
+      - alias: Entity 02
+        id: trigger_entitypage_state
+        trigger: state
+        entity_id: !input entities_entity18
+
+      - alias: Entity 03
+        id: trigger_entitypage_state
+        trigger: state
+        entity_id: !input entities_entity19
+
+      - alias: Entity 04
+        id: trigger_entitypage_state
+        trigger: state
+        entity_id: !input entities_entity20
+
+      - alias: Entity 05
+        id: trigger_entitypage_state
+        trigger: state
+        entity_id: !input entities_entity21
+
+      - alias: Entity 06
+        id: trigger_entitypage_state
+        trigger: state
+        entity_id: !input entities_entity22
+
+      - alias: Entity 07
+        id: trigger_entitypage_state
+        trigger: state
+        entity_id: !input entities_entity23
+
+      - alias: Entity 08
+        id: trigger_entitypage_state
+        trigger: state
+        entity_id: !input entities_entity24
+
+  - triggers: # Entities page 04
+      - alias: Entity 01
+        id: trigger_entitypage_state
+        trigger: state
+        entity_id: !input entities_entity25
+
+      - alias: Entity 02
+        id: trigger_entitypage_state
+        trigger: state
+        entity_id: !input entities_entity26
+
+      - alias: Entity 03
+        id: trigger_entitypage_state
+        trigger: state
+        entity_id: !input entities_entity27
+
+      - alias: Entity 04
+        id: trigger_entitypage_state
+        trigger: state
+        entity_id: !input entities_entity28
+
+      - alias: Entity 05
+        id: trigger_entitypage_state
+        trigger: state
+        entity_id: !input entities_entity29
+
+      - alias: Entity 06
+        id: trigger_entitypage_state
+        trigger: state
+        entity_id: !input entities_entity30
+
+      - alias: Entity 07
+        id: trigger_entitypage_state
+        trigger: state
+        entity_id: !input entities_entity31
+
+      - alias: Entity 08
+        id: trigger_entitypage_state
+        trigger: state
+        entity_id: !input entities_entity32
+
+  - triggers: # Home page - Chips
+      - alias: Chip 01
+        id: trigger_chip_state
+        trigger: event
+        event_type: state_changed
+        event_data:
+          entity_id: !input chip01
+
+      - alias: Chip 02
+        id: trigger_chip_state
+        trigger: event
+        event_type: state_changed
+        event_data:
+          entity_id: !input chip02
+
+      - alias: Chip 03
+        id: trigger_chip_state
+        trigger: event
+        event_type: state_changed
+        event_data:
+          entity_id: !input chip03
+
+      - alias: Chip 04
+        id: trigger_chip_state
+        trigger: event
+        event_type: state_changed
+        event_data:
+          entity_id: !input chip04
+
+      - alias: Chip 05
+        id: trigger_chip_state
+        trigger: event
+        event_type: state_changed
+        event_data:
+          entity_id: !input chip05
+
+      - alias: Chip 06
+        id: trigger_chip_state
+        trigger: event
+        event_type: state_changed
+        event_data:
+          entity_id: !input chip06
+
+      - alias: Chip 07
+        id: trigger_chip_state
+        trigger: event
+        event_type: state_changed
+        event_data:
+          entity_id: !input chip07
+
+  - triggers: # Home page - Values
+      - alias: Value 01
+        id: home_values_state
+        trigger: state
+        entity_id: !input home_value01
+        not_to:
+          - unknown
+          - unavailable
+        for:
+          seconds: 1
+
+      - alias: Value 02
+        id: home_values_state
+        trigger: state
+        entity_id: !input home_value02
+        not_to:
+          - unknown
+          - unavailable
+        for:
+          seconds: 1
+
+      - alias: Value 03
+        id: home_values_state
+        trigger: state
+        entity_id: !input home_value03
+        not_to:
+          - unknown
+          - unavailable
+        for:
+          seconds: 1
+
+      - alias: Value 04
+        id: home_values_state
+        trigger: state
+        entity_id: !input home_value04
+        not_to:
+          - unknown
+          - unavailable
+        for:
+          seconds: 1
+
+  - triggers: # Home page - Custom buttons
+      - alias: Custom button 01
+        id: home_custom_buttons
+        trigger: event
+        event_type: state_changed
+        event_data:
+          entity_id: !input home_custom_button01
+
+      - alias: Custom button 02
+        id: home_custom_buttons
+        trigger: event
+        event_type: state_changed
+        event_data:
+          entity_id: !input home_custom_button02
+
+      - alias: Custom button 03
+        id: home_custom_buttons
+        trigger: event
+        event_type: state_changed
+        event_data:
+          entity_id: !input home_custom_button03
+
+      - alias: Custom button 04
+        id: home_custom_buttons
+        trigger: event
+        event_type: state_changed
+        event_data:
+          entity_id: !input home_custom_button04
+
+      - alias: Custom button 05
+        id: home_custom_buttons
+        trigger: event
+        event_type: state_changed
+        event_data:
+          entity_id: !input home_custom_button05
+
+      - alias: Custom button 06
+        id: home_custom_buttons
+        trigger: event
+        event_type: state_changed
+        event_data:
+          entity_id: !input home_custom_button06
+
+      - alias: Custom button 07
+        id: home_custom_buttons
+        trigger: event
+        event_type: state_changed
+        event_data:
+          entity_id: !input alarm  # Name kept to keep compatibility with older versions
+
+  - triggers: # Climate page
+      - alias: Climate entity
+        id: climate_state
+        trigger: event
+        event_type: state_changed
+        event_data:
+          entity_id: !input climate
+
+      - alias: Value 01
+        id: trigger_climatepage_value_state
+        trigger: state
+        entity_id: !input climate_value01
+        not_to:
+          - unknown
+          - unavailable
+        for:
+          seconds: 1
+
+      - alias: Value 02
+        id: trigger_climatepage_value_state
+        trigger: state
+        entity_id: !input climate_value02
+        not_to:
+          - unknown
+          - unavailable
+        for:
+          seconds: 1
+
+      - alias: Value 03
+        id: trigger_climatepage_value_state
+        trigger: state
+        entity_id: !input climate_value03
+        not_to:
+          - unknown
+          - unavailable
+        for:
+          seconds: 1
+
+      - alias: Value 04
+        id: trigger_climatepage_value_state
+        trigger: state
+        entity_id: !input climate_value04
+        not_to:
+          - unknown
+          - unavailable
+        for:
+          seconds: 1
+
+      - alias: Button 01
+        id: climate_button08_state
+        trigger: state
+        entity_id: !input climate_button08
+        not_to:
+          - unknown
+          - unavailable
+        for:
+          seconds: 1
+
+      - alias: Button 02
+        id: climate_button09_state
+        trigger: state
+        entity_id: !input climate_button09
+        not_to:
+          - unknown
+          - unavailable
+        for:
+          seconds: 1
+
+  - triggers: # Water heater page
+      - alias: Value 01
+        id: trigger_water_heater_page_value_state
+        trigger: state
+        entity_id: !input water_heater_value01
+        not_to:
+          - unknown
+          - unavailable
+        for:
+          seconds: 1
+
+      - alias: Value 02
+        id: trigger_water_heater_page_value_state
+        trigger: state
+        entity_id: !input water_heater_value02
+        not_to:
+          - unknown
+          - unavailable
+        for:
+          seconds: 1
+
+      - alias: Value 03
+        id: trigger_water_heater_page_value_state
+        trigger: state
+        entity_id: !input water_heater_value03
+        not_to:
+          - unknown
+          - unavailable
+        for:
+          seconds: 1
+
+      - alias: Value 04
+        id: trigger_water_heater_page_value_state
+        trigger: state
+        entity_id: !input water_heater_value04
+        not_to:
+          - unknown
+          - unavailable
+        for:
+          seconds: 1
+
+  - triggers: # HW Buttons
+      - alias: Left button - entity
+        id: left_button_state
+        trigger: state
+        entity_id: !input left_button_entity
+      - alias: Left button - state entity
+        id: left_button_alt_state
+        trigger: state
+        entity_id: !input left_button_state_entity
+
+      - alias: Right button - entity
+        id: right_button_state
+        trigger: state
+        entity_id: !input right_button_entity
+      - alias: Right button - state entity
+        id: right_button_alt_state
+        trigger: state
+        entity_id: !input right_button_state_entity
+
+  - triggers: # QRcode page
+      - alias: QRcode entity
+        id: qrcode_changed
+        trigger: state
+        entity_id: !input "qrcode_entity"
+
+  - triggers: # Utilities page - Main line
+      - alias: Utilities page - Main line
+        id: utilities_page
+        trigger: template
+        value_template: >
+          {% set line_ref_id = utilities_line_reference.page01.main %}
+          {% set line_ref_state = (states(line_ref_id) | float(0)) if line_ref_id is string and line_ref_id.split(".") == 2 else 0 %}
+          {{ ((line_ref_state > 0) - (line_ref_state < 0)) }}
+        for:
+          seconds: 1
+
+  - triggers: # Utilities page - Home group
+      - alias: Utilities - Home - Value 1
+        id: utilities_page
+        trigger: state
+        entity_id: !input utilities_page01_home_value1
+        for:
+          seconds: 1
+      - alias: Utilities - Home - Value 2
+        id: utilities_page
+        trigger: state
+        entity_id: !input utilities_page01_home_value2
+        for:
+          seconds: 1
+
+  - triggers: # Utilities page - Grid group
+      - alias: Utilities - Grid - Value 1
+        id: utilities_page
+        trigger: state
+        entity_id: !input utilities_page01_grid_value1
+        for:
+          seconds: 1
+      - alias: Utilities - Grid - Value 2
+        id: utilities_page
+        trigger: state
+        entity_id: !input utilities_page01_grid_value2
+        for:
+          seconds: 1
+
+  - triggers: # Utilities page - Group 01
+      - alias: Utilities - Group 1 - Value 1
+        id: utilities_page
+        trigger: state
+        entity_id: !input utilities_page01_group01_value1
+        for:
+          seconds: 1
+      - alias: Utilities - Group 1 - Value 2
+        id: utilities_page
+        trigger: state
+        entity_id: !input utilities_page01_group01_value2
+        for:
+          seconds: 1
+      - alias: Utilities - Group 1 - Line
+        trigger: template
+        value_template: >
+          {% set line_ref_id = utilities_line_reference.page01.group01 %}
+          {% set line_ref_state = (states(line_ref_id) | float(0)) if line_ref_id is string and line_ref_id.split(".") == 2 else 0 %}
+          {{ ((line_ref_state > 0) - (line_ref_state < 0)) }}
+        id: utilities_page
+        for:
+          seconds: 1
+
+  - triggers: # Utilities page - Group 02
+      - alias: Utilities - Group 2 - Value 1
+        id: utilities_page
+        trigger: state
+        entity_id: !input utilities_page01_group02_value1
+        for:
+          seconds: 1
+      - alias: Utilities - Group 2 - Value 2
+        id: utilities_page
+        trigger: state
+        entity_id: !input utilities_page01_group02_value2
+        for:
+          seconds: 1
+      - alias: Utilities - Group 1 - Line
+        trigger: template
+        value_template: >
+          {% set line_ref_id = utilities_line_reference.page01.group02 %}
+          {% set line_ref_state = (states(line_ref_id) | float(0)) if line_ref_id is string and line_ref_id.split(".") == 2 else 0 %}
+          {{ ((line_ref_state > 0) - (line_ref_state < 0)) }}
+        id: utilities_page
+        for:
+          seconds: 1
+
+  - triggers: # Utilities page - Group 03
+      - alias: Utilities - Group 3 - Value 1
+        id: utilities_page
+        trigger: state
+        entity_id: !input utilities_page01_group03_value1
+        for:
+          seconds: 1
+      - alias: Utilities - Group 3 - Value 2
+        id: utilities_page
+        trigger: state
+        entity_id: !input utilities_page01_group03_value2
+        for:
+          seconds: 1
+      - alias: Utilities - Group 3 - Line
+        trigger: template
+        value_template: >
+          {% set line_ref_id = utilities_line_reference.page01.group03 %}
+          {% set line_ref_state = (states(line_ref_id) | float(0)) if line_ref_id is string and line_ref_id.split(".") == 2 else 0 %}
+          {{ ((line_ref_state > 0) - (line_ref_state < 0)) }}
+        id: utilities_page
+        for:
+          seconds: 1
+
+  - triggers: # Utilities page - Group 04
+      - alias: Utilities - Group 4 - Value 1
+        id: utilities_page
+        trigger: state
+        entity_id: !input utilities_page01_group04_value1
+        for:
+          seconds: 1
+      - alias: Utilities - Group 4 - Value 2
+        id: utilities_page
+        trigger: state
+        entity_id: !input utilities_page01_group04_value2
+        for:
+          seconds: 1
+      - alias: Utilities - Group 4 - Line
+        trigger: template
+        value_template: >
+          {% set line_ref_id = utilities_line_reference.page01.group04 %}
+          {% set line_ref_state = (states(line_ref_id) | float(0)) if line_ref_id is string and line_ref_id.split(".") == 2 else 0 %}
+          {{ ((line_ref_state > 0) - (line_ref_state < 0)) }}
+        id: utilities_page
+        for:
+          seconds: 1
+
+  - triggers: # Utilities page - Group 05
+      - alias: Utilities - Group 5 - Value 1
+        id: utilities_page
+        trigger: state
+        entity_id: !input utilities_page01_group05_value1
+        for:
+          seconds: 1
+      - alias: Utilities - Group 5 - Value 2
+        id: utilities_page
+        trigger: state
+        entity_id: !input utilities_page01_group05_value2
+        for:
+          seconds: 1
+      - alias: Utilities - Group 5 - Line
+        trigger: template
+        value_template: >
+          {% set line_ref_id = utilities_line_reference.page01.group05 %}
+          {% set line_ref_state = (states(line_ref_id) | float(0)) if line_ref_id is string and line_ref_id.split(".") == 2 else 0 %}
+          {{ ((line_ref_state > 0) - (line_ref_state < 0)) }}
+        id: utilities_page
+        for:
+          seconds: 1
+
+  - triggers: # Utilities page - Group 06
+      - alias: Utilities - Group 6 - Value 1
+        id: utilities_page
+        trigger: state
+        entity_id: !input utilities_page01_group06_value1
+        for:
+          seconds: 1
+      - alias: Utilities - Group 6 - Value 2
+        id: utilities_page
+        trigger: state
+        entity_id: !input utilities_page01_group06_value2
+        for:
+          seconds: 1
+      - alias: Utilities - Group 6 - Line
+        trigger: template
+        value_template: >
+          {% set line_ref_id = utilities_line_reference.page01.group06 %}
+          {% set line_ref_state = (states(line_ref_id) | float(0)) if line_ref_id is string and line_ref_id.split(".") == 2 else 0 %}
+          {{ ((line_ref_state > 0) - (line_ref_state < 0)) }}
+        id: utilities_page
+        for:
+          seconds: 1
+
+  - triggers: # Home page - Weather and temperatures
+      - alias: Outdoor temperature
+        id: outdoortemp_state
+        trigger: event
+        event_type: state_changed
+        event_data:
+          entity_id: !input outdoortemp
+
+      - alias: Indoor temperature
+        id: indoortemp_state
+        trigger: event
+        event_type: state_changed
+        event_data:
+          entity_id: !input indoortemp
+
+      - alias: Weather conditions
+        id: weather_state_change
+        trigger: event
+        event_type: state_changed
+        event_data:
+          entity_id: !input weather_entity
+      - alias: The Sun
+        id: sun_state_change
+        trigger: template
+        value_template: '{{ sun_is_up }}'
 
 # yamllint disable rule:line-length
-condition:
+conditions:
+  condition:
   - >  # Trigger is coming from panel's event or Nextion display must be connected
     {{
       trigger.id in ["automation_reloaded", "ha_started", "nspanel_event"] or
@@ -5051,7 +5079,7 @@ condition:
           - '{{ trigger.event.data.new_state.state != trigger.event.data.old_state.state }}'
 # yamllint enable rule:line-length
 
-action:
+actions:
   - alias: Global variables
     variables:
       ##### GENERAL #####
