@@ -28,7 +28,18 @@ Page settings
             dim_text.txt+="%"
             vis lbl_sleep,0
             vis bt_sleep,0
+            for(index=1;index<=last_component.id;index++)
+            {
+                b[index].picc=settings.pic
+                b[index].pco=color_pco_main
+            }
             button_back.font=button_back_font
+            button_back.pco=color_pco_navigation
+            button_back.picc2=settings.pic
+            brightslider.picc1=slider_picc1.val
+            dimslider.picc1=slider_picc1.val
+            t2.pco=color_pco_navigation
+            t3.pco=color_pco_navigation
             sendme
         
         Touch Press Event
@@ -43,6 +54,18 @@ Variable (string) csv
         Scope         : local
         Text          : 
         Max. Text Size: 50
+    
+Variable (int32) slider_picc1
+    Attributes
+        ID   : 28
+        Scope: global
+        Value: 34
+    
+Variable (int32) last_component
+    Attributes
+        ID   : 29
+        Scope: local
+        Value: 0
     
 Text bright_text
     Attributes

@@ -1,7 +1,7 @@
 Page home
     Attributes
         ID                 : 0
-        Scope              : local
+        Scope              : global
         Dragging           : 0
         Send Component ID  : on press and release
         Opacity            : 127
@@ -19,15 +19,41 @@ Page home
     
     Events
         Preinitialize Event
-            dim=brightness
             back_page_id=home_page_id
-            is_entitypages=is_entitypage01|is_entitypage02|is_entitypage03|is_entitypage04
-            vis bt_entities,is_entitypages
-            if(display_mode>=3)
+            // set component visibility
+            // chips
+            vis chip_relay1,vis_chip_relay1
+            vis chip_relay2,vis_chip_relay2
+            vis chip_climate,vis_chip_climate
+            vis chip01,vis_chip01
+            vis chip02,vis_chip02
+            vis chip03,vis_chip03
+            vis chip04,vis_chip04
+            vis chip05,vis_chip05
+            vis chip06,vis_chip06
+            vis chip07,vis_chip07
+            // buttons
+            vis bt_utilities,vis_bt_utilities
+            vis bt_notific,vis_bt_notific
+            vis bt_qrcode,vis_bt_qrcode
+            vis bt_entities,vis_bt_entities
+            // Custom buttons
+            vis button01,vis_button01
+            vis button02,vis_button02
+            vis button03,vis_button03
+            vis button04,vis_button04
+            vis button05,vis_button05
+            vis button06,vis_button06
+            vis button07,vis_button07
+            // Bluetooth icon
+            vis bt_icon,vis_bt_icon
+            // HW Button's labels
+            if(display_mode==3)
             {
                 vis left_bt_text,0
                 vis right_bt_text,0
             }
+            dim=brightness
             sendme
         
 Variable (string) lastclick
@@ -795,7 +821,7 @@ Text bt_entities
         Horizontal Alignment    : center
         Vertical Alignment      : center
         Input Type              : character
-        Text                    : 
+        Text                    : \xee\xb7\x8f
         Max. Text Size          : 3
         Word wrap               : disabled
         Horizontal Spacing      : 0

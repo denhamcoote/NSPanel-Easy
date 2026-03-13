@@ -180,7 +180,7 @@ First, import the NSPanel Easy Blueprint into Home Assistant.
 Click the button below to do it directly:
 
 <!-- markdownlint-disable MD013 -->
-[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fedwardtfn%2FNSPanel-Easy%2Fblob%2Fmain%2Fnspanel_easy_blueprint.yaml)
+[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fraw.githubusercontent.com%2Fedwardtfn%2FNSPanel-Easy%2Frefs%2Ftags%2Flatest%2Fnspanel_easy_blueprint.yaml)
 <!-- markdownlint-enable MD013 -->
 
 Alternatively, you can import it manually:
@@ -191,7 +191,7 @@ Alternatively, you can import it manually:
 3. Paste this URL:
 
    ```text
-   https://github.com/edwardtfn/NSPanel-Easy/blob/main/nspanel_easy_blueprint.yaml
+   https://raw.githubusercontent.com/edwardtfn/NSPanel-Easy/refs/tags/latest/nspanel_easy_blueprint.yaml
    ```
 
 4. Click **Preview Blueprint** and then **Import Blueprint**.

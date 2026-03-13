@@ -1,0 +1,31 @@
+---
+name: Announce release on Discord
+
+# yamllint disable-line rule:truthy
+on:
+  release:
+    types: [published]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    permissions: {}
+
+    steps:
+      - name: Send release message to Discord
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_CH_GENERAL_WEBHOOK }}
+          RELEASE_NAME: ${{ github.event.release.name }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          RELEASE_URL: ${{ github.event.release.html_url }}
+        run: |
+          MESSAGE="🚀 New NSPanel Easy release published
+          ${RELEASE_NAME:-$RELEASE_TAG}
+          ${RELEASE_URL}"
+
+          jq -n --arg content "$MESSAGE" '{content: $content}' \
+          | curl --fail-with-body \
+            -H "Content-Type: application/json" \
+            -d @- \
+            "$DISCORD_WEBHOOK"
+...

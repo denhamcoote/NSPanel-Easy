@@ -106,50 +106,10 @@ api:
 
             // Resolve page to current page if empty
             const std::string resolved_page = page.empty() ? current_page->state : page;
-            ESP_LOGV("${TAG_API}", "  page: %s", resolved_page.c_str());
 
-            // If caller explicitly targets a page, require it to be current
-            if (!page.empty() && resolved_page != current_page->state) {
-              ESP_LOGW("${TAG_API}", "Not the current page (%s vs %s)",
-                      resolved_page.c_str(), current_page->state.c_str());
-              return;
+            for (const auto &id : ids) {
+              action_component_visibility->execute(resolved_page.c_str(), id.c_str(), visible);
             }
-
-            ESP_LOGV("${TAG_API}", "  visible: %s", YESNO(visible));
-
-            // Process each component ID
-            size_t processed_count = 0;
-            for (const std::string& component_id : ids) {
-              if (component_id.empty()) {
-                ESP_LOGW("${TAG_API}", "Skipping empty component ID");
-                continue;
-              }
-
-              ESP_LOGV("${TAG_API}", "Processing component ID: %s", component_id.c_str());
-
-              // Extract component information using helper function
-              const NextionComponent component = extractNextionComponent(component_id, resolved_page);
-              const std::string component_page = component.page;
-              if (component_page != resolved_page) {
-                ESP_LOGW("${TAG_API}", "Skipping component on non-current page (%s vs %s)",
-                        component_page.c_str(), resolved_page.c_str());
-                continue;
-              }
-
-              const char* target_id = component.component_id;
-              ESP_LOGV("${TAG_API}", "  target: %s", target_id);
-
-              // Apply visibility change
-              #if ESPHOME_VERSION_CODE >= VERSION_CODE(2025, 11, 0)  // Code for ESPHome newer than v2025.11.0
-              disp1->set_component_visibility(target_id, visible);
-              #else
-              if (visible) disp1->show_component(target_id); else disp1->hide_component(target_id);
-              #endif
-              processed_count++;
-            }  // #endfor component_id iteration
-
-            ESP_LOGVV("${TAG_API}", "Processed %zu/%zu component IDs with visibility: %s",
-                      processed_count, ids.size(), YESNO(visible));
 
     # Displays detailed information for a specific entity.
     - action: entity_details_show
@@ -219,6 +179,8 @@ api:
             ESP_LOGV("${TAG_API}", "  icon_color: %" PRIu16, rgbTo565(icon_color));
             ESP_LOGV("${TAG_API}", "  visible: %s", YESNO(visible));
 
+            action_component_visibility->execute(page.c_str(), id.c_str(), visible);
+
             // Extract component information using helper function
             const NextionComponent component = extractNextionComponent(id, page);
 
@@ -229,12 +191,6 @@ api:
             if (is_current_page) {
               // Use short format for current page: "id"
               target_id = component.component_id;
-              // Apply visibility only on current page
-              #if ESPHOME_VERSION_CODE >= VERSION_CODE(2025, 11, 0)  // Code for ESPHome newer than v2025.11.0
-              disp1->set_component_visibility(target_id, visible);
-              #else
-              if (visible) disp1->show_component(target_id); else disp1->hide_component(target_id);
-              #endif
             } else {
               // Use full format for global components: "page.id"
               snprintf(full_id, sizeof(full_id), "%s.%s", component.page, component.component_id);
@@ -274,14 +230,12 @@ script:
           ESP_LOGV("${TAG_API}", "  page: %s", page.c_str());
           ESP_LOGV("${TAG_API}", "  component: %s", component.c_str());
           ESP_LOGV("${TAG_API}", "  color: %" PRIu16, color);
+          if (page == "mem") return;
           if (page.empty()) {
             disp1->set_component_font_color(component.c_str(), color);
             return;
           }
-          if (page != "mem") {
-            disp1->send_command_printf("%s.%s.pco=%" PRIu16, page.c_str(), component.c_str(), color);
-            return;
-          }
+          disp1->send_command_printf("%s.%s.pco=%" PRIu16, page.c_str(), component.c_str(), color);
 
   - id: action_component_text
     mode: single
@@ -332,14 +286,52 @@ script:
           ESP_LOGV("${TAG_API}", "  page: %s", page.c_str());
           ESP_LOGV("${TAG_API}", "  component: %s", component.c_str());
           ESP_LOGV("${TAG_API}", "  val: %i", val);
+          if (page == "mem") return;
           if (page.empty()) {
             disp1->set_component_value(component.c_str(), val);
             return;
           }
-          if (page != "mem") {
-            disp1->send_command_printf("%s.%s.val=%" PRId32, page.c_str(), component.c_str(), val);
+          disp1->send_command_printf("%s.%s.val=%" PRId32, page.c_str(), component.c_str(), val);
+
+  - id: action_component_visibility
+    mode: queued
+    max_runs: 10
+    parameters:
+      page: string       # Page name for visibility control. Empty string applies to current page.
+      component: string  # Component identifier. Can be 'component' or 'page.component' format.
+      visible: bool      # Set to true to show the component, or false to hide it.
+    then:
+      - lambda: |-
+          ESP_LOGV("${TAG_API}", "Action: component_visibility");
+          ESP_LOGV("${TAG_API}", "  page: %s", page.c_str());
+          if (component.empty()) {
+            ESP_LOGW("${TAG_API}", "Empty component ID");
             return;
           }
+          ESP_LOGV("${TAG_API}", "  component: %s", component.c_str());
+          ESP_LOGV("${TAG_API}", "  visible: %s", YESNO(visible));
+          if (page == "mem") return;
+
+          // Extract component information using helper function
+          const NextionComponent nextion_component = extractNextionComponent(component, page);
+          const std::string component_page = nextion_component.page;
+          const char* target_id = nextion_component.component_id;
+          const bool is_home_page = (component_page == hmi::home::PAGE.name);
+          const bool is_current_page = (component_page == current_page->state);
+
+          // Always update the home page persistent visibility variable,
+          // regardless of which page is currently active
+          if (is_home_page)
+            disp1->send_command_printf("vis_%s=%" PRIu8, target_id, (uint8_t)visible);
+
+          // Apply the vis command only when the target page is currently visible
+          if (page.empty() || is_current_page) {
+            disp1->set_component_visibility(target_id, visible);
+            return;
+          }
+
+          if (!is_home_page)
+            ESP_LOGW("${TAG_API}", "Not the current page (%s vs %s)", page.c_str(), current_page->state.c_str());
 
   - id: !extend dump_config
     then:
@@ -374,6 +366,10 @@ script:
   - id: !extend stop_all
     then:
       - lambda: |-
+          action_component_color->stop();
+          action_component_text->stop();
+          action_component_val->stop();
+          action_component_visibility->stop();
           ha_button->stop();
           update_flag_api_ready->stop();
 

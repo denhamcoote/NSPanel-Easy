@@ -413,7 +413,7 @@ If you have any questions or need clarification, please reach out to us.
 
 Importing the blueprint into Home Assistant is a simple process. Just click the button below and follow the steps:
 <!-- markdownlint-disable MD013 -->
-[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fedwardtfn%2FNSPanel-Easy%2Fblob%2Fmain%2Fnspanel_blueprint.yaml)
+[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fraw.githubusercontent.com%2Fedwardtfn%2FNSPanel-Easy%2Frefs%2Ftags%2Flatest%2Fnspanel_easy_blueprint.yaml)
 <!-- markdownlint-enable MD013 -->
 
 ### Creating an Automation
@@ -827,12 +827,12 @@ script:
 
 ### Advanced Blueprint Configuration
 
-The Blueprint file `nspanel_blueprint.yaml` can be customized for specific use cases.
+The Blueprint file `nspanel_easy_blueprint.yaml` can be customized for specific use cases.
 While the standard Blueprint handles most scenarios, advanced users may need specialized automations.
 
 For local Blueprint modifications:
 
-1. Download `nspanel_blueprint.yaml` from the repository
+1. Download `nspanel_easy_blueprint.yaml` from the repository
 2. Modify according to your requirements
 3. Import the local file instead of the remote URL
 

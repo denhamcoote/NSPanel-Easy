@@ -28,8 +28,43 @@ display:
               return;
             }
 
+globals:
+  - id: weather_icon
+    type: uint8_t
+    restore_value: false
+    initial_value: '0'
+
 esphome:
   platformio_options:
     build_flags:
       - -D NSPANEL_EASY_PAGE_WEATHER
+
+script:
+  - id: !extend action_component_val
+    then:
+      - lambda: |-
+          if (page != "mem") return;
+          if (component == "weather_icon") {
+            id(weather_icon) = static_cast<uint8_t>(val);
+            theme_update_all_weather_icon->execute();
+          }
+
+  - id: !extend stop_all
+    then:
+      - lambda: theme_update_all_weather_icon->stop();
+
+  - id: !extend theme_update_all
+    then:
+      - script.execute: theme_update_all_weather_icon
+      - script.wait: theme_update_all_weather_icon
+
+  - id: theme_update_all_weather_icon
+    then:
+      - lambda: |-
+          if ( current_page_id >= ${PAGE_WEATHER01_ID} and current_page_id <= ${PAGE_WEATHER05_ID}) {
+            const uint8_t weather_icon_corrected = id(weather_icon) +
+                                ((current_theme == ThemeMode::LIGHT) ? ${THEME_DARK_PIC_PAGE_HOME_WEATHER_OFFSET} : 0);
+            ESP_LOGD("${TAG_PAGE_HOME}", "Update weather icon: %" PRIu8, weather_icon_corrected);
+            disp1->set_component_pic("weather_icon", weather_icon_corrected);
+          }
 ...

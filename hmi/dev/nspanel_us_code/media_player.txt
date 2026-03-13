@@ -19,12 +19,21 @@ Page media_player
     
     Events
         Preinitialize Event
-            dim=brightness
             if(api==0)
             {
                 page home_page_id
             }
+            // set background image and fg color to all component
+            media_player.pic=pic_background_main
+            for(index=1;index<=last_component.id;index++)
+            {
+                b[index].picc=pic_background_main
+                b[index].pco=color_pco_main
+            }
             button_back.font=button_back_font
+            button_back.pco=color_pco_navigation
+            button_back.picc2=pic_background_main
+            dim=brightness
             sendme
         
 Variable (string) lastclick
@@ -56,6 +65,12 @@ Variable (int32) prg_current
 Variable (int32) prg_total
     Attributes
         ID   : 24
+        Scope: local
+        Value: 0
+    
+Variable (int32) last_component
+    Attributes
+        ID   : 25
         Scope: local
         Value: 0
     

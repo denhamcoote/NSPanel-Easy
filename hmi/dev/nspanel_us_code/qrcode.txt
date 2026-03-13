@@ -19,8 +19,14 @@ Page qrcode
     
     Events
         Preinitialize Event
-            dim=brightness
+            qrcode.pic=pic_background_main
             button_back.font=button_back_font
+            button_back.picc=pic_background_main
+            button_back.picc2=pic_background_main
+            button_back.pco=color_pco_navigation
+            qrcode_label.picc=pic_background_main
+            qrcode_label.pco=color_pco_main
+            dim=brightness
             sendme
         
 Text qrcode_label

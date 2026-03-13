@@ -11,18 +11,33 @@ substitutions:
   ## Change only in your      ##
   ## local yaml substitutions ##
   ##############################
+  THEME_DARK_LABEL: Dark
+  THEME_DARK_COLOR_PCO_MAIN: ${COLOR_WHITE}                # Foreground font color for main information
+  THEME_DARK_COLOR_PCO_SECONDARY: ${COLOR_GRAY_LIGHT}      # Foreground font color for secondary information
+  THEME_DARK_COLOR_PCO_NAVIGATION: ${COLOR_GRAY_MOSS}      # Foreground font color for navigation components, like back button or page index
+  THEME_DARK_COLOR_PCO_UNSUPPORTED: ${COLOR_GRAY_DARKEST}  #  Foreground font color for unsupported or unavailable components
+  THEME_LIGHT_LABEL: Light (Under construction)
+  THEME_LIGHT_COLOR_PCO_MAIN: ${COLOR_BLACK}               # BLACK - main text on white bg
+  THEME_LIGHT_COLOR_PCO_SECONDARY: ${COLOR_GRAY_MEDIUM}    # Mid gray for secondary
+  THEME_LIGHT_COLOR_PCO_NAVIGATION: ${COLOR_GRAY_DARK}     # Colors::GRAY_DARK for navigation
+  THEME_LIGHT_COLOR_PCO_UNSUPPORTED: ${COLOR_GRAY_LIGHT}   # Light gray - visually "faded"
   BAUD_RATE: '115200'
   BOOT_STEP_HW_DISPLAY: '5'
   bytes_per_char: "1"
   button_back_font: "8"
-  COLOR_BLUE_INDIGO: '10597'
-  COLOR_CYAN_BRIGHT: '7519'
-  COLOR_GRAY_MOSS: '33808'
-  COLOR_RED_PRIMARY: '63488'
-  COLOR_WHITE: '65535'
-  COLOR_YELLOW_GOLDEN: '64992'
-  DISPLAY_CHARSET_CJK: '2'
-  DISPLAY_CHARSET_INTERNATIONAL: '1'
+  COLOR_BLACK: '0'              # Colors::BLACK
+  COLOR_BLUE_INDIGO: '10597'    # Colors::BLUE_INDIGO
+  COLOR_CYAN_BRIGHT: '7519'     # Colors::CYAN_BRIGHT
+  COLOR_GRAY_DARK: '16904'      # Colors::GRAY_DARK
+  COLOR_GRAY_DARKEST: '6339'    # Colors::GRAY_DARKEST
+  COLOR_GRAY_LIGHT: '52857'     # Colors::GRAY_LIGHT
+  COLOR_GRAY_MEDIUM: '29614'    # Colors::GRAY_MEDIUM — mid gray, secondary text on light backgrounds
+  COLOR_GRAY_MOSS: '33808'      # Colors::GRAY_MOSS
+  COLOR_RED_PRIMARY: '63488'    # Colors::RED
+  COLOR_WHITE: '65535'          # Colors::WHITE
+  COLOR_YELLOW_GOLDEN: '64992'  # Colors::YELLOW_GOLDEN
+  DISPLAY_CHARSET_CJK: 2
+  DISPLAY_CHARSET_INTERNATIONAL: 1
   GPIO_DISPLAY_NEXTION_RX_PIN: 17
   GPIO_DISPLAY_NEXTION_TX_PIN: 16
   GPIO_DISPLAY_POWER_PIN:
@@ -56,7 +71,9 @@ display:
   - id: disp1
     platform: nextion
     uart_id: tf_uart
+    command_spacing: 5ms
     # dump_device_info: true  # To-do: Enable when pr#13566 is released
+    max_commands_per_loop: 15
     update_interval: never
     on_setup:
       then:
@@ -67,7 +84,7 @@ display:
             ESP_LOGI("${TAG_HW_DISPLAY}", "Nextion setup triggered");
             system_flags.nextion_ready = true;
             nextion_init->publish_state(true);
-            disp1->set_component_value("button_back_font", id(button_back_font));
+            disp1->send_command_printf("button_back_font=%i", id(button_back_font));
 
     on_page:
       then:
@@ -95,6 +112,11 @@ globals:
     type: uint8_t
     restore_value: true
     initial_value: ${bytes_per_char}
+
+  - id: theme_pending_apply
+    type: bool
+    restore_value: false
+    initial_value: 'false'
 
 number:
   - id: display_brightness  # Screen brightness when in use
@@ -155,9 +177,14 @@ script:
           }
           if (component == "button_back_font") {
             id(button_back_font) = static_cast<uint8_t>(val);
-            disp1->set_component_value("button_back_font", id(button_back_font));
+            disp1->send_command_printf("button_back_font=%i", id(button_back_font));
             return;
           }
+
+  - id: !extend boot_wrap_up
+    then:
+      - script.execute: theme_update
+      - script.wait: theme_update
 
   - id: !extend dump_config
     then:
@@ -170,6 +197,7 @@ script:
       # Report Nextion status
       - lambda: |-
           ESP_LOGCONFIG("${TAG_HW_DISPLAY}", "Nextion:");
+          ESP_LOGCONFIG("${TAG_HW_DISPLAY}", "  Theme: %s", background_type->current_option());
           ESP_LOGCONFIG("${TAG_HW_DISPLAY}", "  Queue size:  %d", disp1->queue_size());
           if (disp1->is_setup())
             ESP_LOGCONFIG("${TAG_HW_DISPLAY}", "  Is setup: True");
@@ -329,7 +357,7 @@ script:
             disp1->set_backlight_brightness(brightness / 100.0f);
           }
 
-  - id: set_component_font_color
+  - id: set_component_font_color_DEPRECATED
     mode: single
     parameters:
       component_id: string
@@ -345,7 +373,11 @@ script:
           goto_page->stop();
           page_change->stop();
           set_brightness->stop();
-          set_component_font_color->stop();
+          set_component_font_color_DEPRECATED->stop();
+          theme_update->stop();
+          theme_update_all->stop();
+          theme_update_dark->stop();
+          theme_update_light->stop();
           timer_dim->stop();
           timer_page->stop();
           timer_reset_all->stop();
@@ -356,6 +388,60 @@ script:
   - id: stop_page_constructors
     mode: single
     then:  # Page home is an exception, as it can be constructed in the background
+
+  - id: theme_update
+    then:
+      - lambda: |-
+          ESP_LOGI("${TAG_HW_DISPLAY}", "Apply theme: %s", background_type->current_option());
+          current_theme = (background_type->current_option() == "${THEME_LIGHT_LABEL}") ?
+                                                                ThemeMode::LIGHT : ThemeMode::DARK;
+          theme_update_all->execute();
+      - script.wait: theme_update_all
+
+      - lambda: |-
+          if (current_theme == ThemeMode::LIGHT) {
+            theme_update_light->execute();
+          } else {
+            theme_update_dark->execute();
+          }
+      - script.wait: theme_update_dark
+      - script.wait: theme_update_light
+
+      - lambda: |-
+          if (current_page_id == ${PAGE_BOOT_ID} or current_page_id == ${PAGE_SCREENSAVER_ID}) {
+            id(theme_pending_apply) = true;
+            return;
+          }
+          // Call page theme_apply
+          disp1->send_command("theme_apply.previous_page.val=dp");
+          disp1->send_command("page theme_apply");
+
+  - id: theme_update_all
+    mode: restart
+    then:
+      - lambda: |-
+          ESP_LOGI("${TAG_HW_DISPLAY}", "Applying theme: %s", (current_theme == ThemeMode::LIGHT) ? "LIGHT" : "DARK");
+          disp1->send_command_printf("theme=%" PRIu8, (current_theme == ThemeMode::LIGHT) ? 1 : 0);
+
+  - id: theme_update_dark
+    mode: restart
+    then:
+      - lambda: |-
+          ESP_LOGI("${TAG_HW_DISPLAY}", "Applying DARK theme");
+          disp1->send_command("color_pco_main=${THEME_DARK_COLOR_PCO_MAIN}");
+          disp1->send_command("color_pco_secondary=${THEME_DARK_COLOR_PCO_SECONDARY}");
+          disp1->send_command("color_pco_navigation=${THEME_DARK_COLOR_PCO_NAVIGATION}");
+          disp1->send_command("color_pco_unsupported=${THEME_DARK_COLOR_PCO_UNSUPPORTED}");
+
+  - id: theme_update_light
+    mode: restart
+    then:
+      - lambda: |-
+          ESP_LOGI("${TAG_HW_DISPLAY}", "Applying LIGHT theme");
+          disp1->send_command("color_pco_main=${THEME_LIGHT_COLOR_PCO_MAIN}");
+          disp1->send_command("color_pco_secondary=${THEME_LIGHT_COLOR_PCO_SECONDARY}");
+          disp1->send_command("color_pco_navigation=${THEME_LIGHT_COLOR_PCO_NAVIGATION}");
+          disp1->send_command("color_pco_unsupported=${THEME_LIGHT_COLOR_PCO_UNSUPPORTED}");
 
   ###### Timers ######
   - id: timer_dim        # Handles the brightness dimming after a timeout
@@ -468,7 +554,13 @@ script:
               detailed_entity->publish_state((id(is_embedded_thermostat)) ? "embedded_climate" : "");
               disp1->set_component_value("climate.embedded", id(is_embedded_thermostat) ? 1 : 0);
             }
-            goto_page->execute(wakeup_page_id);
+            if (id(theme_pending_apply)) {
+              // Call page theme_apply
+              disp1->send_command_printf("theme_apply.previous_page.val=%" PRIu8, wakeup_page_id);
+              disp1->send_command("page theme_apply");
+            } else {
+              goto_page->execute(wakeup_page_id);
+            }
           }
           if (reset_timer) {
             timer_reset_all->execute();
@@ -482,6 +574,24 @@ script:
       - script.execute: wait_for_display
 
 select:
+  - id: background_type
+    name: Background type
+    platform: template
+    options:
+      - ${THEME_DARK_LABEL}
+      - ${THEME_LIGHT_LABEL}
+    initial_option: ${THEME_DARK_LABEL}
+    optimistic: true
+    restore_value: true
+    internal: false
+    disabled_by_default: false
+    entity_category: config
+    icon: mdi:theme-light-dark
+    update_interval: never
+    on_value:
+      then:
+        - script.execute: theme_update
+
   - id: wakeup_page_name
     name: Wake-up page
     platform: template

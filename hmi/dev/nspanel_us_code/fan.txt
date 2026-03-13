@@ -19,13 +19,33 @@ Page fan
     
     Events
         Preinitialize Event
-            dim=brightness
             if(api==0)
             {
                 page home_page_id
             }
             vis bt_oscillate,0
+            fan.pic=pic_background_main
             button_back.font=button_back_font
+            button_back.picc=pic_background_main
+            button_back.picc2=pic_background_main
+            button_back.pco=color_pco_navigation
+            icon_state.picc=pic_background_main
+            icon_state.pco=color_pco_main
+            page_label.picc=pic_background_main
+            page_label.pco=color_pco_main
+            fan_value.picc=pic_background_main
+            fan_value.pco=color_pco_main
+            button_up.picc=pic_background_main
+            button_up.picc2=pic_background_main
+            button_up.pco=color_pco_secondary
+            button_down.picc=pic_background_main
+            button_down.picc2=pic_background_main
+            button_down.pco=color_pco_secondary
+            power_button.picc=pic_background_main
+            power_button.pco=color_pco_secondary
+            bt_oscillate.picc=pic_background_main
+            bt_oscillate.pco=color_pco_secondary
+            dim=brightness
             sendme
         
 Variable (string) fansetting
@@ -188,7 +208,7 @@ Text power_button
 Slider fanslider
     Attributes
         ID                     : 3
-        Scope                  : local
+        Scope                  : global
         Dragging               : 0
         Send Component ID      : on press and release
         Opacity                : 127

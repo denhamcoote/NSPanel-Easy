@@ -58,4 +58,21 @@ namespace nspanel_easy {
         return ((rgb[0] & 0xF8) << 8) | ((rgb[1] & 0xFC) << 3) | (rgb[2] >> 3);
     }
 
+    /**
+    * @brief Computes the inverse of an RGB565 color.
+    *
+    * Inverts each channel independently:
+    *   - Red:   5-bit inversion (max 31)
+    *   - Green: 6-bit inversion (max 63)
+    *   - Blue:  5-bit inversion (max 31)
+    *
+    * Equivalent to `(~color) & 0xFFFF`.
+    *
+    * @param color RGB565 color value to invert.
+    * @return Inverted RGB565 color value.
+    */
+    constexpr uint16_t invertColor565(uint16_t color) {
+        return (~color) & 0xFFFF;
+    }
+
 }  // namespace nspanel_easy

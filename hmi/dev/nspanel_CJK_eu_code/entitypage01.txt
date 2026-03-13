@@ -19,7 +19,6 @@ Page entitypage01
     
     Events
         Preinitialize Event
-            dim=brightness
             if(api==0)
             {
                 page home_page_id
@@ -44,7 +43,18 @@ Page entitypage01
             {
                 vis page_index,0
             }
+            // set background image and fg color to all components
+            b[0].pic=pic_background_main
+            for(index=3;index<=29;index++)
+            {
+                b[index].picc=pic_background_main
+                b[index].pco=color_pco_main
+            }
             button_back.font=button_back_font
+            button_back.picc2=pic_background_main
+            button_back.pco=color_pco_navigation
+            page_index.pco=color_pco_navigation
+            dim=brightness
             sendme
         
 Text value01_label

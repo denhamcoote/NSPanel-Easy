@@ -20,7 +20,7 @@ display:
             if (
                   page_id == ${PAGE_LIGHT_ID} and  // Page light
                   !touch_event and                 // Release
-                  component_id == 32               // power button
+                  component_id == 29               // power button
                 ) {
               fire_ha_event("action_call", {
                 {"action", "light.toggle"},
