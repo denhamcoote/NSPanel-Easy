@@ -17,3 +17,7 @@ Page boot
         Fill               : picture
         Back. Picture ID   : 0
     
+    Events
+        Preinitialize Event
+            sendme
+        

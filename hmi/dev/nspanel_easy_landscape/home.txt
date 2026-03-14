@@ -18,6 +18,9 @@ Page home
         Back. Color        : 61277
     
     Events
+        Preinitialize Event
+            sendme
+        
         Postinitialize Event
             // Main rounded rectangle
             fill 10,53,431,108,color_containers
