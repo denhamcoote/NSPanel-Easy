@@ -42,7 +42,7 @@ See [NSPanel Models](nspanel_models.md) for a detailed comparison.
 | 🇮🇹 EU (Italy) | [amazon.it](https://www.amazon.it/dp/B09MS7JDVQ?tag=edwardtfn0e-21) 🤝 | [amazon.it](https://www.amazon.it/dp/B0BNMRB2FZ?tag=edwardtfn0e-21) 🤝 | [amazon.it](https://www.amazon.it/dp/B09MRZQCN2?tag=edwardtfn0e-21) 🤝 | [amazon.it](https://www.amazon.it/dp/B0BNMRHYG5?tag=edwardtfn0e-21) 🤝 | — |
 | 🇺🇸 US | — | — | [amazon.com](https://www.amazon.com/dp/B09MRZQCN2?tag=edwardtfn-20) 🤝 | [amazon.com](https://www.amazon.com/dp/B0BNMRHYG5?tag=edwardtfn-20) 🤝 | — |
 | 🇧🇷 Brazil | — | — | [amazon.com.br](https://www.amazon.com.br/dp/B09MRZQCN2?tag=edwardtfn06-20) 🤝 | [amazon.com.br](https://www.amazon.com.br/dp/B0BNMRHYG5?tag=edwardtfn06-20) 🤝 | — |
-<!-- markdownlint-disable MD013 MD033 -->
+<!-- markdownlint-enable MD013 MD033 -->
 
 <!-- TODO: Confirm NSPanel US ASINs on amazon.se and add with ?tag=edwardtfn-21.                  -->
 <!-- TODO: Confirm additional NSPanel ASINs on amazon.com.br (only US Dim Gray confirmed so far). -->
