@@ -539,7 +539,7 @@ Timer log_scroll
                 if(log_end_pos.val>0)
                 {
                     // Remove the first line including the newline character
-                    substr log_body.txt,log_body.txt,log_start_pos.val+2,log_len.val-log_start_pos.val-2
+                    substr log_body.txt,log_body.txt,log_start_pos.val+1,log_len.val-log_start_pos.val-1
                 }
             }
             doevents
