@@ -39,9 +39,8 @@ jobs:
     # Values are only populated when skip=false and push_tag succeeded;
     # the notify-discord job guards on those conditions before consuming them.
     outputs:
-      released:    ${{ steps.push_tag.outcome == 'success'
-                       && steps.skip_check.outputs.skip == 'false' }}
-      version:     ${{ steps.push_tag.outputs.version }}
+      released: ${{ steps.push_tag.outcome == 'success' && steps.skip_check.outputs.skip == 'false' }}
+      version: ${{ steps.push_tag.outputs.version }}
       release_url: ${{ steps.create_release.outputs.url }}
 
     steps:
