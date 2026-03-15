@@ -408,7 +408,7 @@ script:
       - script.wait: theme_update_light
 
       - lambda: |-
-          if (current_page_id == ${PAGE_BOOT_ID} or current_page_id == ${PAGE_SCREENSAVER_ID}) {
+          if (current_page_id == ${PAGE_BOOT_ID}) {
             id(theme_pending_apply) = true;
             return;
           }
