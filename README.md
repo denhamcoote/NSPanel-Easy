@@ -27,15 +27,16 @@ consider [buying me an ice cream][buymeacoffee] - it fuels the late-night coding
 
 1. [Project Highlights](#-project-highlights)
 2. [Prerequisites](#-prerequisites)
-3. [Architecture](#-architecture)
-4. [Documentation & Resources](#-documentation--resources)
-5. [Features](#-features)
-6. [Pages Overview](#-pages-overview)
-7. [Home Assistant Integration](#-home-assistant-integration)
-8. [Contributing](#-contributing)
-9. [Community & Support](#-community--support)
-10. [Acknowledgements](#-acknowledgements)
-11. [Donations](#-donations)
+3. [Where to Buy](#-where-to-buy)
+4. [Architecture](#-architecture)
+5. [Documentation & Resources](#-documentation--resources)
+6. [Features](#-features)
+7. [Pages Overview](#-pages-overview)
+8. [Home Assistant Integration](#-home-assistant-integration)
+9. [Contributing](#-contributing)
+10. [Community & Support](#-community--support)
+11. [Acknowledgements](#-acknowledgements)
+12. [Donations](#-donations)
 
 ## 🌟 Project Highlights
 
@@ -54,6 +55,12 @@ consider [buying me an ice cream][buymeacoffee] - it fuels the late-night coding
 > [!NOTE]
 > This project uses the **ESP-IDF** framework exclusively.
 > Arduino framework support has been deprecated and is no longer maintained.
+
+## 🛒 Where to Buy
+
+Need a Sonoff NSPanel? Our [Where to Buy](docs/where_to_buy.md) guide lists retailers
+across multiple regions — including affiliate links that support this project at no
+extra cost to you, and pre-flashed options for those who prefer a ready-to-go setup.
 
 ## 🏗 Architecture
 
