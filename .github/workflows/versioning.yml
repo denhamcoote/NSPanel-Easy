@@ -317,8 +317,8 @@ jobs:
       - name: Send release message to Discord
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_CH_GENERAL_WEBHOOK }}
-          RELEASE_TAG:     v${{ needs.version-and-release.outputs.version }}
-          RELEASE_URL:     ${{ needs.version-and-release.outputs.release_url }}
+          RELEASE_TAG: v${{ needs.version-and-release.outputs.version }}
+          RELEASE_URL: ${{ needs.version-and-release.outputs.release_url }}
         run: |
           MESSAGE="🚀 New NSPanel Easy release published
           ${RELEASE_TAG}
