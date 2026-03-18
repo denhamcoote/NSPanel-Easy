@@ -52,7 +52,7 @@ CONFIG_SCHEMA = cv.Schema({
 })
 
 
-# @coroutine_with_priority(1.0)
+@coroutine_with_priority(1.0)
 async def to_code(config):
     var = cg.new_Pvariable(config[CONF_ID])
     await cg.register_component(var, config)
