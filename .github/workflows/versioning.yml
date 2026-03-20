@@ -72,12 +72,12 @@ jobs:
 
       - name: Set up yq
         if: steps.skip_check.outputs.skip == 'false'
-        uses: mikefarah/yq@v4.43.1
+        uses: mikefarah/yq@v4.52.4
 
       - name: Get PR information
         id: pr_info
         if: steps.skip_check.outputs.skip == 'false'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             try {
