@@ -168,9 +168,13 @@ script:
 
           std::string date_str = id(mui_date_format);
           auto replace_token = [](std::string& str, const char* token, const char* value) {
-            size_t pos = str.find(token);
-            if (pos != std::string::npos)
-              str.replace(pos, strlen(token), value);
+            size_t pos = 0;
+            const size_t token_len = strlen(token);
+            const size_t value_len = strlen(value);
+            while ((pos = str.find(token, pos)) != std::string::npos) {
+              str.replace(pos, token_len, value);
+              pos += value_len;
+            }
           };
           replace_token(date_str, "%A", weekdays[dow]);
           replace_token(date_str, "%a", weekdays_short[dow]);
