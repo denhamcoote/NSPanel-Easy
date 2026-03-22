@@ -49,26 +49,6 @@ number:
               disp1->set_component_text_printf("dim_text", "%i%%", int(x));
 
 script:
-  - id: !extend boot_nextion
-    then:
-      - lambda: |-
-          // Display settings
-          boot_log->execute("Boot", "Sending display settings");
-          disp1->send_command_printf("brightness=%i", int(display_brightness->state));
-          disp1->set_component_value("settings.brightslider", int(display_brightness->state));
-          feed_wdt_delay(${DELAY_DEFAULT});
-          disp1->send_command_printf("brightness_dim=%i", int(display_dim_brightness->state));
-          disp1->set_component_value("settings.dimslider", int(display_dim_brightness->state));
-          feed_wdt_delay(${DELAY_DEFAULT});
-          disp1->send_command_printf("brightness_sleep=%i", int(display_sleep_brightness->state));
-          #if ESPHOME_VERSION_CODE >= VERSION_CODE(2025, 11, 0)  // Code for ESPHome newer than v2025.11.0
-          disp1->send_command_printf("wakeup_page_id=%" PRIu8, get_page_id(wakeup_page_name->current_option()));
-          #else
-          disp1->send_command_printf("wakeup_page_id=%" PRIu8, get_page_id(wakeup_page_name->state.c_str()));
-          #endif
-          boot_progress->execute(5);
-          feed_wdt_delay(${DELAY_DEFAULT});
-
   - id: !extend event_from_display
     then:
       - lambda: |-
@@ -108,10 +88,11 @@ script:
     mode: single
     then:
       - lambda: |-
-          if (current_page_id == ${PAGE_SETTINGS_ID}) {
-            disp1->hide_component("lbl_sleep");
-            disp1->hide_component("bt_sleep");
-          }
+          if (current_page_id != ${PAGE_SETTINGS_ID}) return;
+          disp1->set_component_text("lbl_reboot", "${LOCALIZATION[LANG].settings.reboot}");
+          disp1->set_component_text("lbl_brightness", "${LOCALIZATION[LANG].settings.brightness}");
+          disp1->set_component_text("lbl_bright", "${LOCALIZATION[LANG].settings.bright}");
+          disp1->set_component_text("lbl_dim", "${LOCALIZATION[LANG].settings.dim}");
 
   - id: !extend stop_page_constructors
     then:

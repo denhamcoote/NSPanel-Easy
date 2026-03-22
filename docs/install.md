@@ -116,6 +116,7 @@ Follow these steps to add a new device in the ESPHome Dashboard:
      wifi_ssid: !secret wifi_ssid
      wifi_password: !secret wifi_password
      ota_password: ""  # Optional: set OTA password, or use ${wifi_password} for backward compatibility (see migration guide)
+     language: en      # Language code - see docs/localization.md for all supported codes
      boot_sound: false
      # Add-on configuration (if needed)
      ## Upload TFT
@@ -226,8 +227,8 @@ The use of a non-conductive tool, like the blue plastic one shown in the picture
       | Panel's Board | TTL USB-to-Serial |
       | :--: | :--: |
       | `3V3` | `VCC`, `3V3`, or `3.3V` |
-      | `TX`  | `RX`  |
-      | `RX`  | `TX`  |
+      | `TX` | `RX` |
+      | `RX` | `TX` |
       | `GND` | `GND` |
       | `IO0` | `GND`<br>This can be connected to a `GND` pin on the panel's board. |
     <!-- markdownlint-enable MD033 -->
@@ -506,6 +507,7 @@ substitutions:
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
   ota_password: ""  # Optional: set OTA password, or use ${wifi_password} for backward compatibility (see migration guide)
+  language: en      # Language code - see docs/localization.md for all supported codes
   boot_sound: false
   # Add-on configuration (if needed)
   ## Upload TFT
@@ -563,6 +565,7 @@ substitutions:
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
   ota_password: ""  # Optional: set OTA password, or use ${wifi_password} for backward compatibility (see migration guide)
+  language: en      # Language code - see docs/localization.md for all supported codes
   boot_sound: false
   # Add-on configuration (if needed)
   ## Upload TFT
@@ -607,6 +610,7 @@ substitutions:
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
   ota_password: ""  # Optional: set OTA password, or use ${wifi_password} for backward compatibility (see migration guide)
+  language: en      # Language code - see docs/localization.md for all supported codes
   boot_sound: false
   # Add-on configuration (if needed)
   ## Upload TFT
@@ -670,6 +674,7 @@ Here's a complete workflow for integrating Bluetooth Proxy while managing memory
      wifi_ssid: !secret wifi_ssid
      wifi_password: !secret wifi_password
      ota_password: ""  # Optional: set OTA password, or use ${wifi_password} for backward compatibility (see migration guide)
+     language: en      # Language code - see docs/localization.md for all supported codes
      boot_sound: false
      # Add-on configuration (if needed)
      ## Upload TFT
@@ -700,6 +705,7 @@ Here's a complete workflow for integrating Bluetooth Proxy while managing memory
      wifi_ssid: !secret wifi_ssid
      wifi_password: !secret wifi_password
      ota_password: ""  # Optional: set OTA password, or use ${wifi_password} for backward compatibility (see migration guide)
+     language: en      # Language code - see docs/localization.md for all supported codes
      boot_sound: false
      # Add-on configuration (if needed)
      ## Upload TFT
@@ -749,6 +755,7 @@ substitutions:
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
   ota_password: ""  # Optional: set OTA password, or use ${wifi_password} for backward compatibility (see migration guide)
+  language: en      # Language code - see docs/localization.md for all supported codes
   boot_sound: false
   # Add-on configuration (if needed)
   ## Upload TFT

@@ -9,7 +9,9 @@ The individual elements of the Blueprint are described below.
 
 It is possible to change both the color of the labels and the icons for most of the elements on each screen.
 
-On the blueprint settings, you will be able to select any of the MDI icons supported by Home Assistant, however, your panel will only support the icons available on the [HASwitchPlate Material Design Icons](https://htmlpreview.github.io/?https://github.com/jobr99/Generate-HASP-Fonts/blob/master/cheatsheet.html).
+On the blueprint settings, you will be able to select any of the MDI icons supported by Home Assistant,
+however, your panel will only support the icons available on the
+[HASwitchPlate Material Design Icons](https://htmlpreview.github.io/?https://github.com/jobr99/Generate-HASP-Fonts/blob/master/cheatsheet.html).
 
 For an easier overview, the menu items "Icon Color" and "Label Color" will not be described separately in the following documentation.
 
@@ -26,10 +28,18 @@ This is technically the only required field, as basic functionality will be avai
 
 ### Language for NSPanel
 
-The language can be selected via the drop-down menu.
+Language is no longer configured in the Blueprint. It is now set directly in your ESPHome YAML
+as a substitution, which means only your chosen language's strings are compiled into the firmware —
+saving memory and allowing the panel to display correct date and UI strings even when offline.
 
-Currently around 30 languages are supported, but if you cannot find your language there,
-please create a [new feature request](https://github.com/edwardtfn/NSPanel-Easy/issues/new) and we will be happy to help.
+To set your language, add the `language` substitution to your ESPHome YAML:
+
+```yaml
+substitutions:
+  language: pt  # Portuguese - see docs/localization.md for all supported codes
+```
+
+For the full list of supported language codes, see [Localization](localization.md).
 
 ### Date format
 
@@ -63,7 +73,7 @@ If the value of the sensor needs to be corrected, this can be done via the tempe
 ## Home page - Entities States
 
 | Entity | Description | Example |
-| ---    | ---         | ---     |
+| --- | --- | --- |
 | Home page - Entity State 01-04 (Optional) | Up to four HA entities can be displayed on the home screen. | ![home_page_entity_state_01_04.jpg](pics/home_page_entity_state_01_04.jpg) |
 | Home page - Chips 01-07 (optional) | Used to display icons of HA binary entities on the home screen. The icon is displayed when the entity is on/open/true/active. Otherwise, no icon is displayed. | ![chip](pics/home_page_chips.jpg) |
 | Custom button 01-06 (Optional) | 7 custom buttons that can be assigned to different entities from your Home Assistant. The behavior of these buttons will depend on the entity's domain, such as light, media player, etc. | ![home_page_custom_buttons.jpg](pics/home_page_custom_buttons.jpg) |
