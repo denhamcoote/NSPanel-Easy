@@ -69,48 +69,48 @@ script:
             return;
 
           // Time
+          const ESPTime now = id(time_provider).now();
           std::string time_format_str = id(mui_time_format);
 
-          if (time_format_str.find("%-H") != std::string::npos) {
-            time_format_str = time_format_str.replace(time_format_str.find("%-H"), sizeof("%-H")-1,
-                                                      to_string((int)(id(time_provider).now().hour)));
-          }
-
-          if (time_format_str.find("%-I") != std::string::npos) {
-            if (id(time_provider).now().hour>12) {
-              time_format_str = time_format_str.replace(time_format_str.find("%-I"), sizeof("%-I")-1,
-                                                        to_string((int)(id(time_provider).now().hour-12)));
-            } else if (id(time_provider).now().hour==0) {
-              time_format_str = time_format_str.replace(time_format_str.find("%-I"), sizeof("%-I")-1, "12");
-            } else {
-              time_format_str = time_format_str.replace(time_format_str.find("%-I"), sizeof("%-I")-1,
-                                                        to_string((int)(id(time_provider).now().hour)));
+          // Looped token replacer — handles repeated tokens in the same format string
+          auto replace_token = [](std::string& str, const char* token, const char* value) {
+            size_t pos = 0;
+            const size_t token_len = strlen(token);
+            const size_t value_len = strlen(value);
+            while ((pos = str.find(token, pos)) != std::string::npos) {
+              str.replace(pos, token_len, value);
+              pos += value_len;
             }
-          }
+          };
 
-          const char* const meridiem_text = (id(time_provider).now().hour < 12) ?
-                                              "${LOCALIZATION[LANG].meridiem.am}" :
-                                              "${LOCALIZATION[LANG].meridiem.pm}";
+          // Resolve %-H (no-padding 24h hour)
+          replace_token(time_format_str, "%-H", to_string(static_cast<int>(now.hour)).c_str());
+
+          // Resolve %-I (no-padding 12h hour)
+          const int hour12 = (now.hour == 0) ? 12 : (now.hour > 12) ? (now.hour - 12) : now.hour;
+          replace_token(time_format_str, "%-I", to_string(hour12).c_str());
+
+          const char* const meridiem_text = (now.hour < 12) ?
+                                             "${LOCALIZATION[LANG].meridiem.am}" :
+                                             "${LOCALIZATION[LANG].meridiem.pm}";
+          const bool has_meridiem = (time_format_str.find("%p") != std::string::npos);
 
           if (current_page->state == "screensaver" and id(screensaver_display_time)) {
             std::string time_format_str_sleep = time_format_str;
-            const size_t p_pos = time_format_str_sleep.find("%p");
-            if (p_pos != std::string::npos)
-              time_format_str_sleep.replace(p_pos, sizeof("%p")-1, meridiem_text);
-            disp1->set_component_text("text", id(time_provider).now().strftime(time_format_str_sleep).c_str());
+            replace_token(time_format_str_sleep, "%p", meridiem_text);
+            disp1->set_component_text("text", now.strftime(time_format_str_sleep).c_str());
           }
 
-          std::string time_format_str_home = time_format_str;
-          const size_t p_pos_home = time_format_str_home.find("%p");
-          if (p_pos_home != std::string::npos) {
-            time_format_str_home.replace(p_pos_home, sizeof("%p")-1, "");
-            while (!time_format_str_home.empty() && time_format_str_home.back() == ' ')
-              time_format_str_home.pop_back();
-          }
+          // Resolve %p for home page — strip from time string, set meridiem component separately
+          // Trim both ends after replacement to avoid leading/trailing whitespace
+          replace_token(time_format_str, "%p", "");
+          while (!time_format_str.empty() && time_format_str.front() == ' ')
+            time_format_str.erase(time_format_str.begin());
+          while (!time_format_str.empty() && time_format_str.back() == ' ')
+            time_format_str.pop_back();
 
-          disp1->set_component_text("home.meridiem", (time_format_str.find("%p") != std::string::npos) ?
-                                                      meridiem_text : " ");
-          disp1->set_component_text("home.time", id(time_provider).now().strftime(time_format_str_home).c_str());
+          disp1->set_component_text("home.meridiem", has_meridiem ? meridiem_text : " ");
+          disp1->set_component_text("home.time", now.strftime(time_format_str).c_str());
 
           // Date
           render_date->execute("home.date", 0);
