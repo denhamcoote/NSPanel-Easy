@@ -180,6 +180,7 @@ namespace nspanel_easy {
 
     void replace_all(std::string& str, const char* token, const char* value) {
         const size_t token_len = strlen(token);
+        if (token_len == 0) return;  // Nothing to replace
         const size_t value_len = strlen(value);
         size_t pos = 0;
         while ((pos = str.find(token, pos)) != std::string::npos) {
