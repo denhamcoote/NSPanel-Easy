@@ -38,17 +38,19 @@ script:
           boot_preparation->execute();
           boot_critical_components->execute();
       - script.wait: boot_critical_components
-      - lambda: boot_early_routines->execute();
+      - script.execute: boot_early_routines
       - script.wait: boot_early_routines
-      - lambda: boot_nextion->execute();
+      - script.execute: boot_nextion
+      - script.wait: boot_nextion
       - delay: 1s
       # This should be moved somewhere else
+      - lambda: boot_progress->execute(0);
       - lambda: |-
           boot_log->execute("Boot", "Starting sequence");
-          boot_progress->execute(0);
           boot_log->execute("Boot", "Waiting for Wi-Fi");
           wait_for_wifi->execute();
       - script.wait: wait_for_wifi
+      - lambda: boot_progress->execute(1);
 
       - delay: ${DELAY_DEFAULT}ms
       - if:
@@ -61,13 +63,13 @@ script:
           else:  # Wi-Fi connected
             - lambda: |-
                 boot_log->execute("Boot", "Wi-Fi connected");
-                boot_progress->execute(3);
                 page_boot_show_ip->execute();
 
+      - lambda: boot_progress->execute(2);
       - lambda: wait_for_api->execute();
       - script.wait: wait_for_api
       - lambda: |-
-          boot_progress->execute(4);
+          boot_progress->execute(3);
           if (system_flags.api_ready) {
             boot_log->execute("Boot", "API connected");
           } else {
@@ -77,11 +79,10 @@ script:
           // Publish Nextion state
           boot_log->execute("Boot", "Publish Nextion state");
           nextion_init->publish_state(disp1->is_setup());
-          feed_wdt_delay(${DELAY_DEFAULT});
-          boot_progress->execute(6);
 
       # Wait for a response from the blueprint
       - delay: ${DELAY_DEFAULT}ms
+      - lambda: boot_progress->execute(4);
       - if:
           condition:
             - lambda: return not system_flags.blueprint_ready;
@@ -91,14 +92,20 @@ script:
                 wait_for_blueprint->execute();
             - script.wait: wait_for_blueprint
       - lambda: |-
+          boot_progress->execute(5);
           if (not system_flags.blueprint_ready) {
             boot_log->execute("Boot", "Blueprint not available");
           }
-          boot_progress->execute(7);
           feed_wdt_delay(${DELAY_DEFAULT});
 
+          // Display settings
+          boot_log->execute("Boot", "Sending display settings");
+          disp1->send_command_printf("brightness=%i", int(display_brightness->state));
+          disp1->send_command_printf("brightness_dim=%i", int(display_dim_brightness->state));
+          disp1->send_command_printf("brightness_sleep=%i", int(display_sleep_brightness->state));
+          disp1->send_command_printf("wakeup_page_id=%" PRIu8, get_page_id(wakeup_page_name->current_option()));
+
           // Wrap-up
-          boot_progress->execute(8);
           feed_wdt_delay(${DELAY_DEFAULT});
           boot_log->execute("Boot", "Wait to finish");
           feed_wdt_delay(${DELAY_DEFAULT});
@@ -109,9 +116,13 @@ script:
           wait_for_blueprint->execute();
           feed_wdt_delay(${DELAY_DEFAULT});
       - script.wait: wait_for_wifi
+      - lambda: boot_progress->execute(6);
       - script.wait: wait_for_api
+      - lambda: boot_progress->execute(7);
       - script.wait: wait_for_blueprint
+      - lambda: boot_progress->execute(8);
       - script.wait: wait_for_version_tft
+      - lambda: boot_progress->execute(9);
       - script.execute: boot_wrap_up
       - script.wait: boot_wrap_up
 
@@ -150,14 +161,6 @@ script:
   - id: boot_nextion
     mode: single
     then:
-      - lambda: |-
-          // Display settings
-          boot_log->execute("Boot", "Sending display settings");
-          disp1->send_command_printf("brightness=%i", int(display_brightness->state));
-          disp1->send_command_printf("brightness_dim=%i", int(display_dim_brightness->state));
-          disp1->send_command_printf("brightness_sleep=%i", int(display_sleep_brightness->state));
-          disp1->send_command_printf("wakeup_page_id=%" PRIu8, get_page_id(wakeup_page_name->current_option()));
-          boot_progress->execute(5);
 
   - id: boot_preparation
     mode: single
