@@ -1,0 +1,262 @@
+Page switch
+    Attributes
+        ID                 : 0
+        Scope              : local
+        Dragging           : 0
+        Send Component ID  : on press and release
+        Opacity            : 127
+        Width              : 320
+        Effect             : load
+        Effect Priority    : 0
+        Effect Time        : 300
+        Locked             : no
+        Swide up page ID   : disabled
+        Swide down page ID : disabled
+        Swide left page ID : disabled
+        Swide right page ID: disabled
+        Fill               : picture
+        Back. Picture ID   : 0
+    
+    Events
+        Preinitialize Event
+            if(api==0)
+            {
+                page home_page_id
+            }
+            // set background image and fg color to all components
+            switch.pic=pic_background_main
+            icon_state.picc=pic_background_main
+            page_label.picc=pic_background_main
+            button_back.font=button_back_font
+            button_back.pco=color_pco_navigation
+            button_back.picc2=pic_background_main
+            dim=brightness
+            sendme
+        
+Variable (int32) state
+    Attributes
+        ID   : 4
+        Scope: local
+        Value: 4294967295
+    
+Variable (int32) color_on
+    Attributes
+        ID   : 5
+        Scope: local
+        Value: 33808
+    
+Variable (int32) color_off
+    Attributes
+        ID   : 6
+        Scope: local
+        Value: 16904
+    
+Variable (int32) color_thumb
+    Attributes
+        ID   : 7
+        Scope: local
+        Value: 61163
+    
+Variable (int32) color_pending
+    Attributes
+        ID   : 8
+        Scope: local
+        Value: 33840
+    
+Variable (int32) cx
+    Attributes
+        ID   : 9
+        Scope: local
+        Value: 0
+    
+Variable (int32) cy
+    Attributes
+        ID   : 10
+        Scope: local
+        Value: 0
+    
+Variable (int32) pw
+    Attributes
+        ID   : 11
+        Scope: local
+        Value: 0
+    
+Variable (int32) ph
+    Attributes
+        ID   : 12
+        Scope: local
+        Value: 0
+    
+Text page_label
+    Attributes
+        ID                      : 1
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : on press and release
+        Opacity                 : 127
+        x coordinate            : 46
+        y coordinate            : 8
+        Width                   : 204
+        Height                  : 30
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 2
+        Cropped Back. Picture ID: 0
+        Horizontal Alignment    : left
+        Vertical Alignment      : center
+        Input Type              : character
+        Text                    : 
+        Max. Text Size          : 100
+        Word wrap               : disabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
+    
+Text icon_state
+    Attributes
+        ID                      : 2
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : on press and release
+        Opacity                 : 127
+        x coordinate            : 10
+        y coordinate            : 8
+        Width                   : 35
+        Height                  : 35
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 8
+        Cropped Back. Picture ID: 0
+        Horizontal Alignment    : center
+        Vertical Alignment      : center
+        Input Type              : character
+        Text                    : 
+        Max. Text Size          : 10
+        Word wrap               : disabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
+    
+Button button_back
+    Attributes
+        ID                                  : 3
+        Scope                               : local
+        Dragging                            : 0
+        Send Component ID                   : on press and release
+        Opacity                             : 127
+        x coordinate                        : 260
+        y coordinate                        : 0
+        Width                               : 60
+        Height                              : 48
+        Effect                              : load
+        Effect Priority                     : 0
+        Effect Time                         : 300
+        Fill                                : crop image
+        Font ID                             : 8
+        Cropped Back. Picture ID (Unpressed): 0
+        Back. Picture ID (Pressed)          : 65535
+        Cropped Back. Picture ID (Pressed)  : 0
+        Horizontal Alignment                : center
+        Vertical Alignment                  : top
+        State                               : unpressed
+        Text                                : \xee\x85\x98
+        Max. Text Size                      : 3
+        Word wrap                           : disabled
+        Horizontal Spacing                  : 0
+        Vertical Spacing                    : 0
+    
+    Events
+        Touch Press Event
+            page back_page_id
+        
+Hotspot touch_area
+    Attributes
+        ID               : 13
+        Scope            : local
+        Dragging         : 0
+        Send Component ID: disabled
+        Opacity          : 127
+        x coordinate     : 90
+        y coordinate     : 170
+        Width            : 140
+        Height           : 60
+        Effect           : load
+        Effect Priority  : 0
+        Effect Time      : 300
+    
+    Events
+        Touch Press Event
+            // Ignore if transition is already in progress
+            if(state.val!=-1)
+            {
+                if(state.val==1)
+                {
+                    printh 92
+                    prints "localevent",0
+                    printh 00
+                    prints "switch,turn_off",0
+                    printh 00
+                    printh FF FF FF
+                }else
+                {
+                    printh 92
+                    prints "localevent",0
+                    printh 00
+                    prints "switch,turn_on",0
+                    printh 00
+                    printh FF FF FF
+                }
+                state.val=-1
+                render.en=1
+            }
+        
+Timer render
+    Attributes
+        ID         : 14
+        Scope      : local
+        Period (ms): 50
+        Enabled    : no
+    
+    Events
+        Timer Event
+            // Layout geometry (display-dependent)
+            if(display_mode==2)
+            {
+                cx.val=160
+                cy.val=200
+                pw.val=140
+                ph.val=60
+            }else
+            {
+                cx.val=225
+                cy.val=150
+                pw.val=160
+                ph.val=68
+            }
+            // Resolve track color and thumb position
+            if(state.val==1)
+            {
+                sys0=color_on.val
+                sys1=cx.val+pw.val/2-ph.val/2
+            }else if(state.val==0)
+            {
+                sys0=color_off.val
+                sys1=cx.val-pw.val/2+ph.val/2
+            }else
+            {
+                sys0=color_pending.val
+                sys1=cx.val
+            }
+            // Draw track
+            cirs cx.val-pw.val/2+ph.val/2,cy.val,ph.val/2,sys0
+            fill cx.val-pw.val/2+ph.val/2,cy.val-ph.val/2,pw.val-ph.val+1,ph.val+1,sys0
+            cirs cx.val+pw.val/2-ph.val/2,cy.val,ph.val/2,sys0
+            // Draw thumb
+            cirs sys1,cy.val,ph.val/2-4,color_thumb.val
+            // Self-disable
+            render.en=0
+        
