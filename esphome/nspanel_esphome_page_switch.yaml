@@ -26,18 +26,27 @@ script:
       - lambda: |-
           if (params[0] != "switch") return;
 
-          // CSV Format: switch,<action>
-          // params[0]=page, params[1]=action (action to perform)
+          if (detailed_entity == nullptr or detailed_entity.empty()) {
+            ESP_LOGW("${TAG_PAGE_SWITCH}", "No detailed entity");
+            return;
+          }
 
           if (params_count != 2) {
             ESP_LOGW("${TAG_PAGE_SWITCH}", "Bad params");
             return;
           }
+
           const std::string& action = params[1];
           ESP_LOGV("${TAG_PAGE_SWITCH}", "Switch action: %s", action.c_str());
 
+          const HomeAssistantEntity entity = extractHomeAssistantEntity(detailed_entity->state);
+          if (entity.domain == "invalid") {
+            ESP_LOGW("${TAG_PAGE_SWITCH}", "Invalid entity: %s", detailed_entity->state.c_str());
+            return;
+          }
+
           fire_ha_event("action_call", {
-            {"action", "homeassistant." + action},
+            {"action", (entity.domain + "." + action).c_str()},
             {"entity", detailed_entity->state.c_str()}
           });
 
