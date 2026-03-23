@@ -24,7 +24,7 @@ script:
   - id: !extend event_from_display  # Defined by hw_display
     then:
       - lambda: |-
-          if (params[0] != "switch") return;
+          if (params_count == 0 || params[0] != "switch") return;
 
           if (detailed_entity == nullptr or detailed_entity->state.empty()) {
             ESP_LOGW("${TAG_PAGE_SWITCH}", "No detailed entity");
