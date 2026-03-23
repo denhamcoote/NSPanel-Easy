@@ -249,7 +249,7 @@ Timer render
             }else
             {
                 sys0=color_pending.val
-                sys1=cx.val-pw.val/2+ph.val/2
+                sys1=cx.val
             }
             // Draw track
             cirs cx.val-pw.val/2+ph.val/2,cy.val,ph.val/2,sys0
