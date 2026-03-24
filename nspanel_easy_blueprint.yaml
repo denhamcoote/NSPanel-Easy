@@ -8544,7 +8544,8 @@ actions:
                           - condition:
                               - '{{ entity_id is defined }}'
                               - '{{ entity_id is string }}'
-                              - '{{ entity_id is match "switch." or entity_id is match "input_boolean." }}'
+                              - '{{ entity_id.split(".") | count == 2 }}'
+                              - '{{ entity_id.split(".")[0] in ["switch", "input_boolean"] }}'
                           - *variable_entity
                           - condition: '{{ entity is defined }}'
 
