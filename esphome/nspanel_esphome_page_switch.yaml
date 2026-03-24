@@ -8,7 +8,6 @@
 
 ---
 substitutions:
-  PAGE_SWITCH_ID: 32
   page_switch_color_off: 16904
   page_switch_color_on: 15483
   page_switch_color_pending: 33840
@@ -54,7 +53,9 @@ script:
 
   - id: !extend page_change
     then:
-      - lambda: if (new_page_id == ${PAGE_SWITCH_ID}) page_switch->execute();
+      - lambda: |-
+          if (new_page_id == get_page_id("switch"))
+            page_switch->execute();
 
   - id: page_switch
     mode: single
