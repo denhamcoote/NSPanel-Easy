@@ -43,7 +43,7 @@ Variable (int32) color_on
     Attributes
         ID   : 5
         Scope: local
-        Value: 33808
+        Value: 15483
     
 Variable (int32) color_off
     Attributes
@@ -55,7 +55,7 @@ Variable (int32) color_thumb
     Attributes
         ID   : 7
         Scope: local
-        Value: 61163
+        Value: 63390
     
 Variable (int32) color_pending
     Attributes
@@ -75,15 +75,45 @@ Variable (int32) cy
         Scope: local
         Value: 0
     
-Variable (int32) pw
+Variable (int32) fill_x
     Attributes
-        ID   : 11
+        ID   : 13
         Scope: local
         Value: 0
     
-Variable (int32) ph
+Variable (int32) fill_y
     Attributes
-        ID   : 12
+        ID   : 14
+        Scope: local
+        Value: 0
+    
+Variable (int32) fill_w
+    Attributes
+        ID   : 15
+        Scope: local
+        Value: 0
+    
+Variable (int32) fill_h
+    Attributes
+        ID   : 16
+        Scope: local
+        Value: 0
+    
+Variable (int32) right_x
+    Attributes
+        ID   : 17
+        Scope: local
+        Value: 0
+    
+Variable (int32) thumb_r
+    Attributes
+        ID   : 18
+        Scope: local
+        Value: 0
+    
+Variable (int32) pill_r
+    Attributes
+        ID   : 19
         Scope: local
         Value: 0
     
@@ -175,7 +205,7 @@ Button button_back
         
 Hotspot touch_area
     Attributes
-        ID               : 13
+        ID               : 11
         Scope            : local
         Dragging         : 0
         Send Component ID: disabled
@@ -216,47 +246,48 @@ Hotspot touch_area
         
 Timer render
     Attributes
-        ID         : 14
+        ID         : 12
         Scope      : local
         Period (ms): 50
         Enabled    : no
     
     Events
         Timer Event
-            // Layout geometry (display-dependent)
-            if(display_mode==2)
-            {
-                cx.val=160
-                cy.val=200
-                pw.val=140
-                ph.val=60
-            }else
-            {
-                cx.val=225
-                cy.val=150
-                pw.val=160
-                ph.val=68
-            }
+            // Self-disable first
+            render.en=0
+            // Derive center from touch_area position
+            sys0=touch_area.w/2
+            sys1=touch_area.h/2
+            cx.val=touch_area.x+sys0
+            cy.val=touch_area.y+sys1
+            // Pre-compute all coordinates
+            pill_r.val=sys1
+            fill_x.val=cx.val-sys0+pill_r.val
+            right_x.val=cx.val+sys0-pill_r.val
+            fill_y.val=cy.val-pill_r.val
+            fill_w.val=right_x.val-fill_x.val
+            fill_h.val=touch_area.h+1
+            thumb_r.val=pill_r.val-4
             // Resolve track color and thumb position
             if(state.val==1)
             {
                 sys0=color_on.val
-                sys1=cx.val+pw.val/2-ph.val/2
+                sys1=right_x.val
             }else if(state.val==0)
             {
                 sys0=color_off.val
-                sys1=cx.val-pw.val/2+ph.val/2
+                sys1=fill_x.val
             }else
             {
                 sys0=color_pending.val
                 sys1=cx.val
             }
             // Draw track
-            cirs cx.val-pw.val/2+ph.val/2,cy.val,ph.val/2,sys0
-            fill cx.val-pw.val/2+ph.val/2,cy.val-ph.val/2,pw.val-ph.val+1,ph.val+1,sys0
-            cirs cx.val+pw.val/2-ph.val/2,cy.val,ph.val/2,sys0
+            cirs fill_x.val,cy.val,pill_r.val,sys0
+            fill fill_x.val,fill_y.val,fill_w.val,fill_h.val,sys0
+            cirs right_x.val,cy.val,pill_r.val,sys0
             // Draw thumb
-            cirs sys1,cy.val,ph.val/2-4,color_thumb.val
-            // Self-disable
-            render.en=0
+            cirs sys1,cy.val,thumb_r.val,color_thumb.val
+            // Ensure touch_area in the front
+            ref touch_area
         

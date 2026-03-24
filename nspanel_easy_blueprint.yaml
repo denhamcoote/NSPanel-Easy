@@ -8535,26 +8535,36 @@ actions:
                         sequence: &refresh_page_switch
                           - &variables_switch_entity
                             variables:
-                              switch_entity: >
+                              entity_id: >
                                 {{
                                   nspanel_event.entity
                                   if nspanel_event is defined and nspanel_event.entity is defined and nspanel_event.entity is string and nspanel_event.entity | length > 1
                                   else (trigger.entity_id if trigger.entity_id is defined else trigger.event.data.entity_id)
                                 }}
-                              switch_entity_domain: >
-                                {{
-                                  switch_entity.split(".")[0]
-                                  if
-                                    switch_entity is defined and
-                                    switch_entity is string and
-                                    switch_entity.split(".") | count == 2
-                                  else "unknown"
-                                }}
                           - condition:
-                              - '{{ switch_entity is defined }}'
-                              - '{{ switch_entity is string }}'
-                              - '{{ switch_entity is match "switch." or switch_entity is match "input_boolean." }}'
-                              - '{{ switch_entity_domain == "switch" or switch_entity_domain == "input_boolean" }}'
+                              - '{{ entity_id is defined }}'
+                              - '{{ entity_id is string }}'
+                              - '{{ entity_id is match "switch." or entity_id is match "input_boolean." }}'
+                          - *variable_entity
+                          - condition: '{{ entity is defined }}'
+                          - if: '{{ entity.name is defined and entity.name is string and entity.name | length > 0 }}'
+                            then:
+                              - *delay_default
+                              - action: 'esphome.{{ nspanel_name }}_component_text'
+                                data:
+                                  page: ""
+                                  id: page_label
+                                  txt: '{{ entity.name }}'
+                                continue_on_error: true
+                          - if: '{{ entity.icon is defined and entity.icon is string and entity.icon | length > 0 }}'
+                            then:
+                              - *delay_default
+                              - action: 'esphome.{{ nspanel_name }}_component_text'
+                                data:
+                                  page: ""
+                                  id: icon_state
+                                  txt: '{{ entity.icon }}'
+                                continue_on_error: true
                           - *delay_default
                           - action: 'esphome.{{ nspanel_name }}_component_val'
                             data:

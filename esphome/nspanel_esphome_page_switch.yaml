@@ -10,9 +10,9 @@
 substitutions:
   PAGE_SWITCH_ID: 32
   page_switch_color_off: 16904
-  page_switch_color_on: 33808
+  page_switch_color_on: 15483
   page_switch_color_pending: 33840
-  page_switch_color_thumb: 61163
+  page_switch_color_thumb: 63390
   TAG_PAGE_SWITCH: nspanel.page.switch
 
 esphome:
