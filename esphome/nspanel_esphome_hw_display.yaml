@@ -237,19 +237,20 @@ script:
                 return;
               }
 
+              const std::string page = params[0].c_str();
               // Button click event
               ESP_LOGD("${TAG_HW_DISPLAY}", "%s->HA", event.c_str());
               fire_ha_event("button_click", {
-                {"page", params[0].c_str()},  // params[0] = page
+                {"page", page.c_str()},
                 {"command", event.c_str()},
                 {"component", params[2].c_str()}
               });
               ESP_LOGV("${TAG_HW_DISPLAY}", "Event sent");
-            } else if (params[0] != "home" and params[0] != "light") {  // params[0] = page
+            } else if (page != "home" and page != "light" and page != "switch") {
               // Generic event
               ESP_LOGD("${TAG_HW_DISPLAY}", "Send generic event to Home Assistant");
               fire_ha_event("button_click", {
-                {"page", params[0].c_str()},  // params[0] = page
+                {"page", page.c_str()},
                 {"event", params[1].c_str()},
                 {"component", params_count > 2 ? params[2].c_str() : ""},
                 {"value", params_count > 3 ? params[3].c_str() : ""},

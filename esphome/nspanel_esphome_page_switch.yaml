@@ -49,6 +49,10 @@ script:
             ESP_LOGW("${TAG_PAGE_SWITCH}", "Invalid entity: %s", detailed_entity->state.c_str());
             return;
           }
+          if (entity.domain != "switch" && entity.domain != "input_boolean") {
+            ESP_LOGW("${TAG_PAGE_SWITCH}", "Unsupported entity domain for switch page: %s", entity.domain.c_str());
+            return;
+          }
 
           const std::string service = entity.domain + "." + action;
           fire_ha_event("action_call", {
