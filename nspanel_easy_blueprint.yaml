@@ -8547,6 +8547,7 @@ actions:
                               - '{{ entity_id is match "switch." or entity_id is match "input_boolean." }}'
                           - *variable_entity
                           - condition: '{{ entity is defined }}'
+
                           - if: '{{ entity.name is defined and entity.name is string and entity.name | length > 0 }}'
                             then:
                               - *delay_default
@@ -8573,10 +8574,10 @@ actions:
                               val: >
                                 {{
                                   1
-                                  if is_state(switch_entity, "on")
+                                  if is_state(entity_id, "on")
                                   else (
                                     0
-                                    if is_state(switch_entity, "off")
+                                    if is_state(entity_id, "off")
                                     else -1
                                   )
                                 }}
