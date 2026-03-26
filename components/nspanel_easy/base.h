@@ -31,14 +31,13 @@ struct SystemFlags {
   uint16_t version_check_ok : 1;           ///< All component versions verified
   uint16_t display_settings_received : 1;  ///< All display settings received
 
-  // Runtime operation flags (bits 9-12)
+  // Runtime operation flags (bits 9-11)
   uint16_t tft_upload_active : 1;  ///< TFT firmware upload in progress
-  uint16_t safe_mode_active : 1;   ///< System running in safe mode
   uint16_t ota_in_progress : 1;    ///< Over-the-air update active
   uint16_t display_sleep : 1;      ///< Display is in sleep mode
 
-  // Reserved flags (bits 13-15)
-  uint16_t reserved : 3;  ///< Reserved for future expansion
+  // Reserved flags (bits 12-15)
+  uint16_t reserved : 4;  ///< Reserved for future expansion
 
   // Default constructor - all flags start as false (zero-initialized)
   SystemFlags()
@@ -52,7 +51,6 @@ struct SystemFlags {
         version_check_ok(0),
         display_settings_received(0),
         tft_upload_active(0),
-        safe_mode_active(0),
         ota_in_progress(0),
         display_sleep(0),
         reserved(0) {}
@@ -141,7 +139,8 @@ extern BlueprintStatusFlags blueprint_status_flags;
 inline bool is_device_ready_for_tasks() {
   return system_flags.boot_completed &&  // Boot flag must be set to consider the system ready
                                          // Device is NOT ready if any of these blocking operations are active
-         !system_flags.ota_in_progress && !system_flags.tft_upload_active && !system_flags.safe_mode_active;
+        !system_flags.ota_in_progress &&
+        !system_flags.tft_upload_active;
 }
 
 /**

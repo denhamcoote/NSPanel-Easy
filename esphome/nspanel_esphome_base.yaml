@@ -61,7 +61,7 @@ interval:
     startup_delay: 89s
     then:
       - lambda: |-
-          if (!system_flags.ota_in_progress and !system_flags.tft_upload_active and !system_flags.safe_mode_active) {
+          if (!system_flags.ota_in_progress and !system_flags.tft_upload_active) {
             ESP_LOGV("${TAG_BASE}", "Calling the watchdog");
             watchdog_round->execute();
           }
@@ -87,11 +87,6 @@ ota:
 
 safe_mode:
   id: safe_mode_component
-  on_safe_mode:
-    then:
-      - lambda: |-
-          system_flags.safe_mode_active = true;
-          stop_all->execute();
 
 script:
   - id: dump_config
@@ -123,7 +118,7 @@ script:
     mode: restart
     then:
       - lambda: |-
-          if (system_flags.ota_in_progress or system_flags.tft_upload_active or system_flags.safe_mode_active) {
+          if (system_flags.ota_in_progress or system_flags.tft_upload_active) {
             ESP_LOGW("${TAG_BASE}", "The watchdog cannot run now");
             watchdog_round_wait_to_end->stop();
             watchdog_round->stop();
