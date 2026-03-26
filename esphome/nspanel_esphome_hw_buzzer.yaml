@@ -8,7 +8,6 @@
 
 ---
 substitutions:
-  BOOT_STEP_HW_BUZZER: '4'
   GPIO_BUZZER_OUTPUT_PIN: 21
   boot_sound: false
   TAG_HW_BUZZER: nspanel.hw.buzzer

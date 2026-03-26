@@ -12,7 +12,6 @@ substitutions:
   ## Change only in your      ##
   ## local yaml substitutions ##
   ##############################
-  BOOT_STEP_BOOT: 1
   BOOT_EVENT_REPEAT_INTERVAL_MS: 10000
   TAG_BOOT: nspanel.boot
 

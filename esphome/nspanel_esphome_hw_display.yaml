@@ -22,7 +22,6 @@ substitutions:
   THEME_LIGHT_COLOR_PCO_NAVIGATION: ${COLOR_GRAY_DARK}     # Colors::GRAY_DARK for navigation
   THEME_LIGHT_COLOR_PCO_UNSUPPORTED: ${COLOR_GRAY_LIGHT}   # Light gray - visually "faded"
   BAUD_RATE: '115200'
-  BOOT_STEP_HW_DISPLAY: '5'
   button_back_font: "8"
   COLOR_BLACK: '0'              # Colors::BLACK
   COLOR_BLUE_INDIGO: '10597'    # Colors::BLUE_INDIGO
