@@ -8356,6 +8356,7 @@ actions:
                                 {{
                                   climate_page_entities
                                   | selectattr("entity", "defined")
+                                  | rejectattr("entity", "eq", "")
                                   | rejectattr("entity", "eq", [])
                                   | list
                                 }}
