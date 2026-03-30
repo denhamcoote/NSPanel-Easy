@@ -1,0 +1,66 @@
+// page_screensaver.h
+
+#pragma once
+
+#ifdef NSPANEL_EASY_PAGE_SCREENSAVER
+
+#include "nextion_components.h"  // For HMIComponent
+#include "pages.h"               // For page_names and get_page_id
+
+/**
+ * @file page_screensaver.h
+ * @brief Nextion component definitions for the Screensaver page.
+ *
+ * This file contains all component constants specific to the Screensaver page
+ * of the NSPanel interface, along with the persistent visibility flag used to
+ * avoid redundant display updates.
+ */
+
+namespace esphome {
+namespace nspanel_easy {
+
+/**
+ * @brief Tracks whether the screensaver page is currently visible on the display.
+ *
+ * Set to @c true once the screensaver has been rendered.
+ * Reset to @c false whenever the panel wakes up or navigates away.
+ * Used to avoid redundant redraws when the screensaver is already active.
+ */
+extern bool page_screensaver_rendered;
+
+namespace hmi {
+namespace screensaver {
+
+/**
+ * @namespace screensaver
+ * @brief Components for the Screensaver page.
+ *
+ * Component ID mapping for the Screensaver page (index 9 in page_names array).
+ * Based on the Nextion HMI design file.
+ * Note: All components are local scope, so names do not include a page prefix.
+ */
+
+// Page definition
+constexpr HMIComponent PAGE = {"screensaver", 9};  ///< Screensaver page (index 9 in page_names array)
+
+// Display components
+constexpr HMIComponent TEXT = {"text", 4};  ///< Time/clock label (word-wrap enabled, 1000 chars max)
+
+// Touch capture components
+constexpr HMIComponent WAKEUP = {"wakeup", 1};  ///< Full-screen wake-up touch area
+constexpr HMIComponent SWIPE  = {"swipe", 2};   ///< Swipe gesture capture area
+
+// Timers (for reference — not visual, excluded from ALL[])
+constexpr HMIComponent TIMER_SWIPESTORE = {"swipestore", 3};  ///< Swipe coordinate sampling timer (50 ms)
+
+// All visual components for iteration (timers and touch caps excluded)
+constexpr HMIComponent ALL[] = {PAGE, TEXT};
+
+constexpr size_t COMPONENT_COUNT = sizeof(ALL) / sizeof(ALL[0]);
+
+}  // namespace screensaver
+}  // namespace hmi
+}  // namespace nspanel_easy
+}  // namespace esphome
+
+#endif  // NSPANEL_EASY_PAGE_SCREENSAVER

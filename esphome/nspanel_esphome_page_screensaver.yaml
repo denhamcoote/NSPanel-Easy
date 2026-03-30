@@ -84,6 +84,9 @@ script:
             id(screensaver_display_time_color) = color;
           } else if (component == "screensaver_bco" and color != id(screensaver_background_color)) {
             id(screensaver_background_color) = color;
+            if (current_page_id == get_page_id("screensaver")) {
+              disp1->send_command("screensaver.bco=screensaver_bco");
+            }
             page_screensaver_setup_nextion->exectute();
           }
           page_screensaver->execute();
@@ -118,25 +121,30 @@ script:
   - id: !extend page_change
     then:
       - lambda: |-
-          if (new_page_id != get_page_id("screensaver")) return;
+          if (new_page_id != get_page_id("screensaver")) {
+            page_screensaver_rendered = false;
+            return;
+          }
           page_screensaver->execute();
 
   - id: page_screensaver
     mode: restart
     then:
-      - delay: 1s
       - lambda: |-
           if (current_page_id != get_page_id("screensaver")) return;
           page_screensaver_set_brightness->execute();
-          disp1->send_command_printf("wakeup_page_id=%" PRIu8, wakeup_page_id);
-          if (id(screensaver_display_time)) {
+          if (!page_screensaver_rendered) {
+            disp1->send_command_printf("wakeup_page_id=%" PRIu8, wakeup_page_id);
             disp1->send_command("screensaver.bco=screensaver_bco");
+            refresh_hardware_buttons_bars->execute(3);
+            page_screensaver_rendered = true;
+          }
+          if (id(screensaver_display_time)) {
             disp1->set_component_font("text", id(screensaver_display_time_font));
             disp1->set_component_font_color("text", id(screensaver_display_time_color));
             disp1->show_component("text");
-            refresh_datetime->execute();
-            refresh_hardware_buttons_bars->execute(3);
           }
+          refresh_datetime->execute();
       - delay: 5s
       - script.execute: page_screensaver_set_brightness
 
