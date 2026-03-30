@@ -39,7 +39,7 @@ constexpr HMIComponent TEXT = {"text", 4};  ///< Time/clock label (word-wrap ena
 
 // Touch capture components
 constexpr HMIComponent WAKEUP = {"wakeup", 1};  ///< Full-screen wake-up touch area
-constexpr HMIComponent SWIPE  = {"swipe", 2};   ///< Swipe gesture capture area
+constexpr HMIComponent SWIPE = {"swipe", 2};    ///< Swipe gesture capture area
 
 // Timers (for reference — not visual, excluded from ALL[])
 constexpr HMIComponent TIMER_SWIPESTORE = {"swipestore", 3};  ///< Swipe coordinate sampling timer (50 ms)

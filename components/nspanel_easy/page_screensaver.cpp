@@ -13,9 +13,7 @@
  */
 
 namespace esphome {
-namespace nspanel_easy {
-
-}  // namespace nspanel_easy
+namespace nspanel_easy {}  // namespace nspanel_easy
 }  // namespace esphome
 
 #endif  // NSPANEL_EASY_PAGE_SCREENSAVER
