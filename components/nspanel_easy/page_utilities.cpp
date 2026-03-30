@@ -15,7 +15,7 @@ namespace esphome {
 namespace nspanel_easy {
 
 bool page_utilities_enabled = false;
-uint16_t page_utilities_icon_color = Colors::GRAY_LIGHT;
+uint16_t page_utilities_icon_color = Colors::RGB565_GRAY_LIGHT;
 
 static constexpr size_t UTILITIES_GROUPS_COUNT = 8;
 

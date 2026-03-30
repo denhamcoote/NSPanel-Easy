@@ -10,7 +10,7 @@
 substitutions:
   qrcode_initial_value: ''
   qrcode_title_initial_value: ''
-  qrcode_icon_color_initial_value: 'Colors::GRAY_LIGHT'
+  qrcode_icon_color_initial_value: 'Colors::RGB565_GRAY_LIGHT'
   qrcode_restore_value: false
   qrcode_background_color: 65535
   qrcode_foreground_color: 0
@@ -109,7 +109,7 @@ globals:
   - id: qrcode_icon
     type: std::string
     restore_value: ${qrcode_restore_value}
-    initial_value: 'Icons::WIFI_DISCONNECTED'
+    initial_value: 'Icons::MDI_QRCODE_SCAN'
 
   - id: qrcode_icon_color
     type: uint16_t

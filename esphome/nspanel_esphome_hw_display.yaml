@@ -19,21 +19,21 @@ substitutions:
   THEME_LIGHT_LABEL: Light (Under construction)
   THEME_LIGHT_COLOR_PCO_MAIN: ${COLOR_BLACK}               # BLACK - main text on white bg
   THEME_LIGHT_COLOR_PCO_SECONDARY: ${COLOR_GRAY_MEDIUM}    # Mid gray for secondary
-  THEME_LIGHT_COLOR_PCO_NAVIGATION: ${COLOR_GRAY_DARK}     # Colors::GRAY_DARK for navigation
+  THEME_LIGHT_COLOR_PCO_NAVIGATION: ${COLOR_GRAY_DARK}     # Colors::RGB565_GRAY_DARK for navigation
   THEME_LIGHT_COLOR_PCO_UNSUPPORTED: ${COLOR_GRAY_LIGHT}   # Light gray - visually "faded"
   BAUD_RATE: '115200'
   button_back_font: "8"
-  COLOR_BLACK: '0'              # Colors::BLACK
-  COLOR_BLUE_INDIGO: '10597'    # Colors::BLUE_INDIGO
-  COLOR_CYAN_BRIGHT: '7519'     # Colors::CYAN_BRIGHT
-  COLOR_GRAY_DARK: '16904'      # Colors::GRAY_DARK
-  COLOR_GRAY_DARKEST: '6339'    # Colors::GRAY_DARKEST
-  COLOR_GRAY_LIGHT: '52857'     # Colors::GRAY_LIGHT
-  COLOR_GRAY_MEDIUM: '29614'    # Colors::GRAY_MEDIUM — mid gray, secondary text on light backgrounds
-  COLOR_GRAY_MOSS: '33808'      # Colors::GRAY_MOSS
-  COLOR_RED_PRIMARY: '63488'    # Colors::RED
-  COLOR_WHITE: '65535'          # Colors::WHITE
-  COLOR_YELLOW_GOLDEN: '64992'  # Colors::YELLOW_GOLDEN
+  COLOR_BLACK: '0'              # Colors::RGB565_BLACK
+  COLOR_BLUE_INDIGO: '10597'    # Colors::RGB565_BLUE_INDIGO
+  COLOR_CYAN_BRIGHT: '7519'     # Colors::RGB565_CYAN_BRIGHT
+  COLOR_GRAY_DARK: '16904'      # Colors::RGB565_GRAY_DARK
+  COLOR_GRAY_DARKEST: '6339'    # Colors::RGB565_GRAY_DARKEST
+  COLOR_GRAY_LIGHT: '52857'     # Colors::RGB565_GRAY_LIGHT
+  COLOR_GRAY_MEDIUM: '29614'    # Colors::RGB565_GRAY_MEDIUM — mid gray, secondary text on light backgrounds
+  COLOR_GRAY_MOSS: '33808'      # Colors::RGB565_GRAY_MOSS
+  COLOR_RED_PRIMARY: '63488'    # Colors::RGB565_RED
+  COLOR_WHITE: '65535'          # Colors::RGB565_WHITE
+  COLOR_YELLOW_GOLDEN: '64992'  # Colors::RGB565_YELLOW_GOLDEN
   DISPLAY_CHARSET_CJK: 2
   DISPLAY_CHARSET_INTERNATIONAL: 1
   GPIO_DISPLAY_NEXTION_RX_PIN: 17
@@ -69,10 +69,10 @@ display:
   - id: disp1
     platform: nextion
     uart_id: tf_uart
-    command_spacing: 10ms
+    command_spacing: 10ms     # Increased from 5ms to prevent "Nextion Buffer Overflow"
     # dump_device_info: true  # To-do: Enable when pr#13566 is released
     max_commands_per_loop: 15
-    # max_queue_size: 128  # Enable with v2026.6.0
+    # max_queue_size: 128     # Enable with v2026.6.0
     update_interval: never
     on_setup:
       then:

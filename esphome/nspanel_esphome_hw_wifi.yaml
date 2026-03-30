@@ -77,10 +77,10 @@ script:
           const char* icon_new = system_flags.wifi_ready ?
             (system_flags.api_ready ?
               (system_flags.blueprint_ready ?
-                Icons::WIFI :
-                Icons::HOME_ASSISTANT) :
-              Icons::API_OFF) :
-            Icons::WIFI_DISCONNECTED;
+                Icons::MDI_WIFI :
+                Icons::MDI_HOME_ASSISTANT) :
+              Icons::MDI_API_OFF) :
+            Icons::MDI_WIFI_OFF;
 
           // Update WiFi icon (only when changed)
           static const char* icon_previous = nullptr;
@@ -90,7 +90,7 @@ script:
           }
 
           // Determine current color
-          const uint16_t color_new = system_flags.blueprint_ready ? Colors::GRAY_MOSS : Colors::RED;
+          const uint16_t color_new = system_flags.blueprint_ready ? Colors::RGB565_GRAY_MOSS : Colors::RGB565_RED;
 
           // Update WiFi icon color (only when changed)
           static uint16_t color_previous = 0;

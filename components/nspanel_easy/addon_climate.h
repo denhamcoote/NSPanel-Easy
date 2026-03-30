@@ -85,13 +85,13 @@ enum ClimateChipVisibility : uint8_t {
  * but uses grey color to indicate inactive state.
  */
 constexpr IconData climate_off_mode_icons[] = {
-    {Icons::NONE, Colors::BLACK},          // CLIMATE_MODE_OFF (0)
-    {Icons::AUTORENEW, Colors::GRAY},      // CLIMATE_MODE_HEAT_COOL (1)
-    {Icons::SNOWFLAKE, Colors::GRAY},      // CLIMATE_MODE_COOL (2)
-    {Icons::FIRE, Colors::GRAY},           // CLIMATE_MODE_HEAT (3)
-    {Icons::FAN, Colors::GRAY},            // CLIMATE_MODE_FAN_ONLY (4)
-    {Icons::WATER_PERCENT, Colors::GRAY},  // CLIMATE_MODE_DRY (5)
-    {Icons::CALENDAR_SYNC, Colors::GRAY}   // CLIMATE_MODE_AUTO (6)
+    {Icons::MDI_NONE, Colors::RGB565_BLACK},          // CLIMATE_MODE_OFF (0)
+    {Icons::MDI_AUTORENEW, Colors::RGB565_GRAY},      // CLIMATE_MODE_HEAT_COOL (1)
+    {Icons::MDI_SNOWFLAKE, Colors::RGB565_GRAY},      // CLIMATE_MODE_COOL (2)
+    {Icons::MDI_FIRE, Colors::RGB565_GRAY},           // CLIMATE_MODE_HEAT (3)
+    {Icons::MDI_FAN, Colors::RGB565_GRAY},            // CLIMATE_MODE_FAN_ONLY (4)
+    {Icons::MDI_WATER_PERCENT, Colors::RGB565_GRAY},  // CLIMATE_MODE_DRY (5)
+    {Icons::MDI_CALENDAR_SYNC, Colors::RGB565_GRAY}   // CLIMATE_MODE_AUTO (6)
 };
 
 /**
@@ -112,13 +112,13 @@ constexpr IconData climate_off_mode_icons[] = {
  *       ClimateAction enum values.
  */
 constexpr IconData climate_action_icons[] = {
-    {Icons::NONE, Colors::BLACK},            // Unused index 0
-    {Icons::NONE, Colors::BLACK},            // Unused index 1
-    {Icons::SNOWFLAKE, Colors::BLUE},        // CLIMATE_ACTION_COOLING (2)
-    {Icons::FIRE, Colors::DEEP_ORANGE},      // CLIMATE_ACTION_HEATING (3)
-    {Icons::THERMOMETER, Colors::GRAY},      // CLIMATE_ACTION_IDLE (4)
-    {Icons::WATER_PERCENT, Colors::ORANGE},  // CLIMATE_ACTION_DRYING (5)
-    {Icons::FAN, Colors::CYAN}               // CLIMATE_ACTION_FAN (6)
+    {Icons::MDI_NONE, Colors::RGB565_BLACK},            // Unused index 0
+    {Icons::MDI_NONE, Colors::RGB565_BLACK},            // Unused index 1
+    {Icons::MDI_SNOWFLAKE, Colors::RGB565_BLUE},        // CLIMATE_ACTION_COOLING (2)
+    {Icons::MDI_FIRE, Colors::RGB565_DEEP_ORANGE},      // CLIMATE_ACTION_HEATING (3)
+    {Icons::MDI_THERMOMETER, Colors::RGB565_GRAY},      // CLIMATE_ACTION_IDLE (4)
+    {Icons::MDI_WATER_PERCENT, Colors::RGB565_ORANGE},  // CLIMATE_ACTION_DRYING (5)
+    {Icons::MDI_FAN, Colors::RGB565_CYAN}               // CLIMATE_ACTION_FAN (6)
 };
 
 }  // namespace nspanel_easy

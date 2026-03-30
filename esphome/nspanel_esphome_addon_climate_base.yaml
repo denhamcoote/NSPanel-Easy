@@ -318,16 +318,16 @@ script:
           ESP_LOGV("${TAG_ADDON_CLIMATE}", "Update buttons bar");
 
           disp1->hide_component("button01");
-          disp1->set_component_font_color("climate.button01", static_cast<uint16_t>(Colors::GRAY_DARK));
+          disp1->set_component_font_color("climate.button01", static_cast<uint16_t>(Colors::RGB565_GRAY_DARK));
 
           #ifdef NSPANEL_EASY_ADDON_CLIMATE_DUAL
           disp1->show_component("button02");
           disp1->set_component_font_color("climate.button02", static_cast<uint16_t>(
-            (thermostat_embedded->mode==climate::CLIMATE_MODE_HEAT_COOL) ? Colors::WHITE : Colors::GRAY_LIGHT));
+            (thermostat_embedded->mode==climate::CLIMATE_MODE_HEAT_COOL) ? Colors::RGB565_WHITE : Colors::RGB565_GRAY_LIGHT));
           #else
           disp1->hide_component("button02");
           disp1->set_component_font_color("climate.button02", static_cast<uint16_t>(
-            (thermostat_embedded->mode==climate::CLIMATE_MODE_HEAT_COOL) ? Colors::WHITE : Colors::GRAY_DARK));
+            (thermostat_embedded->mode==climate::CLIMATE_MODE_HEAT_COOL) ? Colors::RGB565_WHITE : Colors::RGB565_GRAY_DARK));
           #endif  // NSPANEL_EASY_ADDON_CLIMATE_DUAL
           feed_wdt_delay(${DELAY_SHORT});
           if (current_page_id != get_page_id("climate")) return;
@@ -335,11 +335,11 @@ script:
           #if defined(NSPANEL_EASY_ADDON_CLIMATE_HEAT) || defined(NSPANEL_EASY_ADDON_CLIMATE_DUAL)
           disp1->show_component("button03");  // Heat
           disp1->set_component_font_color("climate.button03", static_cast<uint16_t>(
-            (thermostat_embedded->mode==climate::CLIMATE_MODE_HEAT) ? Colors::DEEP_ORANGE : Colors::GRAY_LIGHT));
+            (thermostat_embedded->mode==climate::CLIMATE_MODE_HEAT) ? Colors::RGB565_DEEP_ORANGE : Colors::RGB565_GRAY_LIGHT));
           #else
           disp1->hide_component("button03");  // Heat
           disp1->set_component_font_color("climate.button03", static_cast<uint16_t>(
-            (thermostat_embedded->mode==climate::CLIMATE_MODE_HEAT) ? Colors::DEEP_ORANGE : Colors::GRAY_DARK));
+            (thermostat_embedded->mode==climate::CLIMATE_MODE_HEAT) ? Colors::RGB565_DEEP_ORANGE : Colors::RGB565_GRAY_DARK));
           #endif  // NSPANEL_EASY_ADDON_CLIMATE_HEAT || NSPANEL_EASY_ADDON_CLIMATE_DUAL
           feed_wdt_delay(${DELAY_SHORT});
           if (current_page_id != get_page_id("climate")) return;
@@ -347,29 +347,29 @@ script:
           #if defined(NSPANEL_EASY_ADDON_CLIMATE_COOL) || defined(NSPANEL_EASY_ADDON_CLIMATE_DUAL)
           disp1->show_component("button04");  // Cool
           disp1->set_component_font_color("climate.button04", static_cast<uint16_t>(
-            (thermostat_embedded->mode==climate::CLIMATE_MODE_COOL) ? Colors::BLUE : Colors::GRAY_LIGHT));
+            (thermostat_embedded->mode==climate::CLIMATE_MODE_COOL) ? Colors::RGB565_BLUE : Colors::RGB565_GRAY_LIGHT));
           #else
           disp1->hide_component("button04");  // Cool
           disp1->set_component_font_color("climate.button04", static_cast<uint16_t>(
-            (thermostat_embedded->mode==climate::CLIMATE_MODE_COOL) ? Colors::BLUE : Colors::GRAY_DARK));
+            (thermostat_embedded->mode==climate::CLIMATE_MODE_COOL) ? Colors::RGB565_BLUE : Colors::RGB565_GRAY_DARK));
           #endif  // NSPANEL_EASY_ADDON_CLIMATE_COOL || NSPANEL_EASY_ADDON_CLIMATE_DUAL
           feed_wdt_delay(${DELAY_SHORT});
           if (current_page_id != get_page_id("climate")) return;
 
           disp1->hide_component("button05");
-          disp1->set_component_font_color("climate.button05", static_cast<uint16_t>(Colors::GRAY_DARK));
+          disp1->set_component_font_color("climate.button05", static_cast<uint16_t>(Colors::RGB565_GRAY_DARK));
           feed_wdt_delay(${DELAY_SHORT});
           if (current_page_id != get_page_id("climate")) return;
 
           disp1->hide_component("button06");
-          disp1->set_component_font_color("climate.button06", static_cast<uint16_t>(Colors::GRAY_DARK));
+          disp1->set_component_font_color("climate.button06", static_cast<uint16_t>(Colors::RGB565_GRAY_DARK));
           feed_wdt_delay(${DELAY_SHORT});
           if (current_page_id != get_page_id("climate")) return;
 
           disp1->show_component("button07");  // Off
           disp1->set_component_font_color("climate.button07", static_cast<uint16_t>(
                                                                   (thermostat_embedded->mode==climate::CLIMATE_MODE_OFF)
-                                                                  ? Colors::BLUE_INDIGO : Colors::GRAY));
+                                                                  ? Colors::RGB565_BLUE_INDIGO : Colors::RGB565_GRAY));
 
   - id: !extend page_home
     then:
@@ -416,8 +416,8 @@ script:
 
           ESP_LOGV("${TAG_ADDON_CLIMATE}", "  visible: %s", YESNO(visible));
 
-          const char* icon = Icons::NONE;
-          uint16_t color = Colors::BLACK;
+          const char* icon = Icons::MDI_NONE;
+          uint16_t color = Colors::RGB565_BLACK;
 
           if (visible) {
             if (action == nspanel_easy::CLIMATE_ACTION_OFF) {

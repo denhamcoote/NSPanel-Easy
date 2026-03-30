@@ -91,8 +91,8 @@ script:
     then:
       - lambda: |-
           // Set relay chips to invisible initially (will be updated by refresh_relays when home page loads)
-          disp1->set_component_font_color(hmi::home::CHIP_RELAY1.name, Colors::BLACK);
-          disp1->set_component_font_color(hmi::home::CHIP_RELAY2.name, Colors::BLACK);
+          disp1->set_component_font_color(hmi::home::CHIP_RELAY1.name, Colors::RGB565_BLACK);
+          disp1->set_component_font_color(hmi::home::CHIP_RELAY2.name, Colors::RGB565_BLACK);
           feed_wdt_delay(${DELAY_DEFAULT});
 
   - id: !extend button_left_press_short

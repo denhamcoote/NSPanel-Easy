@@ -29,7 +29,7 @@ globals:
   - id: screensaver_display_time_color
     type: uint16_t
     restore_value: true
-    initial_value: 'Colors::GRAY_DARK'
+    initial_value: 'Colors::RGB565_GRAY_DARK'
 
 number:
   - id: display_sleep_brightness  # Screen brightness when in screensaver page

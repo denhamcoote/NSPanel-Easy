@@ -55,8 +55,8 @@ api:
                   is_this_state ? 43 : 42
               );
 
-              const uint32_t bg_color = is_this_state ? Colors::GREEN : Colors::GRAY_LIGHT;
-              const uint32_t font_color = is_this_state ? Colors::WHITE : Colors::BLACK;
+              const uint32_t bg_color = is_this_state ? Colors::RGB565_GREEN : Colors::RGB565_GRAY_LIGHT;
+              const uint32_t font_color = is_this_state ? Colors::RGB565_WHITE : Colors::RGB565_BLACK;
 
               disp1->set_component_background_color((std::string(button_name) + "_text").c_str(), bg_color);
               disp1->set_component_background_color((std::string(button_name) + "_icon").c_str(), bg_color);
@@ -246,37 +246,37 @@ script:
       state: string
     then:
       - lambda: |-
-          const char* icon = Icons::SHIELD_ALERT_OUTLINE;
-          uint16_t color = Colors::WHITE;
+          const char* icon = Icons::MDI_SHIELD_ALERT_OUTLINE;
+          uint16_t color = Colors::RGB565_WHITE;
 
           // Optimized state checking using first character for fast branching
           if (state[0] == 'd') {  // "disarmed" or "disarming"
-            icon = Icons::SHIELD_OFF_OUTLINE;
-            color = (state == "disarming") ? Colors::YELLOW : Colors::WHITE;
+            icon = Icons::MDI_SHIELD_OFF_OUTLINE;
+            color = (state == "disarming") ? Colors::RGB565_YELLOW : Colors::RGB565_WHITE;
           } else if (state[0] == 'a') {  // "armed_*" or "arming"
             if (state == "arming") {
-              icon = Icons::SHIELD_OUTLINE;
-              color = Colors::YELLOW;
+              icon = Icons::MDI_SHIELD_OUTLINE;
+              color = Colors::RGB565_YELLOW;
             } else {
-              color = Colors::GREEN;
+              color = Colors::RGB565_GREEN;
               if (state == "armed_home") {
-                icon = Icons::SHIELD_HOME_OUTLINE;
+                icon = Icons::MDI_SHIELD_HOME_OUTLINE;
               } else if (state == "armed_away") {
-                icon = Icons::SHIELD_LOCK_OUTLINE;
+                icon = Icons::MDI_SHIELD_LOCK_OUTLINE;
               } else if (state == "armed_night") {
-                icon = Icons::SHIELD_MOON_OUTLINE;
+                icon = Icons::MDI_SHIELD_MOON_OUTLINE;
               } else if (state == "armed_vacation") {
-                icon = Icons::SHIELD_AIRPLANE_OUTLINE;
+                icon = Icons::MDI_SHIELD_AIRPLANE_OUTLINE;
               } else if (state == "armed_custom_bypass") {
-                icon = Icons::SHIELD_HALF_FULL;
+                icon = Icons::MDI_SHIELD_HALF_FULL;
               }
             }
           } else if (state == "pending") {
-            icon = Icons::SHIELD_OUTLINE;
-            color = Colors::YELLOW;
+            icon = Icons::MDI_SHIELD_OUTLINE;
+            color = Colors::RGB565_YELLOW;
           } else if (state == "triggered") {
-            icon = Icons::SHIELD_ALERT_OUTLINE;
-            color = Colors::RED;
+            icon = Icons::MDI_SHIELD_ALERT_OUTLINE;
+            color = Colors::RGB565_RED;
           }
 
           // Apply the icon and color to the display component

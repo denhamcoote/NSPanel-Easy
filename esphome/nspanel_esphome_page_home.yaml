@@ -261,7 +261,7 @@ script:
 
           // Set color (works for both current and non-current page)
           if (display_mode == 4) return;  // To do: Implement logic for new format
-          disp1->set_component_font_color(target_id, show ? color : Colors::BLACK);
+          disp1->set_component_font_color(target_id, show ? color : Colors::RGB565_BLACK);
 
   - id: page_home_weather_pic
     mode: restart

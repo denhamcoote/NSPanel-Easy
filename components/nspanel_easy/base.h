@@ -137,9 +137,9 @@ extern BlueprintStatusFlags blueprint_status_flags;
  * @return true if device is ready (no blocking operations active), false otherwise
  */
 inline bool is_device_ready_for_tasks() {
-  return system_flags.boot_completed &&  // Boot flag must be set to consider the system ready
-                                         // Device is NOT ready if any of these blocking operations are active
-         !system_flags.ota_in_progress && !system_flags.tft_upload_active;
+  // Boot flag must be set to consider the system ready
+  // Device is NOT ready if any of these blocking operations are active
+  return system_flags.boot_completed && !system_flags.ota_in_progress && !system_flags.tft_upload_active;
 }
 
 /**
