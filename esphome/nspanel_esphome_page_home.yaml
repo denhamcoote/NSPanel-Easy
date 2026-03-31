@@ -227,42 +227,6 @@ script:
     # Extended by:
     # - hw_relays
 
-  - id: page_home_icon_visibility
-    mode: parallel
-    max_runs: 8
-    parameters:
-      component_id: string
-      color: uint32_t
-      show: bool
-    then:
-      - lambda: |-
-          const bool is_current_page = (current_page_id == get_page_id("home"));
-
-          // Extract component parts (handles both "id" and "page.id" formats)
-          const esphome::nspanel_easy::NSPanelEasyNextionComponent component =
-                                                            extractNextionComponent(component_id, hmi::home::PAGE.name);
-
-          // Determine target format: use page.id if not current, otherwise just id
-          char target_id[30];  // 14 + 1 (dot) + 14 + 1 (null) = 30
-          if (is_current_page) {
-            // Apply visibility only if on current page
-            #if ESPHOME_VERSION_CODE >= VERSION_CODE(2025, 11, 0)  // Code for ESPHome newer than v2025.11.0
-            disp1->set_component_visibility(component.component_id, show);
-            #else
-            if (show) disp1->show_component(component.component_id); else disp1->hide_component(component.component_id);
-            #endif
-
-            // Current page: use short id
-            snprintf(target_id, sizeof(target_id), "%s", component.component_id);
-          } else {
-            // Not current page: use page.id format
-            snprintf(target_id, sizeof(target_id), "%s.%s", component.page, component.component_id);
-          }
-
-          // Set color (works for both current and non-current page)
-          if (display_mode == 4) return;  // To do: Implement logic for new format
-          disp1->set_component_font_color(target_id, show ? color : Colors::RGB565_BLACK);
-
   - id: page_home_weather_pic
     mode: restart
     then:
@@ -284,7 +248,6 @@ script:
     then:
       - lambda: |-
           page_home->stop();  // Page home is an exception to the stop_page_constructor, as it can be constructed in the background
-          page_home_icon_visibility->stop();
           page_home_weather_pic->stop();
           page_home_weather_update->stop();
 ...

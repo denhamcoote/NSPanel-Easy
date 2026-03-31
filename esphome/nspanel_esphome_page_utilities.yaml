@@ -80,56 +80,10 @@ esphome:
       - -D NSPANEL_EASY_PAGE_UTILITIES
 
 script:
-  - id: !extend action_component_color
-    then:
-      - lambda: |-
-          if (page == "mem") {
-            if (component == "utilities_icon_color") {  // Utilities button color
-              page_utilities_icon_color = color;
-              page_home_icon_visibility->execute(hmi::home::BT_UTILITIES.name,
-                                                  page_utilities_icon_color,
-                                                  page_utilities_enabled);
-              blueprint_status_flags.page_utilities = true;
-              return;
-            }
-          }
-
-  - id: !extend action_component_text
-    then:
-      - lambda: |-
-          if (page == "mem") {
-            if (component == "utilities_icon") {  // Utilities button
-              disp1->set_component_text(hmi::home::BT_UTILITIES.name, txt.c_str());
-              blueprint_status_flags.page_utilities = true;
-              return;
-            }
-          }
-
-  - id: !extend action_component_val
-    then:
-      - lambda: |-
-          if (page == "mem") {
-            if (component == "utilities_enabled") {  // Utilities button enabled
-              page_utilities_enabled = (val != 0);
-              page_home_icon_visibility->execute(hmi::home::BT_UTILITIES.name,
-                                                  page_utilities_icon_color,
-                                                  page_utilities_enabled);
-              blueprint_status_flags.page_utilities = true;
-              return;
-            }
-          }
-
   - id: !extend page_change
     then:
       - lambda: |-
-          if (current_page->state == "utilities") page_utilities->execute();
-
-  - id: !extend page_home
-    then:
-      - lambda: |-
-          page_home_icon_visibility->execute(hmi::home::BT_UTILITIES.name,
-                                              page_utilities_icon_color,
-                                              page_utilities_enabled);
+          if (new_page_id == get_page_id("utilities")) page_utilities->execute();
 
   - id: page_utilities
     mode: single
@@ -139,5 +93,4 @@ script:
   - id: !extend stop_page_constructors
     then:
       - lambda: page_utilities->stop();
-
 ...

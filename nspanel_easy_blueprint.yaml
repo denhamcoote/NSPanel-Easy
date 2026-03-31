@@ -6481,35 +6481,18 @@ actions:
                                   utilities_enabled: !input utilities_enabled
                                   bt_utilities_icon: !input home_button08_icon
                               - *delay_boot
-                              - alias: utilities_enabled
-                                action: 'esphome.{{ nspanel_name }}_component_val'
+                              - action: 'esphome.{{ nspanel_name }}_icon'
                                 data:
-                                  page: mem
-                                  id: utilities_enabled
-                                  val: '{{ 1 if utilities_enabled else 0 }}'
-                                continue_on_error: true
-                              - condition: '{{ utilities_enabled }}'
-                              - *delay_boot
-                              - alias: utilities_icon
-                                action: 'esphome.{{ nspanel_name }}_component_text'
-                                data:
-                                  page: mem
-                                  id: utilities_icon
-                                  txt: >
+                                  page: home
+                                  id: bt_utilities
+                                  icon: >
                                     {{
                                       all_icons[bt_utilities_icon.split("mdi:")[1]]
                                       if bt_utilities_icon is string and bt_utilities_icon.split("mdi:")[1] in all_icons
                                       else all_icons.gauge
                                     }}
-                                continue_on_error: true
-                              - *delay_boot
-                              - alias: utilities_icon_color
-                                action: 'esphome.{{ nspanel_name }}_component_color'
-                                data:
-                                  page: mem
-                                  id: utilities_icon_color
-                                  color: !input home_button08_icon_color
-                                continue_on_error: true
+                                  icon_color: !input home_button08_icon_color
+                                  visible: '{{ utilities_enabled }}'
 
                       ###### Notification button ######
                       - &refresh_page_home_notification_button
