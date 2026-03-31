@@ -74,12 +74,7 @@ struct BlueprintStatusFlags {
 
   // Default constructor - all flags start as false (zero-initialized)
   BlueprintStatusFlags()
-      : page_home(0),
-        page_qrcode(0),
-        relay_settings(0),
-        version(0),
-        hw_buttons_settings(0),
-        reserved(0) {}
+      : page_home(0), page_qrcode(0), relay_settings(0), version(0), hw_buttons_settings(0), reserved(0) {}
 
   /**
    * `@brief` Check if all active flags (bits 0-5) are set
