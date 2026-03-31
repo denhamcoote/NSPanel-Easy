@@ -635,7 +635,7 @@ select:
       then:
         - lambda: |-
             wakeup_page_id = get_page_id(x.c_str());
-            disp1->send_command_printf("wakeup_page_id=%" PRIu8, wakeup_page_id);
+            if (wakeup_page_id > 0) disp1->send_command_printf("wakeup_page_id=%" PRIu8, wakeup_page_id);
             wait_to_be_ready->execute();
         - script.wait: wait_to_be_ready
         # Extended by:

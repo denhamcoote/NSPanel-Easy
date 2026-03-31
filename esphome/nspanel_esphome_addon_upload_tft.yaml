@@ -72,6 +72,12 @@ display:
     tft_url: ${nextion_update_url}
     exit_reparse_on_start: true
 
+esp32:
+  framework:
+    sdkconfig_options:
+      CONFIG_ESP_TASK_WDT_TIMEOUT_S: "30"
+      CONFIG_LWIP_TCP_MSS: "1436"
+
 globals:
   - id: first_time_synced_ms
     type: uint32_t
