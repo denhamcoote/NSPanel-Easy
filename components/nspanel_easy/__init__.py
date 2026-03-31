@@ -7,14 +7,9 @@ corresponding C++ code and ESP-IDF sdkconfig options during code generation.
 
 Supported configuration keys
 -----------------------------
-- ``disable_bootloader_logs``  - Suppress bootloader UART output.
-- ``lwip_tcp_mss``             - Override the LwIP TCP maximum segment size
-                                 (536-1460 bytes).
-- ``main_task_stack_size``     - ESP-IDF main task stack size (8192-32768 B).
 - ``psram_clk_pin``            - GPIO number for the PSRAM clock signal.
 - ``psram_cs_pin``             - GPIO number for the PSRAM chip-select signal.
 - ``require_disarm_before_rearm`` - Gate re-arm on an explicit disarm first.
-- ``task_wdt_timeout_s``       - Task watchdog timeout in seconds (5-300).
 - ``on_setup``                 - Automation trigger fired once on device setup.
 - ``on_dump_config``           - Automation trigger fired on config dump.
 """
@@ -37,13 +32,9 @@ nspanel_easy_ns = cg.esphome_ns.namespace('nspanel_easy')
 
 CONF_ON_DUMP_CONFIG = "on_dump_config"
 CONF_ON_SETUP = "on_setup"
-DISABLE_BOOTLOADER_LOGS = "disable_bootloader_logs"
-LWIP_TCP_MSS = "lwip_tcp_mss"
-MAIN_TASK_STACK_SIZE = "main_task_stack_size"
 PSRAM_CLK_PIN = "psram_clk_pin"
 PSRAM_CS_PIN = "psram_cs_pin"
 REQUIRE_DISARM_BEFORE_REARM = "require_disarm_before_rearm"
-TASK_WDT_TIMEOUT_S = "task_wdt_timeout_s"
 
 NSPanelEasyComponent = nspanel_easy_ns.class_("NSPanelEasyComponent", cg.Component)
 SetupTrigger = nspanel_easy_ns.class_("SetupTrigger", automation.Trigger.template())
@@ -61,13 +52,9 @@ CONFIG_SCHEMA = cv.Schema({
             cv.GenerateID(CONF_TRIGGER_ID): cv.declare_id(DumpConfigTrigger),
         },
     ),
-    cv.Optional(DISABLE_BOOTLOADER_LOGS): cv.boolean,
-    cv.Optional(LWIP_TCP_MSS): cv.int_range(min=536, max=1460),
-    cv.Optional(MAIN_TASK_STACK_SIZE): cv.int_range(8192, 32768),
     cv.Optional(PSRAM_CLK_PIN): pins.internal_gpio_output_pin_number,
     cv.Optional(PSRAM_CS_PIN): pins.internal_gpio_output_pin_number,
     cv.Optional(REQUIRE_DISARM_BEFORE_REARM): cv.boolean,
-    cv.Optional(TASK_WDT_TIMEOUT_S): cv.int_range(min=5, max=300),
 })
 
 
@@ -77,16 +64,12 @@ async def to_code(config):
 
     This coroutine is called by the ESPHome code-generation pipeline.  It:
 
-    - Instantiates the ``NSPanelEasyComponent`` C++ object and registers it
-      as an ESPHome component.
-    - Wires up any ``on_setup`` / ``on_dump_config`` automation triggers
-      declared in the configuration.
+    - Instantiates the ``NSPanelEasyComponent`` C++ object and registers it as an ESPHome component.
+    - Wires up any ``on_setup`` / ``on_dump_config`` automation triggers declared in the configuration.
     - Emits a deprecation warning when the Arduino framework is in use.
-    - Forwards optional PSRAM pin, bootloader-log suppression, stack size,
-      watchdog timeout, and TCP-MSS settings to the ESP-IDF sdkconfig.
-    - Defines ``USE_REQUIRE_DISARM_BEFORE_REARM`` when requested, and
-      unconditionally defines ``USE_NSPANEL_EASY`` plus the global
-      ``esphome::nspanel_easy`` namespace alias.
+    - Forwards optional PSRAM pin settings to the ESP-IDF sdkconfig.
+    - Defines ``USE_REQUIRE_DISARM_BEFORE_REARM`` when requested
+    - Unconditionally defines ``USE_NSPANEL_EASY`` plus the global ``esphome::nspanel_easy`` namespace alias.
 
     Args:
         config: Validated configuration dictionary produced by
@@ -114,18 +97,6 @@ async def to_code(config):
     if PSRAM_CS_PIN in config:
         cs_pin = config[PSRAM_CS_PIN]
         add_idf_sdkconfig_option("CONFIG_D0WD_PSRAM_CS_IO", cs_pin)
-
-    # Handle bootloader logs configuration - Only when explicitly disabled
-    if DISABLE_BOOTLOADER_LOGS in config and config[DISABLE_BOOTLOADER_LOGS]:
-        add_idf_sdkconfig_option("CONFIG_BOOTLOADER_LOG_LEVEL_NONE", True)
-        add_idf_sdkconfig_option("CONFIG_BOOTLOADER_LOG_LEVEL", 0)
-
-    if MAIN_TASK_STACK_SIZE in config:
-        add_idf_sdkconfig_option("CONFIG_ESP_MAIN_TASK_STACK_SIZE", config[MAIN_TASK_STACK_SIZE])
-    if TASK_WDT_TIMEOUT_S in config:
-        add_idf_sdkconfig_option("CONFIG_ESP_TASK_WDT_TIMEOUT_S", config[TASK_WDT_TIMEOUT_S])
-    if LWIP_TCP_MSS in config:
-        add_idf_sdkconfig_option("CONFIG_LWIP_TCP_MSS", config[LWIP_TCP_MSS])
 
     if REQUIRE_DISARM_BEFORE_REARM in config and config[REQUIRE_DISARM_BEFORE_REARM]:
         cg.add_define("USE_REQUIRE_DISARM_BEFORE_REARM")
