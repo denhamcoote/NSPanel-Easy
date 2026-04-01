@@ -7343,7 +7343,8 @@ actions:
                                     {%- endif -%}
                                   indoor_temp_unit: >
                                     {%- if indoor_temperature_sensor.split(".")[0] == "climate" -%}
-                                      {{ state_attr(indoor_temperature_sensor, "temperature_unit") | default(temperature_units) }}
+                                      {%- set unit = state_attr(indoor_temperature_sensor, "temperature_unit") -%}
+                                      {{ unit if unit is string and unit | length > 0 else temperature_units }}
                                     {%- else -%}
                                       {{ "" }}
                                     {%- endif -%}
