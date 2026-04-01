@@ -1,3 +1,4 @@
 *.tft binary
 *.HMI binary
 *.sh text eol=lf
+*.yaml text eol=lf
