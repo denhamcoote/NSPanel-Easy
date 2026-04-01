@@ -10,10 +10,20 @@ substitutions:
   # Automatically updated by CI/CD on each release
   # Value is imported from versioning/version.yaml
   <<: !include ../versioning/version.yaml
-  # Minimum required versions for compatibility
-  min_blueprint_version: 17
+
+  # Minimum required blueprint version for compatibility
+  # Select 'next' when you change the "contract" between ESPHome and Blueprint
+  # Versioning workflow will replace this by the new version being generated
+  min_blueprint_version: next
+
+  # Minimum required TFT version for compatibility
+  # Must be manually updated with Nextion Editor
   min_tft_version: 15
+
+  # Minimum required ESPHome compiler to run this
+  # Versioning workflow will take care of updating this
   min_esphome_compiler_version: 2026.1.0
+
   TAG_VERSIONING: nspanel.versioning
 
 esphome:

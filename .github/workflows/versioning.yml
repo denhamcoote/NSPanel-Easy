@@ -189,7 +189,7 @@ jobs:
           # If min_blueprint_version is set to the sentinel "next", replace it
           # with the actual version being released, tying the compatibility
           # requirement to this exact release.
-          if [[ "$MIN_BP" == "next" ]]; then
+          if [[ "$MIN_BP" == "next" || "$MIN_BP" == '${version}' ]]; then
             yq eval \
               '.substitutions.min_blueprint_version = strenv(NEW_VERSION)' \
               -i "$ESPHOME_VERSION_FILE"
