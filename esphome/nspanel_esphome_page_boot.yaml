@@ -69,7 +69,7 @@ script:
             const uint16_t temp_version_tft = atoi(params[4].c_str());
             const bool tft_ver_valid = (temp_version_tft > 0);
 
-            if (tft_ver_valid) version_tft->publish_state(temp_version_tft);
+            version_tft->publish_state(tft_ver_valid ? temp_version_tft : NAN);
 
             ESP_LOGI("${TAG_PAGE_BOOT}", "Display params:");
             ESP_LOGI("${TAG_PAGE_BOOT}", "  Mode:        %" PRIu8, display_mode);
@@ -112,7 +112,7 @@ script:
     then:
       - lambda: |-
           if (current_page_id == get_page_id("boot") and !version_blueprint->state.empty())
-            disp1->set_component_text_printf("ver_blueprint", "Blueprint: %s", version_blueprint->state);
+            disp1->set_component_text_printf("ver_blueprint", "Blueprint: %s", version_blueprint->state.c_str());
 
   - id: page_boot_show_ip
     mode: single

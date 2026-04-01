@@ -7777,6 +7777,7 @@ actions:
                                       txt: '{{ entity.icon }}'
                                     continue_on_error: true
                           - &variables_light_modes
+                            alias: variables_light_modes
                             variables:
                               entity_id_valid: '{{ entity_id is defined and entity_id is string and entity_id.split(".") | count == 2 }}'
                               entity_domain: '{{ entity_id.split(".")[0] if entity_id_valid }}'
@@ -9958,7 +9959,8 @@ actions:
                               last_click_button: '{{ last_click_button | first }}'
                           - condition: '{{ last_click_button is defined }}'
                           - condition: '{{ last_click_button.entity is defined }}'
-                          - variables:
+                          - alias: variable_entity_input
+                            variables:
                               entity_id: '{{ last_click_button.entity }}'
                               overlap:
                                 icon: '{{ last_click_button.icon if last_click_button.icon is defined else None }}'
@@ -10167,8 +10169,15 @@ actions:
                               versions.blueprint | length >= 8
                               and not is_number(versions.blueprint)
                             }}
-                          - '{{ not blueprint_compatible }}'
-                          - '{{ not esphome_outdated }}'
+                          - >-
+                            {{
+                              blueprint_reported_parts[0] < blueprint_version_parts[0]
+                              or (blueprint_reported_parts[0] == blueprint_version_parts[0]
+                                  and blueprint_reported_parts[1] < blueprint_version_parts[1])
+                              or (blueprint_reported_parts[0] == blueprint_version_parts[0]
+                                  and blueprint_reported_parts[1] == blueprint_version_parts[1]
+                                  and blueprint_reported_parts[2] < blueprint_version_parts[2])
+                            }}
                         sequence:
                           - action: persistent_notification.create
                             data:
