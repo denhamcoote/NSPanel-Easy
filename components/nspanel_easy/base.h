@@ -36,7 +36,7 @@ struct SystemFlags {
   uint16_t ota_in_progress : 1;    ///< Over-the-air update active
 
   // Reserved flags (bits 11-15)
-  uint16_t reserved : 4;  ///< Reserved for future expansion
+  uint16_t reserved : 5;  ///< Reserved for future expansion
 
   // Default constructor - all flags start as false (zero-initialized)
   SystemFlags()
