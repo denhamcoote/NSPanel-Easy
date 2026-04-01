@@ -7349,7 +7349,7 @@ actions:
                                     {%- endif -%}
                                   indoor_temp: >
                                     {%- if indoor_temperature_sensor.split(".")[0] == "climate" -%}
-                                      {{ indoor_temp_raw | string ~ " " ~ indoor_temp_unit }}
+                                      {{ indoor_temp_raw | string ~ " " ~ indoor_temp_unit if is_number(indoor_temp_raw) else none }}
                                     {%- else -%}
                                       {{ indoor_temp_raw }}
                                     {%- endif -%}
