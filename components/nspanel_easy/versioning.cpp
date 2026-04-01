@@ -16,7 +16,7 @@ bool calver_gte(const std::string &version, const std::string &min_version) {
   // sscanf with exact field count check (!=3) is safe here; NOLINT
   // suppresses cert-err34-c which flags sscanf for non-numeric input,
   // but malformed input is handled by the field count check below.
-  if (sscanf(version.c_str(),     "%d.%d.%d", &ver_y, &ver_m, &ver_s) != 3 ||  // NOLINT(cert-err34-c)
+  if (sscanf(version.c_str(), "%d.%d.%d", &ver_y, &ver_m, &ver_s) != 3 ||      // NOLINT(cert-err34-c)
       sscanf(min_version.c_str(), "%d.%d.%d", &min_y, &min_m, &min_s) != 3) {  // NOLINT(cert-err34-c)
     return false;
   }
