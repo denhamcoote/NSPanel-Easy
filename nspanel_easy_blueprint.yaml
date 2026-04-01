@@ -10078,6 +10078,7 @@ actions:
                               versions.blueprint | length >= 8
                               and not is_number(versions.blueprint)
                             }}
+                          - '{{ versions.blueprint == blueprint_version }}'
                           # Blueprint version reported by ESPHome is compatible
                           # with the minimum version required by the firmware
                           - '{{ blueprint_compatible }}'
@@ -10098,6 +10099,7 @@ actions:
                             {{
                               versions.blueprint | length < 8
                               or is_number(versions.blueprint)
+                              or versions.blueprint != blueprint_version
                             }}
                         sequence:
                           - action: persistent_notification.create
