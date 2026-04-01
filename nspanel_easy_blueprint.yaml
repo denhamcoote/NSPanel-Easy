@@ -245,7 +245,7 @@ blueprint:
 
             *Only one entity may be selected.*
           default: *selector_entity_single_default_empty
-          selector: &entity_temp_sensor-selector
+          selector: &entity_temp_sensor_selector
             entity:
               multiple: *selector_entity_single_multiple
               filter:
@@ -301,9 +301,19 @@ blueprint:
 
             Additionally a temperature correction for the NSPanel sensor is possible under HA Devices.
 
+            You may select either a temperature `sensor` entity or a `climate` entity,
+            in which case the **current temperature** reported by the climate entity will
+            be used, not its target temperature.
+
             *Only one entity may be selected.*
           default: *selector_entity_single_default_empty
-          selector: *entity_temp_sensor-selector
+          selector: &entity_temp_or_climate_sensor_selector
+            entity:
+              multiple: *selector_entity_single_multiple
+              filter:
+                - domain: sensor
+                  device_class: temperature
+                - domain: climate
         home_indoor_temp_icon:
           name: Home page - Indoor Temperature Sensor - Icon (Optional)
           description: "Icon which should be displayed (Default mdi:thermometer)"
@@ -4201,7 +4211,7 @@ trigger_variables:
     }}
 
 variables:
-  blueprint_version: 16
+  blueprint_version: 17
   pages:
     current: '{{ states(currentpage) }}'
     alarm: "alarm"
@@ -7299,7 +7309,6 @@ actions:
                                   txt: '{{ outdoor_temp_trimmed }}'
                                 continue_on_error: true
 
-                          ##### NSPanel Indoor Temp #####
                           - &refresh_page_home_indoor_temp
                             alias: Home page - Indoor temperature
                             sequence:
@@ -7325,7 +7334,25 @@ actions:
                                   - '{{ not embedded_indoor_temperature }}'
                                   - '{{ has_value(indoor_temperature_sensor) }}'
                               - variables:
-                                  indoor_temp: '{{ states(indoor_temperature_sensor, rounded=True, with_unit=True) }}'
+                                  indoor_temp_raw: >
+                                    {%- if indoor_temperature_sensor.split(".")[0] == "climate" -%}
+                                      {%- set current_temp = state_attr(indoor_temperature_sensor, "current_temperature") -%}
+                                      {{ current_temp | round(1) if is_number(current_temp) else none }}
+                                    {%- else -%}
+                                      {{ states(indoor_temperature_sensor, rounded=True, with_unit=True) }}
+                                    {%- endif -%}
+                                  indoor_temp_unit: >
+                                    {%- if indoor_temperature_sensor.split(".")[0] == "climate" -%}
+                                      {{ state_attr(indoor_temperature_sensor, "temperature_unit") | default(temperature_units) }}
+                                    {%- else -%}
+                                      {{ "" }}
+                                    {%- endif -%}
+                                  indoor_temp: >
+                                    {%- if indoor_temperature_sensor.split(".")[0] == "climate" -%}
+                                      {{ indoor_temp_raw | string ~ " " ~ indoor_temp_unit }}
+                                    {%- else -%}
+                                      {{ indoor_temp_raw }}
+                                    {%- endif -%}
                                   indoor_temp_trimmed: >
                                     {{ indoor_temp | regex_replace('\s+', ' ') | trim }}
                               - condition: '{{ indoor_temp_trimmed != "" }}'
