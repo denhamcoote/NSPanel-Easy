@@ -142,4 +142,55 @@ jobs:
           substitutions: |
             ref_name=${{ env.REF_NAME }}
             ref_url=${{ env.REF_URL }}
+
+  # ===========================================================================
+  # Pre-built firmware - ESPHome Latest
+  # ===========================================================================
+  build_prebuilt_latest:
+    name: ${{ matrix.firmware.name }} - Pre-built (latest)
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        firmware:
+          - name: NSPanel Easy
+            yaml-file: prebuilt/nspanel_esphome_prebuilt.yaml
+          - name: Wall Display
+            yaml-file: prebuilt/wall_display.yaml
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+      - name: Build firmware
+        uses: edwardtfn/build-action@add-substitutions-support
+        with:
+          yaml-file: ${{ matrix.firmware.yaml-file }}
+          substitutions: |
+            ref_name=${{ env.REF_NAME }}
+            ref_url=${{ env.REF_URL }}
+
+  # ===========================================================================
+  # Pre-built firmware - ESPHome Dev
+  # ===========================================================================
+  build_prebuilt_dev:
+    name: ${{ matrix.firmware.name }} - Pre-built (dev)
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        firmware:
+          - name: NSPanel Easy
+            yaml-file: prebuilt/nspanel_esphome_prebuilt.yaml
+          - name: Wall Display
+            yaml-file: prebuilt/wall_display.yaml
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+      - name: Build firmware
+        uses: edwardtfn/build-action@add-substitutions-support
+        with:
+          yaml-file: ${{ matrix.firmware.yaml-file }}
+          version: dev
+          substitutions: |
+            ref_name=${{ env.REF_NAME }}
+            ref_url=${{ env.REF_URL }}
 ...
