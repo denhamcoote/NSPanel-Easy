@@ -42,10 +42,10 @@ jobs:
       pull-requests: read
 
     outputs:
-      skip:    ${{ steps.skip_check.outputs.skip }}
+      skip: ${{ steps.skip_check.outputs.skip }}
       version: ${{ steps.next_version.outputs.version }}
       pr_title: ${{ fromJson(steps.pr_info.outputs.result).title }}
-      pr_body:  ${{ fromJson(steps.pr_info.outputs.result).body }}
+      pr_body: ${{ fromJson(steps.pr_info.outputs.result).body }}
 
     steps:
       - name: Checkout code
@@ -269,7 +269,7 @@ jobs:
 
       - name: Copy artifacts to staging directory
         env:
-          BIN:         ${{ steps.locate.outputs.bin }}
+          BIN: ${{ steps.locate.outputs.bin }}
           BIN_FACTORY: ${{ steps.locate.outputs.bin_factory }}
         run: |
           mkdir -p staging
@@ -357,7 +357,7 @@ jobs:
 
       - name: Copy artifacts to staging directory
         env:
-          BIN:         ${{ steps.locate.outputs.bin }}
+          BIN: ${{ steps.locate.outputs.bin }}
           BIN_FACTORY: ${{ steps.locate.outputs.bin_factory }}
         run: |
           mkdir -p staging
@@ -420,8 +420,8 @@ jobs:
       contents: write
 
     outputs:
-      released:    ${{ steps.push_tag.outcome == 'success' }}
-      version:     ${{ needs.bump.outputs.version }}
+      released: ${{ steps.push_tag.outcome == 'success' }}
+      version: ${{ needs.bump.outputs.version }}
       release_url: ${{ steps.create_release.outputs.url }}
 
     steps:
@@ -511,8 +511,8 @@ jobs:
       - name: Build tag message from PR
         env:
           NEW_VERSION: ${{ needs.bump.outputs.version }}
-          PR_TITLE:    ${{ needs.bump.outputs.pr_title }}
-          PR_BODY:     ${{ needs.bump.outputs.pr_body }}
+          PR_TITLE: ${{ needs.bump.outputs.pr_title }}
+          PR_BODY: ${{ needs.bump.outputs.pr_body }}
         run: |
           {
             printf '# v%s - %s\n\n' "$NEW_VERSION" "$PR_TITLE"
@@ -523,7 +523,7 @@ jobs:
         id: push_tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NEW_VERSION:  ${{ needs.bump.outputs.version }}
+          NEW_VERSION: ${{ needs.bump.outputs.version }}
         run: |
           git tag -a "v${NEW_VERSION}" -F tag_message.txt
           git push origin "v${NEW_VERSION}"
