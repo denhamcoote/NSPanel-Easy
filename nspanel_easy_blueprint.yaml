@@ -1509,6 +1509,8 @@ blueprint:
         entity01_name:
           name: Button page 1, Button 1 - Label (Optional)
           description: &description_button_label >-
+            `Optional`
+
             Supports up to 22 characters.
             Longer labels may not display perfectly due to limited space and Nextion text wrapping.
             Use `\r` to force a line break.
