@@ -1508,7 +1508,10 @@ blueprint:
                   - water_heater
         entity01_name:
           name: Button page 1, Button 1 - Label (Optional)
-          description: "Specify a label for this button (supports up to 10 characters)."
+          description: &description_button_label >-
+            Supports up to 22 characters.
+            Longer labels may not display perfectly due to limited space and Nextion text wrapping.
+            Use `\r` to force a line break.
           default: ""
           selector:
             text:
@@ -1541,7 +1544,7 @@ blueprint:
           selector: *button-entity-selector
         entity02_name:
           name: Button page 1, Button 2 - Label (Optional)
-          description: "Specify a label for this button (supports up to 10 characters)."
+          description: *description_button_label
           default: ""
           selector:
             text:
@@ -1573,7 +1576,7 @@ blueprint:
           selector: *button-entity-selector
         entity03_name:
           name: Button page 1, Button 3 - Label (Optional)
-          description: "Specify a label for this button (supports up to 10 characters)."
+          description: *description_button_label
           default: ""
           selector:
             text:
@@ -1605,7 +1608,7 @@ blueprint:
           selector: *button-entity-selector
         entity04_name:
           name: Button page 1, Button 4 - Label (Optional)
-          description: "Specify a label for this button (supports up to 10 characters)."
+          description: *description_button_label
           default: ""
           selector:
             text:
@@ -1637,7 +1640,7 @@ blueprint:
           selector: *button-entity-selector
         entity05_name:
           name: Button page 1, Button 5 - Label (Optional)
-          description: "Specify a label for this button (supports up to 10 characters)."
+          description: *description_button_label
           default: ""
           selector:
             text:
@@ -1669,7 +1672,7 @@ blueprint:
           selector: *button-entity-selector
         entity06_name:
           name: Button page 1, Button 6 - Label (Optional)
-          description: "Specify a label for this button (supports up to 10 characters)."
+          description: *description_button_label
           default: ""
           selector:
             text:
@@ -1701,7 +1704,7 @@ blueprint:
           selector: *button-entity-selector
         entity07_name:
           name: Button page 1, Button 7 - Label (Optional)
-          description: "Specify a label for this button (supports up to 10 characters)."
+          description: *description_button_label
           default: ""
           selector:
             text:
@@ -1733,7 +1736,7 @@ blueprint:
           selector: *button-entity-selector
         entity08_name:
           name: Button page 1, Button 8 - Label (Optional)
-          description: "Specify a label for this button (supports up to 10 characters)."
+          description: *description_button_label
           default: ""
           selector:
             text:
@@ -1777,7 +1780,7 @@ blueprint:
           selector: *button-entity-selector
         entity09_name:
           name: Button page 2, Button 1 - Label (Optional)
-          description: "Specify a label for this button (supports up to 10 characters)."
+          description: *description_button_label
           default: ""
           selector:
             text:
@@ -1809,7 +1812,7 @@ blueprint:
           selector: *button-entity-selector
         entity10_name:
           name: Button page 2, Button 2 - Label (Optional)
-          description: "Specify a label for this button (supports up to 10 characters)."
+          description: *description_button_label
           default: ""
           selector:
             text:
@@ -1841,7 +1844,7 @@ blueprint:
           selector: *button-entity-selector
         entity11_name:
           name: Button page 2, Button 3 - Label (Optional)
-          description: "Specify a label for this button (supports up to 10 characters)."
+          description: *description_button_label
           default: ""
           selector:
             text:
@@ -1873,7 +1876,7 @@ blueprint:
           selector: *button-entity-selector
         entity12_name:
           name: Button page 2, Button 4 - Label (Optional)
-          description: "Specify a label for this button (supports up to 10 characters)."
+          description: *description_button_label
           default: ""
           selector:
             text:
@@ -1905,7 +1908,7 @@ blueprint:
           selector: *button-entity-selector
         entity13_name:
           name: Button page 2, Button 5 - Label (Optional)
-          description: "Specify a label for this button (supports up to 10 characters)."
+          description: *description_button_label
           default: ""
           selector:
             text:
@@ -1937,7 +1940,7 @@ blueprint:
           selector: *button-entity-selector
         entity14_name:
           name: Button page 2, Button 6 - Label (Optional)
-          description: "Specify a label for this button (supports up to 10 characters)."
+          description: *description_button_label
           default: ""
           selector:
             text:
@@ -1969,7 +1972,7 @@ blueprint:
           selector: *button-entity-selector
         entity15_name:
           name: Button page 2, Button 7 - Label (Optional)
-          description: "Specify a label for this button (supports up to 10 characters)."
+          description: *description_button_label
           default: ""
           selector:
             text:
@@ -2001,7 +2004,7 @@ blueprint:
           selector: *button-entity-selector
         entity16_name:
           name: Button page 2, Button 8 - Label (Optional)
-          description: "Specify a label for this button (supports up to 10 characters)."
+          description: *description_button_label
           default: ""
           selector:
             text:
@@ -2045,7 +2048,7 @@ blueprint:
           selector: *button-entity-selector
         entity17_name:
           name: Button page 3, Button 1 - Label (Optional)
-          description: "Specify a label for this button (supports up to 10 characters)."
+          description: *description_button_label
           default: ""
           selector:
             text:
@@ -2077,7 +2080,7 @@ blueprint:
           selector: *button-entity-selector
         entity18_name:
           name: Button page 3, Button 2 - Label (Optional)
-          description: "Specify a label for this button (supports up to 10 characters)."
+          description: *description_button_label
           default: ""
           selector:
             text:
@@ -2109,7 +2112,7 @@ blueprint:
           selector: *button-entity-selector
         entity19_name:
           name: Button page 3, Button 3 - Label (Optional)
-          description: "Specify a label for this button (supports up to 10 characters)."
+          description: *description_button_label
           default: ""
           selector:
             text:
@@ -2141,7 +2144,7 @@ blueprint:
           selector: *button-entity-selector
         entity20_name:
           name: Button page 3, Button 4 - Label (Optional)
-          description: "Specify a label for this button (supports up to 10 characters)."
+          description: *description_button_label
           default: ""
           selector:
             text:
@@ -2173,7 +2176,7 @@ blueprint:
           selector: *button-entity-selector
         entity21_name:
           name: Button page 3, Button 5 - Label (Optional)
-          description: "Specify a label for this button (supports up to 10 characters)."
+          description: *description_button_label
           default: ""
           selector:
             text:
@@ -2205,7 +2208,7 @@ blueprint:
           selector: *button-entity-selector
         entity22_name:
           name: Button page 3, Button 6 - Label (Optional)
-          description: "Specify a label for this button (supports up to 10 characters)."
+          description: *description_button_label
           default: ""
           selector:
             text:
@@ -2237,7 +2240,7 @@ blueprint:
           selector: *button-entity-selector
         entity23_name:
           name: Button page 3, Button 7 - Label (Optional)
-          description: "Specify a label for this button (supports up to 10 characters)."
+          description: *description_button_label
           default: ""
           selector:
             text:
@@ -2269,7 +2272,7 @@ blueprint:
           selector: *button-entity-selector
         entity24_name:
           name: Button page 3, Button 8 - Label (Optional)
-          description: "Specify a label for this button (supports up to 10 characters)."
+          description: *description_button_label
           default: ""
           selector:
             text:
@@ -2313,7 +2316,7 @@ blueprint:
           selector: *button-entity-selector
         entity25_name:
           name: Button page 4, Button 1 - Label (Optional)
-          description: "Specify a label for this button (supports up to 10 characters)."
+          description: *description_button_label
           default: ""
           selector:
             text:
@@ -2345,7 +2348,7 @@ blueprint:
           selector: *button-entity-selector
         entity26_name:
           name: Button page 4, Button 2 - Label (Optional)
-          description: "Specify a label for this button (supports up to 10 characters)."
+          description: *description_button_label
           default: ""
           selector:
             text:
@@ -2377,7 +2380,7 @@ blueprint:
           selector: *button-entity-selector
         entity27_name:
           name: Button page 4, Button 3 - Label (Optional)
-          description: "Specify a label for this button (supports up to 10 characters)."
+          description: *description_button_label
           default: ""
           selector:
             text:
@@ -2409,7 +2412,7 @@ blueprint:
           selector: *button-entity-selector
         entity28_name:
           name: Button page 4, Button 4 - Label (Optional)
-          description: "Specify a label for this button (supports up to 10 characters)."
+          description: *description_button_label
           default: ""
           selector:
             text:
@@ -2441,7 +2444,7 @@ blueprint:
           selector: *button-entity-selector
         entity29_name:
           name: Button page 4, Button 5 - Label (Optional)
-          description: "Specify a label for this button (supports up to 10 characters)."
+          description: *description_button_label
           default: ""
           selector:
             text:
@@ -2473,7 +2476,7 @@ blueprint:
           selector: *button-entity-selector
         entity30_name:
           name: Button page 4, Button 6 - Label (Optional)
-          description: "Specify a label for this button (supports up to 10 characters)."
+          description: *description_button_label
           default: ""
           selector:
             text:
@@ -2505,7 +2508,7 @@ blueprint:
           selector: *button-entity-selector
         entity31_name:
           name: Button page 4, Button 7 - Label (Optional)
-          description: "Specify a label for this button (supports up to 10 characters)."
+          description: *description_button_label
           default: ""
           selector:
             text:
@@ -2537,7 +2540,7 @@ blueprint:
           selector: *button-entity-selector
         entity32_name:
           name: Button page 4, Button 8 - Label (Optional)
-          description: "Specify a label for this button (supports up to 10 characters)."
+          description: *description_button_label
           default: ""
           selector:
             text:
