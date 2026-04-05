@@ -58,6 +58,7 @@ Page buttonpage04
                 page_index.pco=color_pco_navigation
                 page_index.picc=pic_background_main
                 // Back button
+                button_back.pco=color_pco_navigation
                 button_back.picc=pic_background_main
                 button_back.picc2=pic_background_main
                 // Button sub-components (pic, icon, text, bri slots: ids 11-42)
