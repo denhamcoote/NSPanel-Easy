@@ -114,7 +114,6 @@ jobs:
             echo "Rebase failed - main has diverged"
             exit 1
           }
-          git push origin HEAD:main
 
       - name: Calculate next version
         id: next_version
@@ -182,29 +181,18 @@ jobs:
           MIN_BLUEPRINT_VERSION: ${{ steps.versions.outputs.min_blueprint_version }}
           MIN_TFT_VERSION: ${{ steps.versions.outputs.min_tft_version }}
         run: |
-          TEMPLATE=".github/ISSUE_TEMPLATE/bug.yml"
-
-          # Update TFT Version placeholder (index 2)
-          yq eval \
-            '.body[2].attributes.placeholder = ("e.g., " + strenv(MIN_TFT_VERSION))' \
-            -i "$TEMPLATE"
-
-          # Update Firmware Version placeholder (index 3)
-          yq eval \
-            '.body[3].attributes.placeholder = ("e.g., " + strenv(VERSION))' \
-            -i "$TEMPLATE"
-
-          # Update Blueprint Version placeholder (index 4)
-          yq eval \
-            '.body[4].attributes.placeholder = ("e.g., " + strenv(MIN_BLUEPRINT_VERSION))' \
-            -i "$TEMPLATE"
+          # Use label-anchored Python script to avoid fragile body index references.
+          python3 .github/scripts/update_bug_template.py \
+            .github/ISSUE_TEMPLATE/bug.yml \
+            "$MIN_TFT_VERSION" \
+            "$VERSION" \
+            "$MIN_BLUEPRINT_VERSION"
 
       - name: Restore YAML document end markers
         if: steps.skip_check.outputs.skip == 'false'
         run: |
-          # yq strips the YAML document end marker (...) on in-place edits.
-          # Re-append it to all files modified by yq.
-          for file in ./versioning/version.yaml .github/ISSUE_TEMPLATE/bug.yml; do
+          # Re-append document end marker stripped by yq on version.yaml in-place edits.
+          for file in ./versioning/version.yaml; do
             if [ -f "$file" ] && ! tail -1 "$file" | grep -qx '\.\.\.'; then
               echo '...' >> "$file"
             fi
@@ -262,6 +250,8 @@ jobs:
           BIN_FACTORY=$(find prebuilt/.esphome/build -name "firmware-factory.bin" | head -1)
           if [ -z "$BIN" ]; then
             echo "ERROR: firmware.bin not found after build"
+            echo "Build directory contents:"
+            find prebuilt/.esphome/build -type f 2>/dev/null || echo "Build directory does not exist"
             exit 1
           fi
           echo "bin=${BIN}" >> "$GITHUB_OUTPUT"
@@ -348,6 +338,8 @@ jobs:
           BIN_FACTORY=$(find prebuilt/.esphome/build -name "firmware-factory.bin" | head -1)
           if [ -z "$BIN" ]; then
             echo "ERROR: firmware.bin not found after build"
+            echo "Build directory contents:"
+            find prebuilt/.esphome/build -type f 2>/dev/null || echo "Build directory does not exist"
             exit 1
           fi
           echo "bin=${BIN}" >> "$GITHUB_OUTPUT"
@@ -412,6 +404,9 @@ jobs:
     needs: [bump, build-nspanel, build-wall-display]
     if: needs.bump.outputs.skip == 'false'
     runs-on: ubuntu-latest
+    concurrency:
+      group: version-and-release
+      cancel-in-progress: false
     permissions:
       contents: write
 
