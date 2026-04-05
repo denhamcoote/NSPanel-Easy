@@ -23,11 +23,13 @@ import re
 import sys
 
 
-def update_placeholder(content: str, label: str, value: str) -> str:
+def update_placeholder(content: str, label: str, value: str) -> tuple[str, int]:
     """Replace the placeholder value following a given label field.
 
-    Matches the label and the next placeholder: line using a non-greedy
-    DOTALL pattern, replacing only the value after 'e.g., '.
+    Matches the label and the next placeholder: line using MULTILINE mode
+    with line anchors, replacing only the value after 'e.g., '.
+    Does NOT use DOTALL — the trailing match is restricted to non-newline
+    characters to avoid consuming content beyond the target line.
 
     Args:
         content: Full file content as a string.
@@ -35,12 +37,22 @@ def update_placeholder(content: str, label: str, value: str) -> str:
         value:   The new placeholder value to set.
 
     Returns:
-        Updated file content with the placeholder replaced.
-        Returns content unchanged if the label is not found.
+        Tuple of (updated content, number of replacements made).
+        Returns (content, 0) if the label is not found.
     """
-    pattern = r'(label: ' + re.escape(label) + r'\b.*?placeholder: )e\.g\.,.*'
+    pattern = (
+        r'(^\s*label:\s*' + re.escape(label) +
+        r'\s*$[\s\S]*?\s*placeholder:\s*)e\.g\.,[ \t]*[^\n\r]*'
+    )
     replacement = r'\g<1>e.g., ' + value
-    return re.sub(pattern, replacement, content, flags=re.DOTALL, count=1)
+    updated, count = re.subn(
+        pattern,
+        replacement,
+        content,
+        count=1,
+        flags=re.MULTILINE,
+    )
+    return updated, count
 
 
 def main() -> None:
@@ -59,9 +71,29 @@ def main() -> None:
     with open(template_path, encoding='utf-8') as f:
         content = f.read()
 
-    content = update_placeholder(content, 'TFT Version', tft_version)
-    content = update_placeholder(content, 'Firmware Version', firmware_version)
-    content = update_placeholder(content, 'Blueprint Version', blueprint_version)
+    replacements = [
+        ('TFT Version', tft_version),
+        ('Firmware Version', firmware_version),
+        ('Blueprint Version', blueprint_version),
+    ]
+
+    errors = []
+    for label, value in replacements:
+        content, count = update_placeholder(content, label, value)
+        if count != 1:
+            errors.append(
+                f"  '{label}': expected 1 replacement, got {count}"
+            )
+
+    if errors:
+        print('ERROR: placeholder update failed:', file=sys.stderr)
+        for error in errors:
+            print(error, file=sys.stderr)
+        print(
+            'Check that the label names in the template have not been renamed.',
+            file=sys.stderr,
+        )
+        sys.exit(2)
 
     with open(template_path, 'w', encoding='utf-8') as f:
         f.write(content)

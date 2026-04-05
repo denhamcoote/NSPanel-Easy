@@ -292,25 +292,23 @@ jobs:
           NEW_VERSION: ${{ needs.bump.outputs.version }}
         run: |
           MD5=$(cat staging/nspanel_esphome_prebuilt.bin.md5)
-          cat > staging/nspanel_esphome_prebuilt.manifest.json <<EOF
-          {
-            "name": "NSPanel Easy Pre-built",
-            "version": "${NEW_VERSION}",
-            "home_assistant_domain": "esphome",
-            "new_install_prompt_erase": false,
-            "builds": [
-              {
-                "chipFamily": "ESP32",
-                "ota": {
-                  "path": "nspanel_esphome_prebuilt.bin",
-                  "md5": "${MD5}",
-                  "summary": "NSPanel Easy Pre-built v${NEW_VERSION}",
-                  "release_url": "https://github.com/edwardtfn/NSPanel-Easy/releases/tag/v${NEW_VERSION}"
-                }
-              }
-            ]
-          }
-          EOF
+          jq -n \
+            --arg name    "NSPanel Easy Pre-built" \
+            --arg version "$NEW_VERSION" \
+            --arg path    "nspanel_esphome_prebuilt.bin" \
+            --arg md5     "$MD5" \
+            --arg summary "NSPanel Easy Pre-built v${NEW_VERSION}" \
+            --arg url     "https://github.com/edwardtfn/NSPanel-Easy/releases/tag/v${NEW_VERSION}" \
+            '{
+              name: $name,
+              version: $version,
+              home_assistant_domain: "esphome",
+              new_install_prompt_erase: false,
+              builds: [{
+                chipFamily: "ESP32",
+                ota: {path: $path, md5: $md5, summary: $summary, release_url: $url}
+              }]
+            }' > staging/nspanel_esphome_prebuilt.manifest.json
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -380,25 +378,23 @@ jobs:
           NEW_VERSION: ${{ needs.bump.outputs.version }}
         run: |
           MD5=$(cat staging/wall_display.bin.md5)
-          cat > staging/wall_display.manifest.json <<EOF
-          {
-            "name": "NSPanel Easy - Wall Display",
-            "version": "${NEW_VERSION}",
-            "home_assistant_domain": "esphome",
-            "new_install_prompt_erase": false,
-            "builds": [
-              {
-                "chipFamily": "ESP32",
-                "ota": {
-                  "path": "wall_display.bin",
-                  "md5": "${MD5}",
-                  "summary": "NSPanel Easy Wall Display v${NEW_VERSION}",
-                  "release_url": "https://github.com/edwardtfn/NSPanel-Easy/releases/tag/v${NEW_VERSION}"
-                }
-              }
-            ]
-          }
-          EOF
+          jq -n \
+            --arg name    "NSPanel Easy - Wall Display" \
+            --arg version "$NEW_VERSION" \
+            --arg path    "wall_display.bin" \
+            --arg md5     "$MD5" \
+            --arg summary "NSPanel Easy Wall Display v${NEW_VERSION}" \
+            --arg url     "https://github.com/edwardtfn/NSPanel-Easy/releases/tag/v${NEW_VERSION}" \
+            '{
+              name: $name,
+              version: $version,
+              home_assistant_domain: "esphome",
+              new_install_prompt_erase: false,
+              builds: [{
+                chipFamily: "ESP32",
+                ota: {path: $path, md5: $md5, summary: $summary, release_url: $url}
+              }]
+            }' > staging/wall_display.manifest.json
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
