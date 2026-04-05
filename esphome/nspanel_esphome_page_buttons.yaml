@@ -91,25 +91,46 @@ script:
           const uint8_t button_pressed_pic_id = (current_theme == ThemeMode::LIGHT) ?
                                                 ${THEME_PAGE_BUTTONS_LIGHT_PIC_PRESSED} :
                                                 ${THEME_PAGE_BUTTONS_DARK_PIC_PRESSED};
+          const uint16_t pic_id = state ? button_pressed_pic_id : button_pic_id;
+          const uint16_t fg_color = state ? Colors::RGB565_BLUE_INDIGO : Colors::RGB565_WHITE;
 
-          disp1->set_component_picc((button_id + "pic").c_str(), state ? button_pressed_pic_id : button_pic_id);
-          disp1->set_component_picc((button_id + "bri").c_str(), state ? button_pressed_pic_id : button_pic_id);
-          disp1->set_component_picc((button_id + "text").c_str(), state ? button_pressed_pic_id : button_pic_id);
-          disp1->set_component_picc((button_id + "icon").c_str(), state ? button_pressed_pic_id : button_pic_id);
-          disp1->set_component_font((button_id + "icon").c_str(), icon_font);
-          disp1->set_component_foreground_color((button_id + "bri").c_str(),
-                                                state ? Colors::RGB565_BLUE_INDIGO : Colors::RGB565_WHITE);
-          disp1->set_component_foreground_color((button_id + "text").c_str(),
-                                                state ? Colors::RGB565_BLUE_INDIGO : Colors::RGB565_WHITE);
-          disp1->set_component_font_color((button_id + "icon").c_str(), icon_color);
-          disp1->set_component_text((button_id + "icon").c_str(), icon.c_str());
+          // Pre-build component name strings on the stack
+          // Nextion object name limit: 14 chars + NUL = 15
+          // Longest case: "button07" (8) + "icon"/"text" (4) = 12 chars — within limit
+          const char *btn = button_id.c_str();
+          char comp_pic[15];
+          char comp_bri[15];
+          char comp_text[15];
+          char comp_icon[15];
+          snprintf(comp_pic, sizeof(comp_pic), "%spic", btn);
+          snprintf(comp_bri, sizeof(comp_bri), "%sbri", btn);
+          snprintf(comp_text, sizeof(comp_text), "%stext", btn);
+          snprintf(comp_icon, sizeof(comp_icon), "%sicon", btn);
 
-          disp1->set_component_text((button_id + "text").c_str(), wrapText(label.c_str(), 10, ${LANG_BYTES_PER_CHAR}).c_str());
-          disp1->set_component_text((button_id + "bri").c_str(), (strcmp(bri.c_str(), "0") == 0) ? " " : bri.c_str());
+          // Background images
+          disp1->set_component_picc(comp_pic, pic_id);
+          disp1->set_component_picc(comp_bri, pic_id);
+          disp1->set_component_picc(comp_text, pic_id);
+          disp1->set_component_picc(comp_icon, pic_id);
 
-          disp1->send_command_printf("vis %s,1", (button_id + "pic").c_str());
-          disp1->send_command_printf("vis %s,1", (button_id + "icon").c_str());
-          disp1->send_command_printf("vis %s,1", (button_id + "text").c_str());
-          disp1->send_command_printf("vis %s,1", (button_id + "bri").c_str());
-          disp1->send_command_printf("vis %s,1", button_id.c_str());
+          // Foreground colors
+          if (current_page_id != page_id) return;
+          disp1->set_component_foreground_color(comp_bri, fg_color);
+          disp1->set_component_foreground_color(comp_text, fg_color);
+          disp1->set_component_font_color(comp_icon, icon_color);
+          disp1->set_component_font(comp_icon, icon_font);
+
+          // Text content
+          if (current_page_id != page_id) return;
+          disp1->set_component_text(comp_icon, icon.c_str());
+          disp1->set_component_text(comp_text, wrapText(label.c_str(), 10, ${LANG_BYTES_PER_CHAR}).c_str());
+          disp1->set_component_text(comp_bri, (strcmp(bri.c_str(), "0") == 0) ? " " : bri.c_str());
+
+          // Visibility
+          if (current_page_id != page_id) return;
+          disp1->show_component(comp_pic);
+          disp1->show_component(comp_icon);
+          disp1->show_component(comp_text);
+          disp1->show_component(comp_bri);
+          disp1->show_component(btn);
 ...
