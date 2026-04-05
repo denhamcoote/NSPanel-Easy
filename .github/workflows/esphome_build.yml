@@ -167,6 +167,26 @@ jobs:
           substitutions: |
             ref_name=${{ env.REF_NAME }}
             ref_url=${{ env.REF_URL }}
+      - name: Verify compiled output
+        run: |
+          # Locate the binary produced by the build action.
+          # Using find avoids hardcoding the device name from the YAML.
+          BIN=$(find prebuilt/.esphome/build -name "firmware.bin" | head -1)
+          BIN_FACTORY=$(find prebuilt/.esphome/build -name "firmware-factory.bin" | head -1)
+          ok=true
+          if [ ! -s "$BIN" ]; then
+            echo "ERROR: firmware.bin missing or empty"
+            ok=false
+          else
+            echo "OK: firmware.bin ($(wc -c < "$BIN") bytes)"
+          fi
+          if [ -n "$BIN_FACTORY" ] && [ ! -s "$BIN_FACTORY" ]; then
+            echo "ERROR: firmware-factory.bin found but empty"
+            ok=false
+          elif [ -n "$BIN_FACTORY" ]; then
+            echo "OK: firmware-factory.bin ($(wc -c < "$BIN_FACTORY") bytes)"
+          fi
+          [ "$ok" = true ] || exit 1
 
   # ===========================================================================
   # Pre-built firmware - ESPHome Dev
@@ -193,4 +213,24 @@ jobs:
           substitutions: |
             ref_name=${{ env.REF_NAME }}
             ref_url=${{ env.REF_URL }}
+      - name: Verify compiled output
+        run: |
+          # Locate the binary produced by the build action.
+          # Using find avoids hardcoding the device name from the YAML.
+          BIN=$(find prebuilt/.esphome/build -name "firmware.bin" | head -1)
+          BIN_FACTORY=$(find prebuilt/.esphome/build -name "firmware-factory.bin" | head -1)
+          ok=true
+          if [ ! -s "$BIN" ]; then
+            echo "ERROR: firmware.bin missing or empty"
+            ok=false
+          else
+            echo "OK: firmware.bin ($(wc -c < "$BIN") bytes)"
+          fi
+          if [ -n "$BIN_FACTORY" ] && [ ! -s "$BIN_FACTORY" ]; then
+            echo "ERROR: firmware-factory.bin found but empty"
+            ok=false
+          elif [ -n "$BIN_FACTORY" ]; then
+            echo "OK: firmware-factory.bin ($(wc -c < "$BIN_FACTORY") bytes)"
+          fi
+          [ "$ok" = true ] || exit 1
 ...
