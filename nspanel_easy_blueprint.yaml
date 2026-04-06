@@ -9882,13 +9882,13 @@ actions:
                         esphome: '{{ nspanel_event.esphome | default("") }}'
                         tft: >
                           {{
-                            nspanel_event.tft | int(0)
+                            nspanel_event.tft | float(0)
                             if nspanel_event.tft is defined
                             else 0
                           }}
                         tft_min: >
                           {{
-                            nspanel_event.min_tft_version | int(0)
+                            nspanel_event.min_tft_version | float(0)
                             if nspanel_event.min_tft_version is defined
                             else 0
                           }}
