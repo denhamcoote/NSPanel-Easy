@@ -29,6 +29,29 @@ bool calver_gte(const std::string &version, const std::string &min_version) {
   return ver_s >= min_s;
 }
 
+bool tft_ver_gte(const std::string &version, const std::string &min_version) {
+  int ver_maj = 0, ver_min = 0;
+  int min_maj = 0, min_min = 0;
+
+  // Parse both version strings — accept "major.minor" or bare "major".
+  // sscanf returns the number of fields successfully parsed; at least 1
+  // is required. A bare integer (e.g. "16") yields 1 field with minor
+  // defaulting to 0. An empty or non-numeric string yields 0, triggering
+  // the < 1 guard below. NOLINT suppresses cert-err34-c; malformed input
+  // is handled by the field count check.
+  const int ver_fields = sscanf(version.c_str(), "%d.%d", &ver_maj, &ver_min);      // NOLINT(cert-err34-c)
+  const int min_fields = sscanf(min_version.c_str(), "%d.%d", &min_maj, &min_min);  // NOLINT(cert-err34-c)
+
+  if (ver_fields < 1 || min_fields < 1)
+    return false;  // Fail conservatively on empty or unparseable input
+
+  // Compare major first, then minor.
+  // Returns false conservatively on any older segment.
+  if (ver_maj != min_maj)
+    return ver_maj > min_maj;
+  return ver_min >= min_min;
+}
+
 }  // namespace esphome::nspanel_easy
 
 #endif  // NSPANEL_EASY_VERSIONING
