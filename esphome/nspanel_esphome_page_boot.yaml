@@ -67,17 +67,17 @@ script:
             display_mode    = atoi(params[2].c_str());
             display_charset = atoi(params[3].c_str());
 
-            // Validate TFT version string — must be non-empty and match "major[.minor]" format
+            // Validate TFT version string — must be bare "major" or "major.minor",
+            // with both sides non-empty and no more than one dot.
             const std::string &ver_str = params[4];
-            bool tft_ver_valid = !ver_str.empty();
-            if (tft_ver_valid) {
-              for (const char c : ver_str) {
-                if (c != '.' && (c < '0' || c > '9')) {
-                  tft_ver_valid = false;
-                  break;
-                }
-              }
-            }
+            const size_t dot = ver_str.find('.');
+            const bool tft_ver_valid =
+                !ver_str.empty() &&
+                ver_str.find_first_not_of("0123456789.") == std::string::npos &&  // digits and dot only
+                (dot == std::string::npos ||                  // bare integer, no dot
+                 (dot != 0 &&                                 // dot not at start
+                  dot != ver_str.size() - 1 &&               // dot not at end
+                  ver_str.find('.', dot + 1) == std::string::npos));  // no second dot
             version_tft->publish_state(tft_ver_valid ? ver_str : "");
 
             ESP_LOGI("${TAG_PAGE_BOOT}", "Display params:");
