@@ -68,18 +68,18 @@ script:
             display_charset = atoi(params[3].c_str());
 
             char *end = nullptr;
-            const long parsed_version_tft = strtol(params[4].c_str(), &end, 10);
+            const float parsed_version_tft = strtof(params[4].c_str(), &end);
             const bool tft_ver_valid =
-                end != nullptr        &&  // strtol out-param was set
-                *end == '\0'          &&  // entire string was consumed (no trailing garbage)
-                parsed_version_tft > 0 &&  // must be positive
-                parsed_version_tft <= UINT16_MAX;  // must fit in expected range
-            version_tft->publish_state(tft_ver_valid ? static_cast<float>(parsed_version_tft) : NAN);
+                end != nullptr &&            // strtof out-param was set
+                end != params[4].c_str() &&  // at least one character was consumed
+                *end == '\0' &&              // entire string was consumed (no trailing garbage)
+                parsed_version_tft > 0.0f;   // must be positive
+            version_tft->publish_state(tft_ver_valid ? parsed_version_tft : NAN);
 
             ESP_LOGI("${TAG_PAGE_BOOT}", "Display params:");
             ESP_LOGI("${TAG_PAGE_BOOT}", "  Mode:        %" PRIu8, display_mode);
             ESP_LOGI("${TAG_PAGE_BOOT}", "  Charset:     %" PRIu8, display_charset);
-            ESP_LOGI("${TAG_PAGE_BOOT}", "  TFT version: %.0f%s", parsed_version_tft, tft_ver_valid ? "" : " (INVALID)");
+            ESP_LOGI("${TAG_PAGE_BOOT}", "  TFT version: %.1f%s", parsed_version_tft, tft_ver_valid ? "" : " (INVALID)");
 
             system_flags.display_settings_received = tft_ver_valid and display_mode > 0 and display_charset > 0;
           }
