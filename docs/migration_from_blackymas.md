@@ -169,6 +169,12 @@ packages:
       - esphome/nspanel_esphome_addon_climate_dual.yaml
 ```
 
+## CJK language support
+
+CJK (Chinese, Japanese, Korean) language support is now built into the standard TFT files.
+There are no separate CJK variants, simply select the model matching your hardware
+(**NSPanel EU**, **NSPanel US**, or **NSPanel US Landscape**) regardless of the language you use.
+
 ---
 
 ## Step 2 - Flash the Updated Firmware
