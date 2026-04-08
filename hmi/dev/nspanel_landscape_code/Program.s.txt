@@ -27,21 +27,21 @@ Program.s
     int hard_coded_display_mode=1  // 1=EU, 2=US, 3=US Land, 4=Blank, 5=Easy EU, 6=Easy US, 7=Easy US Land
     int display_mode=0
     int magic_flag_found_at_boot=0
-    repo sys0,0  // Read magic byte from address 0
-    if(sys0==0x4E)
+    repo sys0,0  // Read magic byte from addresses 0-3
+    if(sys0==2037602629)  // "Easy" in ASCII little-endian
     {
       magic_flag_found_at_boot=1
-      repo display_mode,1  // Read display_mode from address 1
+      repo display_mode,4  // Read display_mode from addresses 4-7
       if(display_mode<1||display_mode>7)
       {
         display_mode=hard_coded_display_mode
-        wepo hard_coded_display_mode,1
+        wepo hard_coded_display_mode,4
       }
     }else
     {
       display_mode=hard_coded_display_mode
-      wepo 0x4E,0
-      wepo hard_coded_display_mode,1
+      wepo 2037602629,0   // "Easy" magic
+      wepo hard_coded_display_mode,4
     }
     bauds=115200 //Configure baudrate
     recmod=0//Serial data parsing mode:0-Passive mode;1-Active mode
