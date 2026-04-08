@@ -170,9 +170,9 @@ script:
             ESP_LOGV("${TAG_HW_BUTTONS}", "Buttons bars not visible");
             return;
           }
-          const uint8_t display_mode_idx = display_model->active_index().value_or(UINT8_MAX);
-          if (display_mode_idx == UINT8_MAX) return;
-          display_mode_idx += 1;
+          const uint8_t display_mode_index = display_model->active_index().value_or(UINT8_MAX);
+          if (display_mode_index == UINT8_MAX) return;
+          const uint8_t display_mode_idx = display_mode_index + 1;
           // Left button
           if (button_mask & 1 and id(hardware_settings).button_left_enabled) {
             static uint16_t button_bar_text_left_last_color_sent;

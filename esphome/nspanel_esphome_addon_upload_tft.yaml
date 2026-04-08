@@ -17,6 +17,7 @@ substitutions:
   upload_tft_wait_ms_after_boot: 300000  # 5min
   ##############################################
   TAG_UPLOAD_TFT: "nspanel.addon.upload_tft"
+  DISPLAY_MODES_BLANK_TEXT: ${DISPLAY_MODES.BLANK.TEXT}
 
 esphome:
   platformio_options:
@@ -97,7 +98,7 @@ script:
             }
 
             // Only proceed when a standard TFT is selected (indices 1+)
-            if (!display_valid || display_model->current_option() == "${DISPLAY_MODES.BLANK.TEXT}") {
+            if (!display_valid || display_model->current_option() == "${DISPLAY_MODES_BLANK_TEXT}") {
               ESP_LOGD("${TAG_UPLOAD_TFT}", "No hardware TFT selected");
               return;
             }
