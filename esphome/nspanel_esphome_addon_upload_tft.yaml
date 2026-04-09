@@ -343,7 +343,6 @@ select:
     options:
       - ${DISPLAY_MODES.BLANK.TEXT}
       - ${DISPLAY_MODES.EASY_EU.TEXT}
-    initial_option: ${DISPLAY_MODES.BLANK.TEXT}
 
 time:
   - id: !extend time_provider
