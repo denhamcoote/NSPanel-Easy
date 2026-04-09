@@ -41,5 +41,5 @@ climate:
         mode: "heat_cool"
 
 packages:
-  - !include nspanel_esphome_addon_climate_base.yaml
+  climate_base_package: !include nspanel_esphome_addon_climate_base.yaml
 ...
