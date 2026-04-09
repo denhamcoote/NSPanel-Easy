@@ -91,14 +91,18 @@ script:
       - lambda: |-
           // Automatic upload is enabled
           #if NSPANEL_EASY_ADDON_UPLOAD_TFT_AUTOMATICALLY
+            static const char* const NEXTION_UPDATE_URL = "${nextion_update_url}";
+            const bool has_url_override = NEXTION_UPDATE_URL[0] != '\0';
+
             // Return if sensor has value and versions match (no update needed)
-            if (tft_ver_gte(version_tft->state, "${min_tft_version}")) {
+            if (!has_url_override && tft_ver_gte(version_tft->state, "${min_tft_version}")) {
               ESP_LOGV("${TAG_UPLOAD_TFT}", "Supported version");
               return;
             }
 
             // Only proceed when a standard TFT is selected (indices 1+)
-            if (!display_valid || display_model->current_option() == "${DISPLAY_MODES_BLANK_TEXT}") {
+            if (!has_url_override &&
+                (!display_valid || display_model->current_option() == "${DISPLAY_MODES.BLANK.TEXT}")) {
               ESP_LOGD("${TAG_UPLOAD_TFT}", "No hardware TFT selected");
               return;
             }
