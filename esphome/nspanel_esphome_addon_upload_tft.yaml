@@ -214,7 +214,8 @@ script:
             if (idx < FILENAMES_COUNT) {
               resolved_url = std::string("${nextion_update_base_url}/nspanel_") + FILENAMES[idx] + ".tft";
             } else {
-              ESP_LOGE("${TAG_UPLOAD_TFT}", "No valid display model selected");
+              ESP_LOGE("${TAG_UPLOAD_TFT}", "TFT upload aborted: No valid display model selected");
+              upload_tft->stop();
               return;
             }
           }
