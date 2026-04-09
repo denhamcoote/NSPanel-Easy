@@ -21,7 +21,6 @@ substitutions:
   THEME_LIGHT_COLOR_PCO_SECONDARY: ${COLOR_GRAY_MEDIUM}    # Mid gray for secondary
   THEME_LIGHT_COLOR_PCO_NAVIGATION: ${COLOR_GRAY_DARK}     # Colors::RGB565_GRAY_DARK for navigation
   THEME_LIGHT_COLOR_PCO_UNSUPPORTED: ${COLOR_GRAY_LIGHT}   # Light gray - visually "faded"
-  BAUD_RATE: '115200'
   button_back_font: "8"
   COLOR_BLACK: '0'              # Colors::RGB565_BLACK
   COLOR_BLUE_INDIGO: '10597'    # Colors::RGB565_BLUE_INDIGO
@@ -34,8 +33,6 @@ substitutions:
   COLOR_RED_PRIMARY: '63488'    # Colors::RGB565_RED
   COLOR_WHITE: '65535'          # Colors::RGB565_WHITE
   COLOR_YELLOW_GOLDEN: '64992'  # Colors::RGB565_YELLOW_GOLDEN
-  GPIO_DISPLAY_NEXTION_RX_PIN: 17
-  GPIO_DISPLAY_NEXTION_TX_PIN: 16
   GPIO_DISPLAY_POWER_PIN:
     number: 4
     inverted: true
@@ -220,12 +217,6 @@ script:
 
   - id: !extend dump_config
     then:
-      # Report UART
-      - lambda: |-
-          ESP_LOGCONFIG("${TAG_HW_DISPLAY}", "UART:");
-          ESP_LOGCONFIG("${TAG_HW_DISPLAY}", "  Baud rate: %" PRIu32 " bps", tf_uart->get_baud_rate());
-          ESP_LOGCONFIG("${TAG_HW_DISPLAY}", "  Queue size: %d", tf_uart->available());
-
       # Report Nextion status
       - lambda: |-
           ESP_LOGCONFIG("${TAG_HW_DISPLAY}", "Nextion:");
@@ -425,7 +416,6 @@ script:
           timer_dim->stop();
           timer_page->stop();
           timer_reset_all->stop();
-          wait_for_uart_available->stop();
           wait_for_version_tft->stop();
           wakeup->stop();
 
@@ -552,17 +542,6 @@ script:
                   - delay: 2s
                   - switch.turn_on: screen_power
                   - delay: 19s
-
-  - id: wait_for_uart_available
-    mode: single
-    then:
-      - repeat:
-          count: 60  # seconds
-          then:
-            - lambda: |-
-                if (tf_uart->available() < 1) wait_for_uart_available->stop();
-                if (iteration % 5 == 0) boot_log->execute("Boot", "Waiting for UART empty queue");
-            - delay: 1s
 
   - id: wait_for_version_tft
     mode: single
@@ -788,10 +767,4 @@ text_sensor:
 
             // Call new CSV handler
             event_from_display->execute(params, static_cast<uint8_t>(params.size()));
-
-uart:
-  - id: tf_uart  # UART for Nextion display
-    tx_pin: ${GPIO_DISPLAY_NEXTION_TX_PIN}
-    rx_pin: ${GPIO_DISPLAY_NEXTION_RX_PIN}
-    baud_rate: ${BAUD_RATE}
 ...
