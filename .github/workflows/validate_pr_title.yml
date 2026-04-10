@@ -42,7 +42,7 @@ jobs:
     name: Validate PR title
     runs-on: ubuntu-latest
     # Dependabot PRs are exempt — their titles follow Dependabot's own format.
-    if: github.actor != 'dependabot[bot]'
+    if: github.event.pull_request.user.login != 'dependabot[bot]'
     steps:
       - name: Check title format
         env:
