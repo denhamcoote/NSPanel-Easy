@@ -15,6 +15,9 @@
 #   - synchronize : new commits pushed (title may have been corrected)
 #   - reopened    : PR reopened after being closed
 #
+# Dependabot PRs are exempt — their titles follow Dependabot's own format
+# which cannot be customised to match this convention.
+#
 # To enforce this as a merge gate, add "Validate PR title / All checks passed"
 # to the list of required status checks in the branch protection rules for `main`.
 
@@ -38,6 +41,8 @@ jobs:
   validate:
     name: Validate PR title
     runs-on: ubuntu-latest
+    # Dependabot PRs are exempt — their titles follow Dependabot's own format.
+    if: github.actor != 'dependabot[bot]'
     steps:
       - name: Check title format
         env:
@@ -76,6 +81,7 @@ jobs:
   all-checks-passed:
     name: Validate PR title / All checks passed
     runs-on: ubuntu-latest
+    permissions: {}
     needs: validate
     if: always()
     steps:
