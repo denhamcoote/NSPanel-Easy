@@ -20,7 +20,7 @@ jobs:
           fetch-depth: '0'
 
       - name: Identify changed files
-        uses: step-security/changed-files@v47.0.1
+        uses: step-security/changed-files@v47.0.5
         id: changed-files
         with:
           files: |

@@ -43,7 +43,7 @@ jobs:
       - name: Detect changed files
         id: changed
         if: github.event_name == 'pull_request'
-        uses: step-security/changed-files@v47.0.1
+        uses: step-security/changed-files@v47.0.5
         with:
           files: |
             nspanel_esphome*.yaml
@@ -99,6 +99,7 @@ jobs:
     if: needs.changes.outputs.any_changed == 'true' || github.event_name != 'pull_request'
     strategy:
       fail-fast: false
+      max-parallel: 8
       matrix:
         firmware:
           - name: Basic (IDF)
@@ -144,6 +145,7 @@ jobs:
     if: needs.changes.outputs.any_changed == 'true' || github.event_name != 'pull_request'
     strategy:
       fail-fast: false
+      max-parallel: 8
       matrix:
         firmware:
           - name: Basic (IDF)
