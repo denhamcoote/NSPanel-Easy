@@ -52,10 +52,10 @@ jobs:
             prebuilt/wall_display*.yaml
             .github/workflows/esphome_build.yml
             .test/*.yaml
-            *.h
-            *.c
-            *.cpp
-            *.py
+            **/*.h
+            **/*.c
+            **/*.cpp
+            **/*.py
 
       # On schedule/workflow_dispatch the step above is skipped, so
       # any_changed is empty — treat that as "yes, proceed".
