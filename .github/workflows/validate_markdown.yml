@@ -61,7 +61,7 @@ jobs:
       - name: Detect changed Markdown files
         id: changed
         if: github.event_name == 'pull_request'
-        uses: step-security/changed-files@v47.0.1
+        uses: step-security/changed-files@v47.0.5
         with:
           files: '**/*.md'
 
