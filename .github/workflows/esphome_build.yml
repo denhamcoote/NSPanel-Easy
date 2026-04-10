@@ -51,6 +51,8 @@ jobs:
             prebuilt/nspanel_esphome*.yaml
             prebuilt/wall_display*.yaml
             .github/workflows/esphome_build.yml
+            .github/requirements.txt
+            .rules/yamllint.yml
             .test/*.yaml
             **/*.h
             **/*.c
