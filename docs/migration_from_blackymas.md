@@ -148,6 +148,7 @@ packages:
 | `ota_password` | It was set on the remote package to use your WiFi password | You have to add the substitution `ota_password: ${wifi_password}` for backward compatibility |
 | `language` | Selected via Blueprint dropdown | Set as `language: xx` substitution in ESPHome YAML - see [Localization](localization.md) |
 | `nextion_update_url` | Used to select the TFT model or override the URL | Now a full override only. Remove it unless you are hosting a custom TFT file locally |
+| `upload_tft` / `wake_up` API actions | Registered by default | Opt-in — add `include_action_upload_tft: true` and/or `include_action_wake_up: true` to your substitutions if needed |
 | `url` | `https://github.com/Blackymas/NSPanel_HA_Blueprint` | `https://github.com/edwardtfn/NSPanel-Easy` |
 | `ref` | `main` (or a specific version) | `latest` |
 | Add-on file paths | Root level (e.g. `nspanel_esphome_addon_climate_heat.yaml`) | Inside `esphome/` folder (e.g. `esphome/nspanel_esphome_addon_climate_heat.yaml`) |
@@ -411,3 +412,15 @@ A: Only if you are hosting a custom or local TFT file. If you set it to select y
 model in the Blackymas project, remove it. Model selection is now handled automatically
 by the **Display model** selector in Home Assistant. See the
 [TFT Upload Add-on documentation](addon_upload_tft.md) for details.
+
+**Q: Some API actions I was calling from automations are no longer available after migration.**
+A: The `upload_tft` and `wake_up` actions are no longer registered by default to reduce boot
+memory usage. Add the corresponding substitutions to your ESPHome YAML to restore them:
+
+```yaml
+substitutions:
+  include_action_upload_tft: true  # Restore the upload_tft API action
+  include_action_wake_up: true     # Restore the wake_up API action
+```
+
+See [Advanced Configuration](install.md#reducing-registered-api-actions) for details.
