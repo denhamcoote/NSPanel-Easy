@@ -9,7 +9,7 @@
 # Usage:
 #   ./generate_images.sh [orientation]
 #
- portrait| portrait
+#   landscape | portrait | all
 #
 # Output directories (alongside this script, inside ui/pics/):
 #   landscape/    Files named by HMI slot number (e.g. 0.png, 1.png, ...)
@@ -86,7 +86,7 @@ magick_command() {
         popd &>/dev/null
     else
         # Docker fallback — paths must be relative to /imgs inside the container
-        docker run --rm -v "${SCRIPT_DIR}:/imgs" dpokidov/imagemagick "$@"
+        docker run --rm -v "${SCRIPT_DIR}:/imgs" -w /imgs dpokidov/imagemagick "$@"
     fi
 }
 
@@ -146,6 +146,7 @@ def magick(*args):
     else:
         cmd = ["docker", "run", "--rm",
                "-v", f"{pics_dir}:/imgs",
+               "-w", "/imgs",
                "dpokidov/imagemagick"] + list(args)
     result = subprocess.run(cmd, cwd=pics_dir, capture_output=True, text=True)
     if result.returncode != 0:
