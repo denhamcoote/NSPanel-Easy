@@ -91,7 +91,7 @@ Text bright_text
         Fill                    : crop image
         Associated Keyboard     : none
         Font ID                 : 1
-        Cropped Back. Picture ID: 33
+        Cropped Back. Picture ID: 0
         Horizontal Alignment    : right
         Vertical Alignment      : bottom
         Input Type              : character
@@ -118,7 +118,7 @@ Text dim_text
         Fill                    : crop image
         Associated Keyboard     : none
         Font ID                 : 1
-        Cropped Back. Picture ID: 33
+        Cropped Back. Picture ID: 0
         Horizontal Alignment    : right
         Vertical Alignment      : center
         Input Type              : character
@@ -145,7 +145,7 @@ Text lbl_bright
         Fill                    : crop image
         Associated Keyboard     : none
         Font ID                 : 1
-        Cropped Back. Picture ID: 33
+        Cropped Back. Picture ID: 0
         Horizontal Alignment    : left
         Vertical Alignment      : center
         Input Type              : character
@@ -172,7 +172,7 @@ Text lbl_dim
         Fill                    : crop image
         Associated Keyboard     : none
         Font ID                 : 1
-        Cropped Back. Picture ID: 33
+        Cropped Back. Picture ID: 0
         Horizontal Alignment    : left
         Vertical Alignment      : center
         Input Type              : character
