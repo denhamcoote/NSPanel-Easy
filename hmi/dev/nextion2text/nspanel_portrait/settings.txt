@@ -346,7 +346,9 @@ Slider brightslider
             tm_bright.en=1
         
         Touch Move Event
-            tm_bright.en=1
+            covx brightslider.val,bright_text.txt,0,0
+            bright_text.txt+="%"
+            dim=brightslider.val
         
 Slider dimslider
     Attributes
@@ -377,7 +379,8 @@ Slider dimslider
             tm_dim.en=1
         
         Touch Move Event
-            tm_dim.en=1
+            covx dimslider.val,dim_text.txt,0,0
+            dim_text.txt+="%"
         
 Button button_back
     Attributes
@@ -442,7 +445,7 @@ Hotspot bt_sleep_hs
         Effect Time      : 300
     
     Events
-        Touch Press Event
+        Touch Release Event
             page screensaver
         
 Hotspot bt_theme_hs
@@ -461,16 +464,25 @@ Hotspot bt_theme_hs
         Effect Time      : 300
     
     Events
-        Touch Press Event
-            theme=1-theme
-            theme_apply.previous_page.val=dp
-            page theme_apply
+        Touch Release Event
+            printh 92
+            prints "localevent",0
+            printh 00
+            if(theme==1)
+            {
+                prints "settings,theme,0",0
+            }else
+            {
+                prints "settings,theme,1",0
+            }
+            printh 00
+            printh FF FF FF
         
 Timer tm_bright
     Attributes
         ID         : 8
         Scope      : local
-        Period (ms): 1000
+        Period (ms): 750
         Enabled    : no
     
     Events
@@ -491,7 +503,7 @@ Timer tm_dim
     Attributes
         ID         : 9
         Scope      : local
-        Period (ms): 1000
+        Period (ms): 750
         Enabled    : no
     
     Events
