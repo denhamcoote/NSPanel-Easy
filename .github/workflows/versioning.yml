@@ -86,7 +86,7 @@ jobs:
       - name: Get PR information
         id: pr_info
         if: steps.skip_check.outputs.skip == 'false'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             try {
