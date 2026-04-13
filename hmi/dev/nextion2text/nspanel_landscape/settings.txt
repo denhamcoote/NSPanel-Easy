@@ -1,7 +1,7 @@
 Page settings
     Attributes
         ID                 : 0
-        Scope              : global
+        Scope              : local
         Dragging           : 0
         Send Component ID  : on press and release
         Opacity            : 127
