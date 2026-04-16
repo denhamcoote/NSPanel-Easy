@@ -20,18 +20,13 @@ Page home
     Events
         Preinitialize Event
             back_page_id=home_page_id
+            // restore chips
+            for(sys0=11;sys0<=20;sys0++)
+            {
+                b[sys0].picc=home.pic
+                b[sys0].font=chip_font
+            }
             // set component visibility
-            // chips
-            vis chip_relay1,vis_chip_relay1
-            vis chip_relay2,vis_chip_relay2
-            vis chip_climate,vis_chip_climate
-            vis chip01,vis_chip01
-            vis chip02,vis_chip02
-            vis chip03,vis_chip03
-            vis chip04,vis_chip04
-            vis chip05,vis_chip05
-            vis chip06,vis_chip06
-            vis chip07,vis_chip07
             // indoor temp
             vis indr_temp,vis_indr_temp
             vis indr_temp_icon,vis_indr_temp
@@ -287,7 +282,7 @@ Text right_bt_text
 Text chip_relay1
     Attributes
         ID                      : 11
-        Scope                   : global
+        Scope                   : local
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
@@ -314,7 +309,7 @@ Text chip_relay1
 Text chip_relay2
     Attributes
         ID                      : 12
-        Scope                   : global
+        Scope                   : local
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
@@ -341,7 +336,7 @@ Text chip_relay2
 Text chip_climate
     Attributes
         ID                      : 13
-        Scope                   : global
+        Scope                   : local
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
@@ -368,7 +363,7 @@ Text chip_climate
 Text chip01
     Attributes
         ID                      : 14
-        Scope                   : global
+        Scope                   : local
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
@@ -395,7 +390,7 @@ Text chip01
 Text chip02
     Attributes
         ID                      : 15
-        Scope                   : global
+        Scope                   : local
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
@@ -422,7 +417,7 @@ Text chip02
 Text chip03
     Attributes
         ID                      : 16
-        Scope                   : global
+        Scope                   : local
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
@@ -449,7 +444,7 @@ Text chip03
 Text chip04
     Attributes
         ID                      : 17
-        Scope                   : global
+        Scope                   : local
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
@@ -476,7 +471,7 @@ Text chip04
 Text chip05
     Attributes
         ID                      : 18
-        Scope                   : global
+        Scope                   : local
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
@@ -503,7 +498,7 @@ Text chip05
 Text chip06
     Attributes
         ID                      : 19
-        Scope                   : global
+        Scope                   : local
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
@@ -530,7 +525,7 @@ Text chip06
 Text chip07
     Attributes
         ID                      : 20
-        Scope                   : global
+        Scope                   : local
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127

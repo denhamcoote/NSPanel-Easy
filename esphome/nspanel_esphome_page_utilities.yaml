@@ -84,7 +84,7 @@ script:
     then:
       - lambda: |-
           if (!is_home_page) return;
-          if (strcmp(component.component_id, "bt_utilities") != 0) return;
+          if (component_id != "bt_utilities") return;
           page_utilities_enabled = visible;
           disp1->send_command_printf("vis_bt_utilities=%" PRIu8, visible ? 1 : 0);
           if (is_current_page) disp1->set_component_visibility("bt_utilities", visible);

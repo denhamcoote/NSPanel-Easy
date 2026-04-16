@@ -19,6 +19,12 @@ Page screensaver
     
     Events
         Preinitialize Event
+            // restore chips
+            for(sys0=6;sys0<=15;sys0++)
+            {
+                b[sys0].bco=screensaver.bco
+                b[sys0].font=chip_font
+            }
             sendme
         
         Touch Release Event
@@ -32,9 +38,9 @@ Text text
         Send Component ID   : disabled
         Opacity             : 127
         x coordinate        : 0
-        y coordinate        : 15
+        y coordinate        : 45
         Width               : 450
-        Height              : 290
+        Height              : 230
         Effect              : load
         Effect Priority     : 0
         Effect Time         : 300
@@ -50,6 +56,336 @@ Text text
         Text                : 
         Max. Text Size      : 1000
         Word wrap           : enabled
+        Horizontal Spacing  : 0
+        Vertical Spacing    : 0
+    
+    Events
+        Touch Release Event
+            page wakeup_page_id
+        
+Text chip_relay1
+    Attributes
+        ID                  : 6
+        Scope               : local
+        Dragging            : 0
+        Send Component ID   : disabled
+        Opacity             : 127
+        x coordinate        : 13
+        y coordinate        : 2
+        Width               : 30
+        Height              : 30
+        Effect              : load
+        Effect Priority     : 0
+        Effect Time         : 300
+        Fill                : solid color
+        Style               : flat
+        Associated Keyboard : none
+        Font ID             : 7
+        Back. Color         : 0
+        Font Color          : 52857
+        Horizontal Alignment: center
+        Vertical Alignment  : center
+        Input Type          : character
+        Text                : 
+        Max. Text Size      : 3
+        Word wrap           : disabled
+        Horizontal Spacing  : 0
+        Vertical Spacing    : 0
+    
+    Events
+        Touch Release Event
+            page wakeup_page_id
+        
+Text chip_relay2
+    Attributes
+        ID                  : 7
+        Scope               : local
+        Dragging            : 0
+        Send Component ID   : disabled
+        Opacity             : 127
+        x coordinate        : 42
+        y coordinate        : 2
+        Width               : 30
+        Height              : 30
+        Effect              : load
+        Effect Priority     : 0
+        Effect Time         : 300
+        Fill                : solid color
+        Style               : flat
+        Associated Keyboard : none
+        Font ID             : 7
+        Back. Color         : 0
+        Font Color          : 52857
+        Horizontal Alignment: center
+        Vertical Alignment  : center
+        Input Type          : character
+        Text                : 
+        Max. Text Size      : 3
+        Word wrap           : disabled
+        Horizontal Spacing  : 0
+        Vertical Spacing    : 0
+    
+    Events
+        Touch Release Event
+            page wakeup_page_id
+        
+Text chip_climate
+    Attributes
+        ID                  : 8
+        Scope               : local
+        Dragging            : 0
+        Send Component ID   : disabled
+        Opacity             : 127
+        x coordinate        : 71
+        y coordinate        : 2
+        Width               : 30
+        Height              : 30
+        Effect              : load
+        Effect Priority     : 0
+        Effect Time         : 300
+        Fill                : solid color
+        Style               : flat
+        Associated Keyboard : none
+        Font ID             : 7
+        Back. Color         : 0
+        Font Color          : 52857
+        Horizontal Alignment: center
+        Vertical Alignment  : center
+        Input Type          : character
+        Text                : 
+        Max. Text Size      : 3
+        Word wrap           : disabled
+        Horizontal Spacing  : 0
+        Vertical Spacing    : 0
+    
+    Events
+        Touch Release Event
+            page wakeup_page_id
+        
+Text chip01
+    Attributes
+        ID                  : 9
+        Scope               : local
+        Dragging            : 0
+        Send Component ID   : disabled
+        Opacity             : 127
+        x coordinate        : 100
+        y coordinate        : 2
+        Width               : 30
+        Height              : 30
+        Effect              : load
+        Effect Priority     : 0
+        Effect Time         : 300
+        Fill                : solid color
+        Style               : flat
+        Associated Keyboard : none
+        Font ID             : 7
+        Back. Color         : 0
+        Font Color          : 52857
+        Horizontal Alignment: center
+        Vertical Alignment  : center
+        Input Type          : character
+        Text                : 
+        Max. Text Size      : 3
+        Word wrap           : disabled
+        Horizontal Spacing  : 0
+        Vertical Spacing    : 0
+    
+    Events
+        Touch Release Event
+            page wakeup_page_id
+        
+Text chip02
+    Attributes
+        ID                  : 10
+        Scope               : local
+        Dragging            : 0
+        Send Component ID   : disabled
+        Opacity             : 127
+        x coordinate        : 129
+        y coordinate        : 2
+        Width               : 30
+        Height              : 30
+        Effect              : load
+        Effect Priority     : 0
+        Effect Time         : 300
+        Fill                : solid color
+        Style               : flat
+        Associated Keyboard : none
+        Font ID             : 7
+        Back. Color         : 0
+        Font Color          : 52857
+        Horizontal Alignment: center
+        Vertical Alignment  : center
+        Input Type          : character
+        Text                : 
+        Max. Text Size      : 3
+        Word wrap           : disabled
+        Horizontal Spacing  : 0
+        Vertical Spacing    : 0
+    
+    Events
+        Touch Release Event
+            page wakeup_page_id
+        
+Text chip03
+    Attributes
+        ID                  : 11
+        Scope               : local
+        Dragging            : 0
+        Send Component ID   : disabled
+        Opacity             : 127
+        x coordinate        : 158
+        y coordinate        : 2
+        Width               : 30
+        Height              : 30
+        Effect              : load
+        Effect Priority     : 0
+        Effect Time         : 300
+        Fill                : solid color
+        Style               : flat
+        Associated Keyboard : none
+        Font ID             : 7
+        Back. Color         : 0
+        Font Color          : 52857
+        Horizontal Alignment: center
+        Vertical Alignment  : center
+        Input Type          : character
+        Text                : 
+        Max. Text Size      : 3
+        Word wrap           : disabled
+        Horizontal Spacing  : 0
+        Vertical Spacing    : 0
+    
+    Events
+        Touch Release Event
+            page wakeup_page_id
+        
+Text chip04
+    Attributes
+        ID                  : 12
+        Scope               : local
+        Dragging            : 0
+        Send Component ID   : disabled
+        Opacity             : 127
+        x coordinate        : 187
+        y coordinate        : 2
+        Width               : 30
+        Height              : 30
+        Effect              : load
+        Effect Priority     : 0
+        Effect Time         : 300
+        Fill                : solid color
+        Style               : flat
+        Associated Keyboard : none
+        Font ID             : 7
+        Back. Color         : 0
+        Font Color          : 52857
+        Horizontal Alignment: center
+        Vertical Alignment  : center
+        Input Type          : character
+        Text                : 
+        Max. Text Size      : 3
+        Word wrap           : disabled
+        Horizontal Spacing  : 0
+        Vertical Spacing    : 0
+    
+    Events
+        Touch Release Event
+            page wakeup_page_id
+        
+Text chip05
+    Attributes
+        ID                  : 13
+        Scope               : local
+        Dragging            : 0
+        Send Component ID   : disabled
+        Opacity             : 127
+        x coordinate        : 216
+        y coordinate        : 2
+        Width               : 30
+        Height              : 30
+        Effect              : load
+        Effect Priority     : 0
+        Effect Time         : 300
+        Fill                : solid color
+        Style               : flat
+        Associated Keyboard : none
+        Font ID             : 7
+        Back. Color         : 0
+        Font Color          : 52857
+        Horizontal Alignment: center
+        Vertical Alignment  : center
+        Input Type          : character
+        Text                : 
+        Max. Text Size      : 3
+        Word wrap           : disabled
+        Horizontal Spacing  : 0
+        Vertical Spacing    : 0
+    
+    Events
+        Touch Release Event
+            page wakeup_page_id
+        
+Text chip06
+    Attributes
+        ID                  : 14
+        Scope               : local
+        Dragging            : 0
+        Send Component ID   : disabled
+        Opacity             : 127
+        x coordinate        : 245
+        y coordinate        : 2
+        Width               : 30
+        Height              : 30
+        Effect              : load
+        Effect Priority     : 0
+        Effect Time         : 300
+        Fill                : solid color
+        Style               : flat
+        Associated Keyboard : none
+        Font ID             : 7
+        Back. Color         : 0
+        Font Color          : 52857
+        Horizontal Alignment: center
+        Vertical Alignment  : center
+        Input Type          : character
+        Text                : 
+        Max. Text Size      : 3
+        Word wrap           : disabled
+        Horizontal Spacing  : 0
+        Vertical Spacing    : 0
+    
+    Events
+        Touch Release Event
+            page wakeup_page_id
+        
+Text chip07
+    Attributes
+        ID                  : 15
+        Scope               : local
+        Dragging            : 0
+        Send Component ID   : disabled
+        Opacity             : 127
+        x coordinate        : 274
+        y coordinate        : 2
+        Width               : 30
+        Height              : 30
+        Effect              : load
+        Effect Priority     : 0
+        Effect Time         : 300
+        Fill                : solid color
+        Style               : flat
+        Associated Keyboard : none
+        Font ID             : 7
+        Back. Color         : 0
+        Font Color          : 52857
+        Horizontal Alignment: center
+        Vertical Alignment  : center
+        Input Type          : character
+        Text                : 
+        Max. Text Size      : 3
+        Word wrap           : disabled
         Horizontal Spacing  : 0
         Vertical Spacing    : 0
     

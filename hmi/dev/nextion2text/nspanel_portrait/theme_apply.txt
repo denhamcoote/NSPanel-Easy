@@ -101,12 +101,6 @@ Page theme_apply
             home.right_bt_text.pco=color_pco_main
             home.left_bt_text.picc=pic_background_main
             home.left_bt_text.pco=color_pco_main
-            // home chips
-            for(sys0=11;sys0<=20;sys0++)
-            {
-                home.b[sys0].picc=pic_background_main
-                home.b[sys0].pco=color_pco_secondary
-            }
             home.wifi_icon.picc=pic_background_main
             home.wifi_icon.pco=color_pco_secondary
             home.bt_icon.picc=pic_background_main
