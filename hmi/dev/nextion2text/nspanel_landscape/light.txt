@@ -833,7 +833,8 @@ Slider tempslider
     
     Events
         Touch Release Event
-            covx tempslider.val,va1.txt,0,0
+            sys0=tempslider.minval+tempslider.maxval-tempslider.val
+            covx sys0,va1.txt,0,0
             temp_value.txt=va1.txt
             temp_value.txt+="K"
             temp_value_2.txt=va1.txt
@@ -847,7 +848,8 @@ Slider tempslider
             printh FF FF FF
         
         Touch Move Event
-            covx tempslider.val,va1.txt,0,0
+            sys0=tempslider.minval+tempslider.maxval-tempslider.val
+            covx sys0,va1.txt,0,0
             temp_value.txt=va1.txt
             temp_value.txt+="K"
             temp_value_2.txt=va1.txt

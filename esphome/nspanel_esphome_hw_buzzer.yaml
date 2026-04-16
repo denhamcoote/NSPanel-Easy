@@ -10,6 +10,7 @@
 substitutions:
   GPIO_BUZZER_OUTPUT_PIN: 21
   boot_sound: false
+  _BOOT_SOUND: ${ 1 if boot_sound else 0 }
   TAG_HW_BUZZER: nspanel.hw.buzzer
   # RTTTL format: name:d=duration,o=octave,b=tempo:notes
   # d=32 (32nd note), o=5 (octave 5), b=100 (tempo 100)
@@ -50,9 +51,9 @@ script:
     then:
       - lambda: |-
           // Only when boot sound is enabled
-          #if ${boot_sound}
+          #if ${_BOOT_SOUND}
           if (current_page_id == ${PAGE_BOOT_ID}) return;    // Page boot is visible, do not play sound
           boot_log->execute("Boot", "Play boot sound");
           buzzer->play("${tone_boot}");
-          #endif
+          #endif  // _BOOT_SOUND
 ...
