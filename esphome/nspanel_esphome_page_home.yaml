@@ -38,12 +38,6 @@ globals:
     restore_value: true
     initial_value: '65535'
 
-  ##### Chips #####
-  - id: home_chip_font_id
-    type: uint8_t
-    restore_value: true
-    initial_value: '7'
-
   #### Custom buttons ####
   - id: home_custom_buttons_font_id
     type: uint8_t
@@ -83,20 +77,6 @@ script:
           if (page != "mem") return;
           if (component == "is_climate") {
             id(is_climate) = (val != 0);
-            return;
-          }
-          if (component == "chip_font") {
-            // Chips icon size
-            disp1->set_component_font(hmi::home::CHIP_CLIMATE.name, val);
-            feed_wdt_delay(${DELAY_DEFAULT});
-            for (int i = 1; i <= 7; ++i) {
-              disp1->send_command_printf("home.chip%02d.font=%" PRIi32, i, val);
-              feed_wdt_delay(${DELAY_SHORT});
-            }
-            feed_wdt_delay(${DELAY_DEFAULT});
-            disp1->set_component_font(hmi::home::WIFI_ICON.name, val);
-            disp1->set_component_font(hmi::home::BT_ICON.name, val);
-            id(home_chip_font_id) = val;
             return;
           }
           if (component == "custom_buttons_font") {
@@ -185,27 +165,21 @@ script:
 
           // Bluetooth icon
           #if defined(USE_ESP32_BLE_SERVER) || defined(USE_ESP32_BLE_CLIENT) || defined(USE_BLUETOOTH_PROXY)
+          disp1->set_component_font(hmi::home::BT_ICON.name, id(chip_font_id));
           action_component_visibility->execute("home", "bt_icon", true);
-          #endif
-
-          // Chips icon size
-          for (uint8_t i = 1; i <= 7; ++i) {
-            disp1->send_command_printf("home.chip%02d.font=%i", i, id(home_chip_font_id));
-            feed_wdt_delay(${DELAY_SHORT});
-          }
           feed_wdt_delay(${DELAY_DEFAULT});
+          #endif
 
           // Custom buttons icon size
           for (uint8_t i = 1; i <= 7; ++i) {
             disp1->send_command_printf("home.button%02d.font=%i", i, id(home_custom_buttons_font_id));
             feed_wdt_delay(${DELAY_SHORT});
           }
-          feed_wdt_delay(${DELAY_DEFAULT});
-
+ 
           // Other components icons size and color
           disp1->set_component_font(hmi::home::BT_ENTITIES.name, id(home_custom_buttons_font_id));
-          disp1->set_component_font(hmi::home::WIFI_ICON.name, id(home_chip_font_id));
-          feed_wdt_delay(${DELAY_DEFAULT});
+          disp1->set_component_font(hmi::home::WIFI_ICON.name, id(chip_font_id));
+
 
   - id: !extend boot_wrap_up
     then:

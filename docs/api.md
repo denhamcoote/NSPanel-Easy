@@ -27,7 +27,7 @@ This document provides details on custom actions designed for integration with H
   - [Climate Page Action (`page_climate`)](#climate-page-action-page_climate): Updates the Climate page with current state information.
   - [Media Player Page Action (`page_media_player`)](#media-player-page-action-page_media_player): Updates the Media Player page with current state information.
 - [Screen Components](#screen-components)
-  - [Home page - Chips](#home-page---chips)
+  - [Chips](#chips)
     - [User-defined Chips](#user-defined-chips)
     - [Relays Chips](#relays-chips)
     - [Climate Chip](#climate-chip)
@@ -422,7 +422,7 @@ This action is ideal for dynamically updating icons on your Panel, allowing for 
 
 **Parameters:**
 
-- `page` (string): Identifier of the page where the component is. Leave empty for current page.
+- `page` (string): Use `chips` for chip components. Leave empty for current page or use the page name for other components.
 - `id` (string): Identifier of the chip or button component. Refer to "[Screen components](#screen-components)" for more details.
 - `icon` (string): Icon codepoint from
   [HASwitchPlate Material Design Icons](https://htmlpreview.github.io/?https://github.com/jobr99/Generate-HASP-Fonts/blob/master/cheatsheet.html).
@@ -435,7 +435,7 @@ Example: "\uE6E8" for `mdi:lightbulb-on-outline`.
 ```yaml
 action: esphome.<your_panel_name>_icon
 data:
-  page: home
+  page: chips
   id: chip03
   icon: "\uE6E8"           # Example for mdi:lightbulb-on-outline
   icon_color: [0, 255, 0]  # Green
@@ -896,31 +896,25 @@ automation:
 
 ## Screen components
 
-### Home Page - Chips
+### Chips
 
 ![Image](pics/Nextion_Components_Home_Chips_EU.png)
 ![Image](pics/Nextion_Components_Home_Chips_US.png)
 
 #### User-defined Chips
-
-- **Description**: Chips are icons that are shown in specific situations or hidden. Their behaviour is controlled by the blueprint.
-- **Type**: Icon only with no touch commands.
-- **Availability**: Global (available even when page is not visible).
-- **Ids**: `home.chip01` to `home.chip07`.
+- **Description**: Chips are status indicator icons shown on the home page and screensaver. Their behaviour is controlled by the blueprint.
+- **Availability**: Rendered on home page and screensaver. Use `page: chips` in the `icon` action to update them from any page context.
+- **Ids**: `chip01` to `chip07`.
 
 #### Relays Chips
-
-- **Description**: Icons representing each of the relays states.
-- **Type**: Icon only with no touch commands.
-- **Availability**: Global (available even when page is not visible).
-- **Ids**: `home.chip_relay1` and `home.chip_relay2`.
+- **Description**: Icons representing each of the relay states.
+- **Availability**: Rendered on home page and screensaver.
+- **Ids**: `chip_relay1` and `chip_relay2`.
 
 #### Climate Chip
-
 - **Description**: Icon representing the state of the main climate entity.
-- **Type**: Icon only with no touch commands.
-- **Availability**: Global (available even when page is not visible).
-- **Ids**: `home.chip_climate`.
+- **Availability**: Rendered on home page and screensaver.
+- **Ids**: `chip_climate`.
 
 ### Home Page - Custom buttons
 

@@ -187,6 +187,7 @@ api:
             const esphome::nspanel_easy::NSPanelEasyNextionComponent component = extractNextionComponent(id, page);
 
             action_icon->execute(
+              page.c_str(),
               component,
               icon.c_str(),
               icon_color.size() == 3 ? rgbTo565(icon_color) : -1,
@@ -324,35 +325,37 @@ script:
     mode: queued
     max_runs: 10
     parameters:
+      page: string
       component: esphome::nspanel_easy::NSPanelEasyNextionComponent  # Component identifier
-      icon: string  # The icon code
+      icon: string         # The icon code
       icon_color: int32_t  # -1 if no color should be set, otherwise the decimal RGB565 color
-      visible: bool  # Set to true to show the component, or false to hide it.
+      visible: bool        # Set to true to show the component, or false to hide it.
       is_home_page: bool
       is_current_page: bool
     then:
       - lambda: |-
-            // Determine target ID format based on page context
-            const char* target_id;
-            char full_id[30];  // 14 + 1 (dot) + 14 + 1 (null) = 30
+          if (page == "chips") return;  // This is handled elsewhere
+          // Determine target ID format based on page context
+          const char* target_id;
+          char full_id[30];  // 14 + 1 (dot) + 14 + 1 (null) = 30
 
-            if (is_current_page) {
-              // Use short format for current page: "id"
-              target_id = component.component_id;
-              action_component_visibility->execute(component.page, component.component_id, visible);
-            } else {
-              // Use full format for global components: "page.id"
-              snprintf(full_id, sizeof(full_id), "%s.%s", component.page, component.component_id);
-              target_id = full_id;
-            }
+          if (is_current_page) {
+            // Use short format for current page: "id"
+            target_id = component.component_id;
+            action_component_visibility->execute(component.page, component.component_id, visible);
+          } else {
+            // Use full format for global components: "page.id"
+            snprintf(full_id, sizeof(full_id), "%s.%s", component.page, component.component_id);
+            target_id = full_id;
+          }
 
-            ESP_LOGV("${TAG_API}", "  target: %s", target_id);
+          ESP_LOGV("${TAG_API}", "  target: %s", target_id);
 
-            // Set icon and color
-            disp1->set_component_text(target_id, icon.c_str());
-            if (icon_color >= 0) {
-              disp1->set_component_font_color(target_id, static_cast<uint16_t>(icon_color));
-            }
+          // Set icon and color
+          disp1->set_component_text(target_id, icon.c_str());
+          if (icon_color >= 0) {
+            disp1->set_component_font_color(target_id, static_cast<uint16_t>(icon_color));
+          }
 
   - id: !extend dump_config
     then:

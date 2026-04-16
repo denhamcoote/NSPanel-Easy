@@ -424,187 +424,6 @@ blueprint:
           description: *description_icon_color
           default: *default_home_value_color
           selector: *color_selector
-    home_page_chips:
-      name: Home page - Chips (optional)
-      icon: mdi:home
-      description: Select the entities to be displayed on the top of the Home page.
-      collapsed: true
-      input:
-        chip_font_size:
-          name: Icon's font size
-          description: Please select the size of the icons shown on the chips.
-          default: '7'
-          selector:
-            select:
-              multiple: false
-              options:
-                - label: 24px
-                  value: '7'
-                - label: 32px
-                  value: '8'
-        chip01:
-          name: Home page - Chip 01 - Entity (Optional)
-          description: *description_entity_displayed
-          default: *selector_entity_single_default_empty
-          selector: &chip-entity-selector
-            entity:
-              multiple: *selector_entity_single_multiple
-              filter:
-                domain:
-                  - alarm_control_panel
-                  - binary_sensor
-                  - climate
-                  - cover
-                  - fan
-                  - input_boolean
-                  - light
-                  - lock
-                  - media_player
-                  - sensor
-                  - switch
-                  - water_heater
-        chip01_inverted:
-          name: Home page - Chip 01 - Inverted
-          description: "If enabled, this chip's display is reversed. It will appear when the linked entity is `off`."
-          default: false
-          selector:
-            boolean:
-        chip01_icon:
-          name: Home page - Chip 01 - Icon (Optional)
-          description: "Specify an icon to show when the entity's state matches. If not set, the entity's default icon is used."
-          default: []
-          selector: *selector_icon
-        chip01_icon_color:
-          name: Home page - Chip 01 - Icon color
-          description: *description_icon_color
-          default: []
-          selector: *color_selector
-        chip02:
-          name: Home page - Chip 02 - Entity (Optional)
-          description: *description_entity_displayed
-          default: *selector_entity_single_default_empty
-          selector: *chip-entity-selector
-        chip02_inverted:
-          name: Home page - Chip 02 - Inverted
-          description: "If enabled, this chip's display is reversed. It will appear when the linked entity is `off`."
-          default: false
-          selector:
-            boolean:
-        chip02_icon:
-          name: Home page - Chip 02 - Icon (Optional)
-          description: "Specify an icon to show when the entity's state matches. If not set, the entity's default icon is used."
-          default: []
-          selector: *selector_icon
-        chip02_icon_color:
-          name: Home page - Chip 02 - Icon color
-          description: *description_icon_color
-          default: []
-          selector: *color_selector
-        chip03:
-          name: Home page - Chip 03 - Entity (Optional)
-          description: *description_entity_displayed
-          default: *selector_entity_single_default_empty
-          selector: *chip-entity-selector
-        chip03_inverted:
-          name: Home page - Chip 03 - Inverted
-          description: "If enabled, this chip's display is reversed. It will appear when the linked entity is `off`."
-          default: false
-          selector:
-            boolean:
-        chip03_icon:
-          name: Home page - Chip 03 - Icon (Optional)
-          description: "Specify an icon to show when the entity's state matches. If not set, the entity's default icon is used."
-          default: []
-          selector: *selector_icon
-        chip03_icon_color:
-          name: Home page - Chip 03 - Icon color
-          description: *description_icon_color
-          default: []
-          selector: *color_selector
-        chip04:
-          name: Home page - Chip 04 - Entity (Optional)
-          description: *description_entity_displayed
-          default: *selector_entity_single_default_empty
-          selector: *chip-entity-selector
-        chip04_inverted:
-          name: Home page - Chip 04 - Inverted
-          description: "If enabled, this chip's display is reversed. It will appear when the linked entity is `off`."
-          default: false
-          selector:
-            boolean:
-        chip04_icon:
-          name: Home page - Chip 04 - Icon (Optional)
-          description: "Specify an icon to show when the entity's state matches. If not set, the entity's default icon is used."
-          default: []
-          selector: *selector_icon
-        chip04_icon_color:
-          name: Home page - Chip 04 - Icon color
-          description: *description_icon_color
-          default: []
-          selector: *color_selector
-        chip05:
-          name: Home page - Chip 05 - Entity (Optional)
-          description: *description_entity_displayed
-          default: *selector_entity_single_default_empty
-          selector: *chip-entity-selector
-        chip05_inverted:
-          name: Home page - Chip 05 - Inverted
-          description: "If enabled, this chip's display is reversed. It will appear when the linked entity is `off`."
-          default: false
-          selector:
-            boolean:
-        chip05_icon:
-          name: Home page - Chip 05 - Icon (Optional)
-          description: "Specify an icon to show when the entity's state matches. If not set, the entity's default icon is used."
-          default: []
-          selector: *selector_icon
-        chip05_icon_color:
-          name: Home page - Chip 05 - Icon color
-          description: *description_icon_color
-          default: []
-          selector: *color_selector
-        chip06:
-          name: Home page - Chip 06 - Entity (Optional)
-          description: *description_entity_displayed
-          default: *selector_entity_single_default_empty
-          selector: *chip-entity-selector
-        chip06_inverted:
-          name: Home page - Chip 06 - Inverted
-          description: "If enabled, this chip's display is reversed. It will appear when the linked entity is `off`."
-          default: false
-          selector:
-            boolean:
-        chip06_icon:
-          name: Home page - Chip 06 - Icon (Optional)
-          description: "Specify an icon to show when the entity's state matches. If not set, the entity's default icon is used."
-          default: []
-          selector: *selector_icon
-        chip06_icon_color:
-          name: Home page - Chip 06 - Icon color
-          description: *description_icon_color
-          default: []
-          selector: *color_selector
-        chip07:
-          name: Home page - Chip 07 - Entity (Optional)
-          description: *description_entity_displayed
-          default: *selector_entity_single_default_empty
-          selector: *chip-entity-selector
-        chip07_inverted:
-          name: Home page - Chip 07 - Inverted
-          description: "If enabled, this chip's display is reversed. It will appear when the linked entity is `off`."
-          default: false
-          selector:
-            boolean:
-        chip07_icon:
-          name: Home page - Chip 07 - Icon (Optional)
-          description: "Specify an icon to show when the entity's state matches. If not set, the entity's default icon is used."
-          default: []
-          selector: *selector_icon
-        chip07_icon_color:
-          name: Home page - Chip 07 - Icon color
-          description: *description_icon_color
-          default: []
-          selector: *color_selector
     home_page_custom_buttons:
       name: Home page - Custom buttons (optional)
       icon: mdi:home
@@ -819,6 +638,187 @@ blueprint:
           default: true
           selector:
             boolean:
+    chips:
+      name: Chips (optional)
+      icon: mdi:dots-horizontal
+      description: Select the entities displayed as status indicators on the home page and screensaver.
+      collapsed: true
+      input:
+        chip_font_size:
+          name: Icon's font size
+          description: Please select the size of the icons shown on the chips.
+          default: '7'
+          selector:
+            select:
+              multiple: false
+              options:
+                - label: 24px
+                  value: '7'
+                - label: 32px
+                  value: '8'
+        chip01:
+          name: Chip 01 - Entity (Optional)
+          description: *description_entity_displayed
+          default: *selector_entity_single_default_empty
+          selector: &chip-entity-selector
+            entity:
+              multiple: *selector_entity_single_multiple
+              filter:
+                domain:
+                  - alarm_control_panel
+                  - binary_sensor
+                  - climate
+                  - cover
+                  - fan
+                  - input_boolean
+                  - light
+                  - lock
+                  - media_player
+                  - sensor
+                  - switch
+                  - water_heater
+        chip01_inverted:
+          name: Chip 01 - Inverted
+          description: "If enabled, this chip's display is reversed. It will appear when the linked entity is `off`."
+          default: false
+          selector:
+            boolean:
+        chip01_icon:
+          name: Chip 01 - Icon (Optional)
+          description: "Specify an icon to show when the entity's state matches. If not set, the entity's default icon is used."
+          default: []
+          selector: *selector_icon
+        chip01_icon_color:
+          name: Chip 01 - Icon color
+          description: *description_icon_color
+          default: []
+          selector: *color_selector
+        chip02:
+          name: Chip 02 - Entity (Optional)
+          description: *description_entity_displayed
+          default: *selector_entity_single_default_empty
+          selector: *chip-entity-selector
+        chip02_inverted:
+          name: Chip 02 - Inverted
+          description: "If enabled, this chip's display is reversed. It will appear when the linked entity is `off`."
+          default: false
+          selector:
+            boolean:
+        chip02_icon:
+          name: Chip 02 - Icon (Optional)
+          description: "Specify an icon to show when the entity's state matches. If not set, the entity's default icon is used."
+          default: []
+          selector: *selector_icon
+        chip02_icon_color:
+          name: Chip 02 - Icon color
+          description: *description_icon_color
+          default: []
+          selector: *color_selector
+        chip03:
+          name: Chip 03 - Entity (Optional)
+          description: *description_entity_displayed
+          default: *selector_entity_single_default_empty
+          selector: *chip-entity-selector
+        chip03_inverted:
+          name: Chip 03 - Inverted
+          description: "If enabled, this chip's display is reversed. It will appear when the linked entity is `off`."
+          default: false
+          selector:
+            boolean:
+        chip03_icon:
+          name: Chip 03 - Icon (Optional)
+          description: "Specify an icon to show when the entity's state matches. If not set, the entity's default icon is used."
+          default: []
+          selector: *selector_icon
+        chip03_icon_color:
+          name: Chip 03 - Icon color
+          description: *description_icon_color
+          default: []
+          selector: *color_selector
+        chip04:
+          name: Chip 04 - Entity (Optional)
+          description: *description_entity_displayed
+          default: *selector_entity_single_default_empty
+          selector: *chip-entity-selector
+        chip04_inverted:
+          name: Chip 04 - Inverted
+          description: "If enabled, this chip's display is reversed. It will appear when the linked entity is `off`."
+          default: false
+          selector:
+            boolean:
+        chip04_icon:
+          name: Chip 04 - Icon (Optional)
+          description: "Specify an icon to show when the entity's state matches. If not set, the entity's default icon is used."
+          default: []
+          selector: *selector_icon
+        chip04_icon_color:
+          name: Chip 04 - Icon color
+          description: *description_icon_color
+          default: []
+          selector: *color_selector
+        chip05:
+          name: Chip 05 - Entity (Optional)
+          description: *description_entity_displayed
+          default: *selector_entity_single_default_empty
+          selector: *chip-entity-selector
+        chip05_inverted:
+          name: Chip 05 - Inverted
+          description: "If enabled, this chip's display is reversed. It will appear when the linked entity is `off`."
+          default: false
+          selector:
+            boolean:
+        chip05_icon:
+          name: Chip 05 - Icon (Optional)
+          description: "Specify an icon to show when the entity's state matches. If not set, the entity's default icon is used."
+          default: []
+          selector: *selector_icon
+        chip05_icon_color:
+          name: Chip 05 - Icon color
+          description: *description_icon_color
+          default: []
+          selector: *color_selector
+        chip06:
+          name: Chip 06 - Entity (Optional)
+          description: *description_entity_displayed
+          default: *selector_entity_single_default_empty
+          selector: *chip-entity-selector
+        chip06_inverted:
+          name: Chip 06 - Inverted
+          description: "If enabled, this chip's display is reversed. It will appear when the linked entity is `off`."
+          default: false
+          selector:
+            boolean:
+        chip06_icon:
+          name: Chip 06 - Icon (Optional)
+          description: "Specify an icon to show when the entity's state matches. If not set, the entity's default icon is used."
+          default: []
+          selector: *selector_icon
+        chip06_icon_color:
+          name: Chip 06 - Icon color
+          description: *description_icon_color
+          default: []
+          selector: *color_selector
+        chip07:
+          name: Chip 07 - Entity (Optional)
+          description: *description_entity_displayed
+          default: *selector_entity_single_default_empty
+          selector: *chip-entity-selector
+        chip07_inverted:
+          name: Chip 07 - Inverted
+          description: "If enabled, this chip's display is reversed. It will appear when the linked entity is `off`."
+          default: false
+          selector:
+            boolean:
+        chip07_icon:
+          name: Chip 07 - Icon (Optional)
+          description: "Specify an icon to show when the entity's state matches. If not set, the entity's default icon is used."
+          default: []
+          selector: *selector_icon
+        chip07_icon_color:
+          name: Chip 07 - Icon color
+          description: *description_icon_color
+          default: []
+          selector: *color_selector
     climate_settings:
       name: Climate entity (optional)
       icon: mdi:thermostat-cog
@@ -4960,10 +4960,12 @@ conditions:
       (states(nextion_display_sensor) | default(false) and has_value(device_name_sensor))
     }}
   - >  # Update page Home only when visible or home_page_background_update is enabled
+    {{ trigger.id not in ["home_values_state"] or home_page_background_update or pages.current == pages.home }}
+  - >  # Update page Home only when visible or home_page_background_update is enabled
     {{
-      trigger.id not in ["home_values_state", "trigger_chip_state"] or
+      trigger.id not in ["trigger_chip_state"] or
       home_page_background_update or
-      pages.current == pages.home
+      pages.current in [ pages.home, pages.screensaver ]
     }}
   - >  # Do not update values when page utilities is not visible
     {{ trigger.id != "utilities_page" or pages.current == pages.utilities }}
@@ -5199,42 +5201,6 @@ actions:
 
       ##### Home page #####
       home_page:
-        chips:
-          - entity: !input chip01
-            inverted: !input chip01_inverted
-            icon: !input chip01_icon
-            icon_color_rgb: !input chip01_icon_color
-            component: chip01
-          - entity: !input chip02
-            inverted: !input chip02_inverted
-            icon: !input chip02_icon
-            icon_color_rgb: !input chip02_icon_color
-            component: chip02
-          - entity: !input chip03
-            inverted: !input chip03_inverted
-            icon: !input chip03_icon
-            icon_color_rgb: !input chip03_icon_color
-            component: chip03
-          - entity: !input chip04
-            inverted: !input chip04_inverted
-            icon: !input chip04_icon
-            icon_color_rgb: !input chip04_icon_color
-            component: chip04
-          - entity: !input chip05
-            inverted: !input chip05_inverted
-            icon: !input chip05_icon
-            icon_color_rgb: !input chip05_icon_color
-            component: chip05
-          - entity: !input chip06
-            inverted: !input chip06_inverted
-            icon: !input chip06_icon
-            icon_color_rgb: !input chip06_icon_color
-            component: chip06
-          - entity: !input chip07
-            inverted: !input chip07_inverted
-            icon: !input chip07_icon
-            icon_color_rgb: !input chip07_icon_color
-            component: chip07
         custom_buttons:
           - entity: !input home_custom_button01
             icon: !input home_custom_button01_icon
@@ -5289,6 +5255,44 @@ actions:
             label_color_rgb: !input home_value04_label_color
             page: home
             component: value04
+
+      ##### Chips #####
+      chips:
+        - entity: !input chip01
+          inverted: !input chip01_inverted
+          icon: !input chip01_icon
+          icon_color_rgb: !input chip01_icon_color
+          component: chip01
+        - entity: !input chip02
+          inverted: !input chip02_inverted
+          icon: !input chip02_icon
+          icon_color_rgb: !input chip02_icon_color
+          component: chip02
+        - entity: !input chip03
+          inverted: !input chip03_inverted
+          icon: !input chip03_icon
+          icon_color_rgb: !input chip03_icon_color
+          component: chip03
+        - entity: !input chip04
+          inverted: !input chip04_inverted
+          icon: !input chip04_icon
+          icon_color_rgb: !input chip04_icon_color
+          component: chip04
+        - entity: !input chip05
+          inverted: !input chip05_inverted
+          icon: !input chip05_icon
+          icon_color_rgb: !input chip05_icon_color
+          component: chip05
+        - entity: !input chip06
+          inverted: !input chip06_inverted
+          icon: !input chip06_icon
+          icon_color_rgb: !input chip06_icon_color
+          component: chip06
+        - entity: !input chip07
+          inverted: !input chip07_inverted
+          icon: !input chip07_icon
+          icon_color_rgb: !input chip07_icon_color
+          component: chip07
 
       ##### Button pages #####
       buttons_pages:
@@ -6429,27 +6433,6 @@ actions:
                               color: !input home_indoor_temp_icon_color
                             continue_on_error: true
 
-                      - alias: Status / Chips bar
-                        repeat:
-                          for_each: >
-                            {{
-                              home_page.chips
-                              | selectattr("entity", "defined")
-                              | rejectattr("entity", "eq", [])
-                              | selectattr("icon_color_rgb", "defined")
-                              | rejectattr("icon_color_rgb", "eq", [])
-                              | rejectattr("icon_color_rgb", "eq", [0, 0, 0])
-                              | list
-                            }}
-                          sequence:
-                            - *delay_boot
-                            - action: 'esphome.{{ nspanel_name }}_component_color'
-                              data:
-                                page: home
-                                id: '{{ repeat.item.component }}'
-                                color: '{{ repeat.item.icon_color_rgb }}'
-                              continue_on_error: true
-
                       - alias: Home page - Values 01 - 04
                         repeat:
                           for_each: '{{ home_page.entity_value | list }}'
@@ -7300,17 +7283,18 @@ actions:
                                 continue_on_error: true
 
                           ###### Status / Chips bar ######
-                          - &update_home_page_status_bar
+                          - &update_chips_bar
                             repeat:
                               for_each: >
                                 {{
-                                  home_page.chips
+                                  chips
                                   | selectattr("entity", "defined")
                                   | rejectattr("entity", "eq", [])
                                   | list
                                 }}
                               sequence:
-                                - if: '{{ repeat.item.entity is defined and repeat.item.entity is string and repeat.item.entity.split(".") | count == 2 }}'
+                                - &update_individual_chip
+                                  if: '{{ repeat.item.entity is defined and repeat.item.entity is string and repeat.item.entity.split(".") | count == 2 }}'
                                   then:
                                     - *delay_default
                                     - variables:
@@ -7318,8 +7302,7 @@ actions:
                                           {{
                                             repeat.item.icon_color_rgb is defined and
                                             repeat.item.icon_color_rgb is list and
-                                            repeat.item.icon_color_rgb | count == 3 and
-                                            repeat.item.icon_color_rgb != [0, 0, 0]
+                                            repeat.item.icon_color_rgb | count == 3
                                           }}
                                         entity_id: '{{ repeat.item.entity }}'
                                         overlap:
@@ -7368,16 +7351,16 @@ actions:
                                     - *delay_default
                                     - action: 'esphome.{{ nspanel_name }}_icon'
                                       data:
-                                        page: home
+                                        page: chips
                                         id: '{{ repeat.item.component }}'
                                         icon: '{{ entity.icon }}'
                                         icon_color: >
-                                          {% if repeat.item.inverted and icon_color_rgb_valid %}
+                                          {% if icon_color_rgb_valid %}
                                             {{ repeat.item.icon_color_rgb }}
-                                          {% elif entity.icon_color is defined and entity.icon_color is list and entity.icon_color | count == 3 %}
+                                          {% elif entity.icon_color is defined and
+                                                  entity.icon_color is list and
+                                                  entity.icon_color | count == 3 %}
                                             {{ entity.icon_color }}
-                                          {% elif icon_color_rgb_valid %}
-                                            {{ repeat.item.icon_color_rgb }}
                                           {% else %}
                                             [255, 255, 255]
                                           {% endif %}
@@ -10572,7 +10555,13 @@ actions:
             id: home_values_state
         sequence:
           - repeat:
-              for_each: '{{ home_page.entity_value | selectattr("entity", "defined") | selectattr("entity", "eq", trigger.entity_id) | list }}'
+              for_each: >
+                {{
+                  home_page.entity_value
+                  | selectattr("entity", "defined")
+                  | selectattr("entity", "eq", trigger.entity_id)
+                  | list
+                }}
               sequence:
                 - *display_value
 
@@ -10581,7 +10570,16 @@ actions:
           - condition: trigger
             id: trigger_chip_state
         sequence:
-          - *update_home_page_status_bar
+          - repeat:
+              for_each: >
+                {{
+                  chips
+                  | selectattr("entity", "defined")
+                  | selectattr("entity", "eq", trigger.entity_id)
+                  | list
+                }}
+              sequence:
+                - *update_chips_bar
 
       - alias: Hardware button - State
         conditions:

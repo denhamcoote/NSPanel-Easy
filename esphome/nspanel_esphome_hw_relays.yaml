@@ -45,10 +45,16 @@ script:
           if (page == "mem") {
             if (component == "relay1_icon_color") {
               id(home_relay1_icon_color) = color;
-              if (relay_1->state) disp1->set_component_font_color("home.chip_relay1", color);
+              chip_states[CHIP_IDX_RELAY1].color = color;
+              if (is_chips_page) {
+                disp1->set_component_font_color(CHIP_NAMES[CHIP_IDX_RELAY1], color);
+              }
             } else if (component == "relay2_icon_color") {
               id(home_relay2_icon_color) = color;
-              if (relay_2->state) disp1->set_component_font_color("home.chip_relay2", color);
+              chip_states[CHIP_IDX_RELAY2].color = color;
+              if (is_chips_page) {
+                disp1->set_component_font_color(CHIP_NAMES[CHIP_IDX_RELAY2], color);
+              }
             }
           }
 
@@ -56,44 +62,56 @@ script:
     then:
       - lambda: |-
           if (page == "mem") {
-            if (component == "relay1_icon") {
+            if (component == "relay1_icon" && id(home_relay1_icon) != txt) {
               id(home_relay1_icon) = txt;
-              disp1->set_component_text(hmi::home::CHIP_RELAY1.name, id(home_relay1_icon).c_str());
-            } else if (component == "relay2_icon") {
+              strncpy(chip_states[CHIP_IDX_RELAY1].icon, txt.c_str(), sizeof(chip_states[CHIP_IDX_RELAY1].icon) - 1);
+              chip_states[CHIP_IDX_RELAY1].icon[sizeof(chip_states[CHIP_IDX_RELAY1].icon) - 1] = '\0';
+              if (is_chips_page) {
+                disp1->set_component_text(CHIP_NAMES[CHIP_IDX_RELAY1], chip_states[CHIP_IDX_RELAY1].icon);
+              }
+            } else if (component == "relay2_icon" && id(home_relay2_icon) != txt) {
               id(home_relay2_icon) = txt;
-              disp1->set_component_text(hmi::home::CHIP_RELAY2.name, id(home_relay2_icon).c_str());
+              strncpy(chip_states[CHIP_IDX_RELAY2].icon, txt.c_str(), sizeof(chip_states[CHIP_IDX_RELAY2].icon) - 1);
+              chip_states[CHIP_IDX_RELAY2].icon[sizeof(chip_states[CHIP_IDX_RELAY2].icon) - 1] = '\0';
+              if (is_chips_page) {
+                disp1->set_component_text(CHIP_NAMES[CHIP_IDX_RELAY2], chip_states[CHIP_IDX_RELAY2].icon);
+              }
             }
           }
 
   - id: !extend action_component_val
     then:
       - lambda: |-
-          if (page == "mem") {
-            if (component == "chip_font") {
-              // Chips icon size
-              disp1->set_component_font(hmi::home::CHIP_RELAY1.name, val);
-              disp1->set_component_font(hmi::home::CHIP_RELAY2.name, val);
-            } else if (component == "relay_settings") {
-              // Extract individual relay settings from the calculated uint8_t value
-              // Bit layout from YAML calculation: bits 0,1,4,5 used
-              const uint8_t relay_settings = static_cast<uint8_t>(val);
-              id(hardware_settings).relay1_local = (relay_settings >> 0) & 1;
-              id(hardware_settings).relay1_fallback = (relay_settings >> 1) & 1;
-              id(hardware_settings).relay2_local = (relay_settings >> 4) & 1;
-              id(hardware_settings).relay2_fallback = (relay_settings >> 5) & 1;
+          if (page != "mem") return;
+          if (component != "relay_settings") return;
 
-              // Update blueprint status
-              blueprint_status_flags.relay_settings = true;
-            }
-          }
+          // Extract individual relay settings from the calculated uint8_t value
+          // Bit layout from YAML calculation: bits 0,1,4,5 used
+          const uint8_t relay_settings = static_cast<uint8_t>(val);
+          id(hardware_settings).relay1_local = (relay_settings >> 0) & 1;
+          id(hardware_settings).relay1_fallback = (relay_settings >> 1) & 1;
+          id(hardware_settings).relay2_local = (relay_settings >> 4) & 1;
+          id(hardware_settings).relay2_fallback = (relay_settings >> 5) & 1;
 
-  - id: !extend boot_nextion
+          // Update blueprint status
+          blueprint_status_flags.relay_settings = true;
+
+  - id: !extend boot_early_routines
     then:
       - lambda: |-
-          // Set relay chips to invisible initially (will be updated by refresh_relays when home page loads)
-          disp1->set_component_font_color(hmi::home::CHIP_RELAY1.name, Colors::RGB565_BLACK);
-          disp1->set_component_font_color(hmi::home::CHIP_RELAY2.name, Colors::RGB565_BLACK);
-          feed_wdt_delay(${DELAY_DEFAULT});
+          // Seed chip_states for relay slots from persisted globals so render_chip
+          // can display the correct icon before the blueprint reconnects.
+          strncpy(chip_states[CHIP_IDX_RELAY1].icon, id(home_relay1_icon).c_str(),
+                  sizeof(chip_states[CHIP_IDX_RELAY1].icon) - 1);
+          chip_states[CHIP_IDX_RELAY1].icon[sizeof(chip_states[CHIP_IDX_RELAY1].icon) - 1] = '\0';
+          chip_states[CHIP_IDX_RELAY1].color = id(home_relay1_icon_color);
+          chip_states[CHIP_IDX_RELAY1].visible = relay_1->state;
+ 
+          strncpy(chip_states[CHIP_IDX_RELAY2].icon, id(home_relay2_icon).c_str(),
+                  sizeof(chip_states[CHIP_IDX_RELAY2].icon) - 1);
+          chip_states[CHIP_IDX_RELAY2].icon[sizeof(chip_states[CHIP_IDX_RELAY2].icon) - 1] = '\0';
+          chip_states[CHIP_IDX_RELAY2].color = id(home_relay2_icon_color);
+          chip_states[CHIP_IDX_RELAY2].visible = relay_2->state;
 
   - id: !extend button_left_press_short
     then:
@@ -142,12 +160,20 @@ script:
           if (relay_mask & 1) {  // Chip - Relay 1
             ESP_LOGV("${TAG_HW_RELAYS}", "  relay1_local:    %s", YESNO(id(hardware_settings).relay1_local));
             ESP_LOGV("${TAG_HW_RELAYS}", "  relay1_fallback: %s", YESNO(id(hardware_settings).relay1_fallback));
-            disp1->set_component_font_color(hmi::home::CHIP_RELAY1.name, relay_1->state ? id(home_relay1_icon_color) : 0);
+            if (chip_states[CHIP_IDX_RELAY1].visible != relay_1->state) {
+              chip_states[CHIP_IDX_RELAY1].visible = relay_1->state;
+              if (is_chips_page)
+                disp1->set_component_visibility(CHIP_NAMES[CHIP_IDX_RELAY1], chip_states[CHIP_IDX_RELAY1].visible);
+            }
           }
           if (relay_mask & 2) {  // Chip - Relay 2
             ESP_LOGV("${TAG_HW_RELAYS}", "  relay2_local:    %s", YESNO(id(hardware_settings).relay2_local));
             ESP_LOGV("${TAG_HW_RELAYS}", "  relay2_fallback: %s", YESNO(id(hardware_settings).relay2_fallback));
-            disp1->set_component_font_color(hmi::home::CHIP_RELAY2.name, relay_2->state ? id(home_relay2_icon_color) : 0);
+            if (chip_states[CHIP_IDX_RELAY2].visible != relay_2->state) {
+              chip_states[CHIP_IDX_RELAY2].visible = relay_2->state;
+              if (is_chips_page)
+                disp1->set_component_visibility(CHIP_NAMES[CHIP_IDX_RELAY2], chip_states[CHIP_IDX_RELAY2].visible);
+            }
           }
 
   - id: !extend stop_all

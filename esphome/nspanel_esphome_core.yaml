@@ -23,6 +23,7 @@ packages:
   api:               !include nspanel_esphome_api.yaml
   base:              !include nspanel_esphome_base.yaml
   boot:              !include nspanel_esphome_boot.yaml
+  chips:             !include nspanel_esphome_chips.yaml
   datetime:          !include nspanel_esphome_datetime.yaml
   hw_buttons:        !include nspanel_esphome_hw_buttons.yaml
   hw_display:        !include nspanel_esphome_hw_display.yaml

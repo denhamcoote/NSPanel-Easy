@@ -67,6 +67,11 @@ climate:
             }
             ESP_LOGV("${TAG_ADDON_CLIMATE}", "Update page 'home'");
             page_home->execute();
+            if (id(is_embedded_thermostat)) {
+              update_climate_chip->execute();
+            }
+
+
 
 globals:
   - id: climate_chip_visibility
@@ -309,9 +314,8 @@ script:
           set_climate->execute();
 
           // Update target temp icon
-          ESP_LOGV("${TAG_ADDON_CLIMATE}", "Call update_climate_icon");
-          update_climate_icon->execute("climate.target_icon",
-                                        int(thermostat_embedded->action), int(thermostat_embedded->mode));
+          ESP_LOGV("${TAG_ADDON_CLIMATE}", "Call update_climate_chip");
+          update_climate_chip->execute();
 
           // Update buttons bar
           // Hide not supported hotspots
@@ -371,32 +375,20 @@ script:
                                                                   (thermostat_embedded->mode==climate::CLIMATE_MODE_OFF)
                                                                   ? Colors::RGB565_BLUE_INDIGO : Colors::RGB565_GRAY));
 
-  - id: !extend page_home
-    then:
-      - lambda: |-
-          if (id(is_embedded_thermostat)) {
-            update_climate_icon->execute(hmi::home::CHIP_CLIMATE.name,
-                                          int(thermostat_embedded->action), int(thermostat_embedded->mode));
-          }
-
   - id: !extend stop_all
     then:
       - lambda: |-
-          update_climate_icon->stop();
+          update_climate_chip->stop();
 
-  - id: update_climate_icon
+  - id: update_climate_chip
     mode: single
-    parameters:
-      component: string
-      action: uint
-      mode: uint
     then:
       - lambda: |-
-          ESP_LOGV("${TAG_ADDON_CLIMATE}", "Update climate icon");
-          ESP_LOGV("${TAG_ADDON_CLIMATE}", "  component: %s", component.c_str());
-          ESP_LOGV("${TAG_ADDON_CLIMATE}", "  action: %d", action);
-          ESP_LOGV("${TAG_ADDON_CLIMATE}", "  mode: %d", mode);
+          ESP_LOGV("${TAG_ADDON_CLIMATE}", "Update climate chip");
           ESP_LOGV("${TAG_ADDON_CLIMATE}", "  visibility: %" PRIu8, id(climate_chip_visibility));
+
+          const uint action = int(thermostat_embedded->action);
+          const uint mode = int(thermostat_embedded->mode);
 
           // Determine visibility based on user preference and current climate state
           const auto visibility = static_cast<nspanel_easy::ClimateChipVisibility>(id(climate_chip_visibility));
@@ -437,26 +429,30 @@ script:
             }
           }  // #endif visible — icon/color remain NONE/BLACK when hidden
 
-          // Extract component information using helper function
-          const esphome::nspanel_easy::NSPanelEasyNextionComponent comp =
-                                                        extractNextionComponent(component, page_names[current_page_id]);
-
-          // Determine target ID format based on page context
-          const char* target_id;
-          char full_id[30];  // 14 + 1 (dot) + 14 + 1 (null) = 30
-
-          if (strcmp(comp.page, page_names[current_page_id]) == 0) {
-            // Use short format for current page: "id"
-            target_id = comp.component_id;
-          } else {
-            // Use full format for other pages: "page.id"
-            snprintf(full_id, sizeof(full_id), "%s.%s", comp.page, comp.component_id);
-            target_id = full_id;
+          // Apply the icon and color to the climate chip
+          // Update shadow state
+          ChipState &the_chip = chip_states[CHIP_IDX_CLIMATE];
+          if (strcmp(the_chip.icon, icon) != 0) {
+            strncpy(the_chip.icon, icon, sizeof(the_chip.icon) - 1);
+            the_chip.icon[sizeof(the_chip.icon) - 1] = '\0';
+            if (is_chips_page)
+              disp1->set_component_text(CHIP_NAMES[CHIP_IDX_CLIMATE], icon);
+          }
+          if (the_chip.color != color) {
+            the_chip.color = color;
+            if (is_chips_page)
+              disp1->set_component_font_color(CHIP_NAMES[CHIP_IDX_CLIMATE], static_cast<uint16_t>(color));
+          }
+          if (the_chip.visible != visible) {
+            the_chip.visible = visible;
+            if (is_chips_page)
+              disp1->set_component_visibility(CHIP_NAMES[CHIP_IDX_CLIMATE], visible);
           }
 
-          ESP_LOGV("${TAG_ADDON_CLIMATE}", "  target: %s", target_id);
-
-          // Apply the icon and color to the display component
-          disp1->set_component_text(target_id, icon);
-          disp1->set_component_font_color(target_id, static_cast<uint16_t>(color));
+          // Apply the icon and color to the target icon on climate page
+          if (current_page_id == get_page_id("climate")) {
+            disp1->set_component_text("target_icon", icon);
+            disp1->set_component_font_color("target_icon", static_cast<uint16_t>(color));
+            return;
+          }
 ...

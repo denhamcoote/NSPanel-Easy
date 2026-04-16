@@ -1,0 +1,13 @@
+// chips.cpp
+
+#ifdef NSPANEL_EASY_CHIPS
+
+#include "chips.h"
+
+namespace esphome::nspanel_easy {
+
+bool is_chips_page = false;
+
+}  // namespace esphome::nspanel_easy
+
+#endif  // NSPANEL_EASY_CHIPS
