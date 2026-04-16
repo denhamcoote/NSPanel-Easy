@@ -28,39 +28,39 @@ Page boot
             sendme
         
         Postinitialize Event
-            line 14,315,305,315,WHITE
-            line 305,315,305,456,WHITE
-            line 14,315,14,456,WHITE
-            line 14,456,305,456,WHITE
-            line 16,317,303,317,WHITE
-            line 303,317,303,454,WHITE
-            line 16,317,16,454,WHITE
-            line 16,454,305,454,WHITE
+            line 14,336,305,336,WHITE
+            line 305,336,305,477,WHITE
+            line 14,336,14,477,WHITE
+            line 14,477,305,477,WHITE
+            line 16,338,303,338,WHITE
+            line 303,338,303,475,WHITE
+            line 16,338,16,475,WHITE
+            line 16,475,305,475,WHITE
             vis log_title,1
-            line 14,55,305,55,WHITE
-            line 305,55,305,171,WHITE
-            line 14,55,14,171,WHITE
-            line 14,171,305,171,WHITE
-            line 16,57,303,57,WHITE
-            line 303,57,303,169,WHITE
-            line 16,57,16,169,WHITE
-            line 16,169,305,169,WHITE
+            line 14,76,305,76,WHITE
+            line 305,76,305,192,WHITE
+            line 14,76,14,192,WHITE
+            line 14,192,305,192,WHITE
+            line 16,78,303,78,WHITE
+            line 303,78,303,190,WHITE
+            line 16,78,16,190,WHITE
+            line 16,190,305,190,WHITE
             vis ver_title,1
-            line 14,185,305,185,WHITE
-            line 305,185,305,301,WHITE
-            line 14,185,14,301,WHITE
-            line 14,301,305,301,WHITE
-            line 16,187,303,187,WHITE
-            line 303,187,303,299,WHITE
-            line 16,187,16,299,WHITE
-            line 16,299,305,299,WHITE
+            line 14,206,305,206,WHITE
+            line 305,206,305,322,WHITE
+            line 14,206,14,322,WHITE
+            line 14,322,305,322,WHITE
+            line 16,208,303,208,WHITE
+            line 303,208,303,320,WHITE
+            line 16,208,16,320,WHITE
+            line 16,320,305,320,WHITE
             vis sys_title,1
         
 Variable (string) version
     Attributes
         ID            : 5
         Scope         : global
-        Text          : 17.3
+        Text          : 17.4
         Max. Text Size: 5
     
 Variable (int32) log_len
@@ -141,7 +141,7 @@ Text log_body
         Send Component ID       : disabled
         Opacity                 : 127
         x coordinate            : 20
-        y coordinate            : 328
+        y coordinate            : 349
         Width                   : 280
         Height                  : 119
         Effect                  : load
@@ -168,7 +168,7 @@ Text nspanel_easy
         Send Component ID       : disabled
         Opacity                 : 127
         x coordinate            : 15
-        y coordinate            : 15
+        y coordinate            : 36
         Width                   : 170
         Height                  : 30
         Effect                  : load
@@ -195,7 +195,7 @@ Text ver_title
         Send Component ID       : disabled
         Opacity                 : 127
         x coordinate            : 20
-        y coordinate            : 41
+        y coordinate            : 62
         Width                   : 67
         Height                  : 30
         Effect                  : load
@@ -222,7 +222,7 @@ Text ver_tft
         Send Component ID       : disabled
         Opacity                 : 127
         x coordinate            : 20
-        y coordinate            : 72
+        y coordinate            : 93
         Width                   : 175
         Height                  : 30
         Effect                  : load
@@ -249,7 +249,7 @@ Text ver_firmware
         Send Component ID       : disabled
         Opacity                 : 127
         x coordinate            : 20
-        y coordinate            : 102
+        y coordinate            : 123
         Width                   : 175
         Height                  : 30
         Effect                  : load
@@ -276,7 +276,7 @@ Text ver_blueprint
         Send Component ID       : disabled
         Opacity                 : 127
         x coordinate            : 20
-        y coordinate            : 132
+        y coordinate            : 153
         Width                   : 175
         Height                  : 30
         Effect                  : load
@@ -303,7 +303,7 @@ Text sys_title
         Send Component ID       : disabled
         Opacity                 : 127
         x coordinate            : 20
-        y coordinate            : 174
+        y coordinate            : 195
         Width                   : 58
         Height                  : 27
         Effect                  : load
@@ -330,7 +330,7 @@ Text sys_ip
         Send Component ID       : disabled
         Opacity                 : 127
         x coordinate            : 20
-        y coordinate            : 202
+        y coordinate            : 223
         Width                   : 175
         Height                  : 30
         Effect                  : load
@@ -357,7 +357,7 @@ Text sys_framework
         Send Component ID       : disabled
         Opacity                 : 127
         x coordinate            : 20
-        y coordinate            : 232
+        y coordinate            : 253
         Width                   : 175
         Height                  : 30
         Effect                  : load
@@ -384,7 +384,7 @@ Text sys_baudrate
         Send Component ID       : disabled
         Opacity                 : 127
         x coordinate            : 20
-        y coordinate            : 262
+        y coordinate            : 283
         Width                   : 175
         Height                  : 30
         Effect                  : load
@@ -411,7 +411,7 @@ Text log_title
         Send Component ID       : disabled
         Opacity                 : 127
         x coordinate            : 20
-        y coordinate            : 304
+        y coordinate            : 325
         Width                   : 35
         Height                  : 27
         Effect                  : load
@@ -430,6 +430,276 @@ Text log_title
         Horizontal Spacing      : 0
         Vertical Spacing        : 0
     
+Text chip_relay1
+    Attributes
+        ID                      : 27
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : on press and release
+        Opacity                 : 127
+        x coordinate            : 15
+        y coordinate            : 2
+        Width                   : 30
+        Height                  : 30
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 7
+        Cropped Back. Picture ID: 32
+        Horizontal Alignment    : center
+        Vertical Alignment      : center
+        Input Type              : character
+        Text                    : 
+        Max. Text Size          : 3
+        Word wrap               : disabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
+    
+Text chip_relay2
+    Attributes
+        ID                      : 28
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : on press and release
+        Opacity                 : 127
+        x coordinate            : 44
+        y coordinate            : 2
+        Width                   : 30
+        Height                  : 30
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 7
+        Cropped Back. Picture ID: 32
+        Horizontal Alignment    : center
+        Vertical Alignment      : center
+        Input Type              : character
+        Text                    : 
+        Max. Text Size          : 3
+        Word wrap               : disabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
+    
+Text chip_climate
+    Attributes
+        ID                      : 29
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : on press and release
+        Opacity                 : 127
+        x coordinate            : 73
+        y coordinate            : 2
+        Width                   : 30
+        Height                  : 30
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 7
+        Cropped Back. Picture ID: 32
+        Horizontal Alignment    : center
+        Vertical Alignment      : center
+        Input Type              : character
+        Text                    : 
+        Max. Text Size          : 3
+        Word wrap               : disabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
+    
+Text chip01
+    Attributes
+        ID                      : 30
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : on press and release
+        Opacity                 : 127
+        x coordinate            : 102
+        y coordinate            : 2
+        Width                   : 30
+        Height                  : 30
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 7
+        Cropped Back. Picture ID: 32
+        Horizontal Alignment    : center
+        Vertical Alignment      : center
+        Input Type              : character
+        Text                    : 
+        Max. Text Size          : 3
+        Word wrap               : disabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
+    
+Text chip02
+    Attributes
+        ID                      : 31
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : on press and release
+        Opacity                 : 127
+        x coordinate            : 131
+        y coordinate            : 2
+        Width                   : 30
+        Height                  : 30
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 7
+        Cropped Back. Picture ID: 32
+        Horizontal Alignment    : center
+        Vertical Alignment      : center
+        Input Type              : character
+        Text                    : 
+        Max. Text Size          : 3
+        Word wrap               : disabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
+    
+Text chip03
+    Attributes
+        ID                      : 32
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : on press and release
+        Opacity                 : 127
+        x coordinate            : 160
+        y coordinate            : 2
+        Width                   : 30
+        Height                  : 30
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 7
+        Cropped Back. Picture ID: 32
+        Horizontal Alignment    : center
+        Vertical Alignment      : center
+        Input Type              : character
+        Text                    : 
+        Max. Text Size          : 3
+        Word wrap               : disabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
+    
+Text chip04
+    Attributes
+        ID                      : 33
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : on press and release
+        Opacity                 : 127
+        x coordinate            : 189
+        y coordinate            : 2
+        Width                   : 30
+        Height                  : 30
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 7
+        Cropped Back. Picture ID: 32
+        Horizontal Alignment    : center
+        Vertical Alignment      : center
+        Input Type              : character
+        Text                    : 
+        Max. Text Size          : 3
+        Word wrap               : disabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
+    
+Text chip05
+    Attributes
+        ID                      : 34
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : on press and release
+        Opacity                 : 127
+        x coordinate            : 218
+        y coordinate            : 2
+        Width                   : 30
+        Height                  : 30
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 7
+        Cropped Back. Picture ID: 32
+        Horizontal Alignment    : center
+        Vertical Alignment      : center
+        Input Type              : character
+        Text                    : 
+        Max. Text Size          : 3
+        Word wrap               : disabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
+    
+Text chip06
+    Attributes
+        ID                      : 35
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : on press and release
+        Opacity                 : 127
+        x coordinate            : 247
+        y coordinate            : 2
+        Width                   : 30
+        Height                  : 30
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 7
+        Cropped Back. Picture ID: 32
+        Horizontal Alignment    : center
+        Vertical Alignment      : center
+        Input Type              : character
+        Text                    : 
+        Max. Text Size          : 3
+        Word wrap               : disabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
+    
+Text chip07
+    Attributes
+        ID                      : 36
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : on press and release
+        Opacity                 : 127
+        x coordinate            : 276
+        y coordinate            : 2
+        Width                   : 30
+        Height                  : 30
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 7
+        Cropped Back. Picture ID: 32
+        Horizontal Alignment    : center
+        Vertical Alignment      : center
+        Input Type              : character
+        Text                    : 
+        Max. Text Size          : 3
+        Word wrap               : disabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
+    
 Dual-state Button bt_reboot
     Attributes
         ID                        : 20
@@ -438,7 +708,7 @@ Dual-state Button bt_reboot
         Send Component ID         : on press and release
         Opacity                   : 127
         x coordinate              : 225
-        y coordinate              : 15
+        y coordinate              : 36
         Width                     : 80
         Height                    : 30
         Effect                    : load

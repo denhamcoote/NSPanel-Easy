@@ -7768,7 +7768,7 @@ actions:
                                 data:
                                   page: light
                                   id: tempslider
-                                  val: '{{ curr_color_temp }}'
+                                  val: '{{ (min_color_temp_kelvin + max_color_temp_kelvin - curr_color_temp) | int }}'
                                 continue_on_error: true
                               - *delay_default
                               - action: 'esphome.{{ nspanel_name }}_command'
