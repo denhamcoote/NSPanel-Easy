@@ -228,7 +228,6 @@ script:
   - id: !extend stop_all
     then:
       - lambda: |-
-          if (current_page_id == get_page_id("boot")) disp1->send_command("tm_esphome.en=0");
           wait_for_page_boot_exit->stop();
 
   - id: !extend stop_page_constructors

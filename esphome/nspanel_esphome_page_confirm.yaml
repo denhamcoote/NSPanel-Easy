@@ -28,6 +28,7 @@ script:
       - lambda: |-
           if (current_page_id != get_page_id("confirm")) return;
           if (!is_device_ready_for_tasks()) return;
+          if (system_flags.tft_upload_active) return;
           disp1->set_component_text("confirm.title", wrapText(
                                                                 "${LOCALIZATION[LANG].please_confirm}",
                                                                 15,
