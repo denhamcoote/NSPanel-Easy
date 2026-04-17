@@ -61,13 +61,14 @@ Page buttonpage01
                 }
             }
             button_back.font=button_back_font
-            // Hide button slots not present in the bitmask
+            // Set up button slots from bitmask
             for(sys0=0;sys0<8;sys0++)
             {
                 sys1=1<<sys0
                 sys2=is_buttonpage01&sys1
                 if(sys2==0)
                 {
+                    // Slot not configured - hide all sub-components
                     sys3=sys0+11  // pic
                     vis b[sys3],0
                     sys3=sys0+19  // text
@@ -78,6 +79,17 @@ Page buttonpage01
                     vis b[sys3],0
                     sys3=sys0+43  // hotspot
                     vis b[sys3],0
+                }else
+                {
+                    // Slot configured - set off state background picture
+                    sys3=sys0+11  // pic
+                    b[sys3].picc=pic_button_off
+                    sys3=sys0+19  // text
+                    b[sys3].picc=pic_button_off
+                    sys3=sys0+27  // icon
+                    b[sys3].picc=pic_button_off
+                    sys3=sys0+35  // bri
+                    b[sys3].picc=pic_button_off
                 }
             }
             dim=brightness
