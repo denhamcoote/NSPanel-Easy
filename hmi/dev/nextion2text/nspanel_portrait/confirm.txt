@@ -19,7 +19,12 @@ Page confirm
     Events
         Preinitialize Event
             dim=brightness
-            if(api==0)
+            if(page_name.txt=="tft_upload")
+            {
+                vis bt_accept,0
+                vis bt_clear,0
+                vis bclose,0
+            }else if(api==0)
             {
                 page home_page_id
             }

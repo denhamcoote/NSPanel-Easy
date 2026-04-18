@@ -25,11 +25,21 @@ light:
     on_turn_on:
       then:
         - lambda: |-
+            // Skip during boot to avoid interfering with boot sequence
+            if (!system_flags.boot_completed || current_page_id == get_page_id("boot")) {
+              ESP_LOGV("${TAG_ADDON_DISPLAY_LIGHT}", "Skipping turn_on - boot not complete");
+              return;
+            }
             if (current_page_id == get_page_id("screensaver")) disp1->goto_page(wakeup_page_id);
             timer_reset_all->execute();
     on_turn_off:
       then:
         - lambda: |-
+            // Skip during boot to avoid interfering with boot sequence
+            if (!system_flags.boot_completed || current_page_id == get_page_id("boot")) {
+              ESP_LOGV("${TAG_ADDON_DISPLAY_LIGHT}", "Skipping turn_off - boot not complete");
+              return;
+            }
             goto_page->execute(get_page_id("screensaver"));
 
 output:
@@ -39,10 +49,18 @@ output:
     type: float
     write_action:
       - lambda: |-
+          // Skip during boot to avoid interfering with boot sequence
+          if (!system_flags.boot_completed || current_page_id == get_page_id("boot")) {
+            ESP_LOGV("${TAG_ADDON_DISPLAY_LIGHT}", "Skipping brightness change - boot not complete");
+            return;
+          }
           ESP_LOGV("${TAG_ADDON_DISPLAY_LIGHT}", "state: %f", state);
           uint8_t target_brightness = int(round(state * 100.0f));
           ESP_LOGV("${TAG_ADDON_DISPLAY_LIGHT}", "target_brightness: %" PRIu8 "%%", target_brightness);
+          // Set flag to prevent feedback loop in extended set_brightness
+          display_light_updating = true;
           set_brightness->execute(target_brightness);
+          display_light_updating = false;
 
 script:
   - id: !extend dump_config
@@ -54,11 +72,16 @@ script:
   - id: !extend page_change
     then:
       - lambda: |-
+          // Skip during boot to avoid interfering with boot sequence
+          if (!system_flags.boot_completed || current_page_id == get_page_id("boot")) {
+            ESP_LOGV("${TAG_ADDON_DISPLAY_LIGHT}", "Skipping page_change sync - boot not complete");
+            return;
+          }
           ESP_LOGV("${TAG_ADDON_DISPLAY_LIGHT}", "is_on(): %s", display_light->current_values.is_on() ? "True" : "False");
-          if (current_page_id == get_page_id("screensaver") and display_light->current_values.is_on()) {
+          if (current_page_id == get_page_id("screensaver") && display_light->current_values.is_on()) {
             auto call = display_light->turn_off();
             call.perform();
-          } else if (current_page_id != get_page_id("screensaver") and (not display_light->current_values.is_on())) {
+          } else if (current_page_id != get_page_id("screensaver") && !display_light->current_values.is_on()) {
             auto call = display_light->turn_on();
             call.perform();
           }
@@ -67,9 +90,19 @@ script:
   - id: !extend set_brightness
     then:
       - lambda: |-
+          // Skip during boot to avoid interfering with boot sequence
+          if (!system_flags.boot_completed || current_page_id == get_page_id("boot")) {
+            ESP_LOGV("${TAG_ADDON_DISPLAY_LIGHT}", "Skipping set_brightness sync - boot not complete");
+            return;
+          }
+          // Skip if this call came from display_light itself to prevent feedback loop
+          if (display_light_updating) {
+            ESP_LOGV("${TAG_ADDON_DISPLAY_LIGHT}", "Skipping set_brightness sync - updating from light");
+            return;
+          }
           uint8_t current_light_brightness = int(round(display_light->current_values.is_on() ? (display_light->current_values.get_brightness() * 100.0f) : 0.0));
           if (brightness != current_light_brightness) {
-            if (current_page_id != get_page_id("screensaver") and brightness > 0) {
+            if (current_page_id != get_page_id("screensaver") && brightness > 0) {
               auto call = display_light->turn_on();
               call.set_brightness(brightness / 100.0f);
               call.perform();
