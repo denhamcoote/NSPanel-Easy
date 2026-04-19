@@ -362,12 +362,6 @@ script:
             last_media_position = 0;
           }
 
-          // Reset timers
-          if (new_page_id != get_page_id("screensaver")) {
-            ESP_LOGV("${TAG_HW_DISPLAY}", "Reset timers");
-            timer_reset_all->execute();
-          }
-
       # Wait for other constructors to stop before telling the blueprint about a new page
       - script.wait: stop_page_constructors
 
@@ -519,12 +513,13 @@ script:
           }
 
   - id: timer_reset_all  # Global timer reset - Triggered with a touch on the screen
-    # Use 'restart' rather than 'single' because multiple paths legitimately
-    # converge on this script within the same tick. A common case is wake-from-screensaver:
-    # Nextion sends both a touch event (firing on_touch) and a page-change event (firing page_change),
-    # and both reset timers.
-    # The script body is three fire-and-forget script.execute calls to 'restart'-mode children,
-    # so re-running has no harmful side effects.
+    # NOTE: Keep mode 'single' (do not change to 'restart').
+    # Multiple paths legitimately converge on resetting timers within the
+    # same tick (e.g., wake-from-screensaver fires both page_change and on_touch).
+    # 'single' silently drops the duplicate; the occasional WARN is benign
+    # and points at structural call patterns that may be worth investigating individually.
+    # Switching to 'restart' produces a debug-message cascade (3 child 'restarting' lines per call)
+    # plus a new warning on set_brightness, which is louder than the original warning.
     mode: restart
     then:
       # Extended by:
