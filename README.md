@@ -67,7 +67,7 @@ extra cost to you, and pre-flashed options for those who prefer a ready-to-go se
 NSPanel Easy comprises three tightly integrated components that work together:
 
 | Component | Description |
-|-----------|-------------|
+| --- | --- |
 | **ESPHome Firmware** | Runs on the ESP32 inside the NSPanel, handling communication, sensors, relays, and display control. |
 | **Nextion TFT** | The display firmware loaded onto the Nextion screen, defining all UI pages and touch interactions. |
 | **HA Blueprint** | A Home Assistant automation blueprint that orchestrates the panel's behavior and entity bindings. |
@@ -93,7 +93,7 @@ Quick links for the most common needs:
 - **Troubleshooting:** [TFT Upload](docs/tft_upload.md) ·
   [Compiling Errors](docs/error_compiling.md) ·
   [Panel Startup Issues](docs/error_initializing.md).
-- **Feature Requests:** Share your ideas [here](https://github.com/edwardtfn/NSPanel-Easy/labels/new%20feature%20request).
+- **Feature Requests:** [Open a new feature request](https://github.com/edwardtfn/NSPanel-Easy/labels/new%20feature%20request) to share your ideas.
 - **Changelog:** Every merged PR automatically generates a [GitHub Release](https://github.com/edwardtfn/NSPanel-Easy/releases) with detailed notes.
 
 ## 🚀 Features
