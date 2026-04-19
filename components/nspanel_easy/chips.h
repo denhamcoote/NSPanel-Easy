@@ -83,4 +83,17 @@ extern bool is_chips_page;
 
 }  // namespace esphome::nspanel_easy
 
+/**
+ * @brief Find the chip index for a given component name.
+ *
+ * @param name Unscoped Nextion component name (e.g. "chip01").
+ * @return Index into chip_states[] / CHIP_NAMES[], or CHIP_COUNT if not found.
+ */
+inline uint8_t find_chip_index(const std::string &name) {
+  for (uint8_t i = 0; i < CHIP_COUNT; ++i) {
+    if (name == CHIP_NAMES[i]) return i;
+  }
+  return UINT8_MAX;  // sentinel: not found
+}
+
 #endif  // NSPANEL_EASY_CHIPS
