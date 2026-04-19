@@ -140,9 +140,11 @@ script:
           timeout: 10s
       - delay: 2s
       - lambda: |-
-          ESP_LOGD("${TAG_UPLOAD_TFT}", "Starting TFT upload");
-          tft_upload_result = disp1->upload_tft(${upload_tft_baud_rate}, !disp1->is_setup());
-          ESP_LOGV("${TAG_UPLOAD_TFT}", "TFT upload: %s", YESNO(tft_upload_result));
+          const uint32_t upload_baud = system_flags.baud_fallback_active
+              ? static_cast<uint32_t>(${BAUD_RATE_FALLBACK})
+              : static_cast<uint32_t>(${upload_tft_baud_rate});
+          ESP_LOGD("${TAG_UPLOAD_TFT}", "Starting TFT upload at %" PRIu32 " bps", upload_baud);
+          tft_upload_result = disp1->upload_tft(upload_baud, !disp1->is_setup());
 
   - id: !extend stop_all
     then:
