@@ -519,7 +519,13 @@ script:
           }
 
   - id: timer_reset_all  # Global timer reset - Triggered with a touch on the screen
-    mode: single
+    # Use 'restart' rather than 'single' because multiple paths legitimately
+    # converge on this script within the same tick. A common case is wake-from-screensaver:
+    # Nextion sends both a touch event (firing on_touch) and a page-change event (firing page_change),
+    # and both reset timers.
+    # The script body is three fire-and-forget script.execute calls to 'restart'-mode children,
+    # so re-running has no harmful side effects.
+    mode: restart
     then:
       # Extended by:
       #  - page_screensaver
