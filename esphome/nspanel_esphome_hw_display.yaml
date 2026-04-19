@@ -201,6 +201,8 @@ script:
             id(button_back_font) = static_cast<uint8_t>(val);
             disp1->send_command_printf("button_back_font=%i", id(button_back_font));
             return;
+          } else if (component == "wake_up") {
+            wakeup->execute(val!=0);
           }
 
   - id: !extend boot_nextion

@@ -10570,7 +10570,7 @@ actions:
               sequence:
                 - *display_value
 
-      - alias: Home page - status bar
+      - alias: Chips bar
         conditions:
           - condition: trigger
             id: trigger_chip_state
@@ -10676,8 +10676,10 @@ actions:
           - condition: trigger
             id: wake_up_sensors
         sequence:
-          - action: 'esphome.{{ nspanel_name }}_wake_up'
+          - action: 'esphome.{{ nspanel_name }}_component_val'
             data:
-              reset_timer: true
+              page: mem
+              id: wake_up
+              val: 1  # reset timers
             continue_on_error: true
 ...
