@@ -23,26 +23,6 @@ consider [buying me an ice cream][buymeacoffee] - it fuels the late-night coding
 [![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fraw.githubusercontent.com%2Fedwardtfn%2FNSPanel-Easy%2Frefs%2Ftags%2Flatest%2Fnspanel_easy_blueprint.yaml)
 <!-- markdownlint-enable MD013 -->
 
-## 📚 Documentation & Resources
-
-Full documentation lives in the [docs/](docs/README.md) folder — also published
-as a browsable site at [edwardtfn.github.io/NSPanel-Easy](https://edwardtfn.github.io/NSPanel-Easy/).
-The Manuals page indexes every guide available.
-
-Quick links for the most common needs:
-
-- **Getting Started:** [Installation and Setup](docs/install.md) walks you
-  through flashing, TFT upload, and Blueprint import.
-- **Migrating from Blackymas?** The [Migration Guide](docs/migration_from_blackymas.md)
-  takes less than 10 minutes — no serial flashing required.
-- **API Reference:** [API Documentation](docs/api.md) for all custom ESPHome
-  actions.
-- **Troubleshooting:** [TFT Upload](docs/tft_upload.md) ·
-  [Compiling Errors](docs/error_compiling.md) ·
-  [Panel Startup Issues](docs/error_initializing.md).
-- **Feature Requests:** Share your ideas [here](https://github.com/edwardtfn/NSPanel-Easy/labels/new%20feature%20request).
-- **Changelog:** Every merged PR automatically generates a [GitHub Release](https://github.com/edwardtfn/NSPanel-Easy/releases) with detailed notes.
-
 ## Table of Contents
 
 1. [Project Highlights](#-project-highlights)
@@ -98,15 +78,21 @@ NSPanel Easy comprises three tightly integrated components that work together:
 
 ## 📚 Documentation & Resources
 
-- **Getting Started:** Comprehensive [Documentation and Setup Guide](docs/README.md) with step-by-step instructions.
-- **Migrating from Blackymas?** Check the [Migration Guide](docs/migration_from_blackymas.md) - it only takes a few minutes.
-- **Customization:** Explore the [Customization Guide](docs/customization.md) for advanced configurations.
-- **API Reference:** Full list of available ESPHome actions in the [API Documentation](docs/api.md).
-- **Troubleshooting:** Running into issues? See some useful docs:
-    - [Installation Guide](docs/install.md)
-    - [Error Compiling Guide](docs/error_compiling.md)
-    - [Error Initializing Guide](docs/error_initializing.md).
-    - [TFT Upload Guide](docs/tft_upload.md)
+Full documentation lives in the [docs/](docs/README.md) folder — also published
+as a browsable site at [edwardtfn.github.io/NSPanel-Easy](https://edwardtfn.github.io/NSPanel-Easy/).
+The Manuals page indexes every guide available.
+
+Quick links for the most common needs:
+
+- **Getting Started:** [Installation and Setup](docs/install.md) walks you
+  through flashing, TFT upload, and Blueprint import.
+- **Migrating from Blackymas?** The [Migration Guide](docs/migration_from_blackymas.md)
+  takes less than 10 minutes — no serial flashing required.
+- **API Reference:** [API Documentation](docs/api.md) for all custom ESPHome
+  actions.
+- **Troubleshooting:** [TFT Upload](docs/tft_upload.md) ·
+  [Compiling Errors](docs/error_compiling.md) ·
+  [Panel Startup Issues](docs/error_initializing.md).
 - **Feature Requests:** Share your ideas [here](https://github.com/edwardtfn/NSPanel-Easy/labels/new%20feature%20request).
 - **Changelog:** Every merged PR automatically generates a [GitHub Release](https://github.com/edwardtfn/NSPanel-Easy/releases) with detailed notes.
 
