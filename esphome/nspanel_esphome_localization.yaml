@@ -13,6 +13,7 @@ substitutions:
   ##############################
   TAG_LOCALIZATION: nspanel.localization
 
+  units_separator: " "
   language: en
   SUPPORTED_LANGUAGES: ["af", "ar", "bg", "bn", "bs", "ca", "cs", "cy", "da", "de", "el", "en",
                         "es", "et", "eu", "fa", "fi", "fr", "gl", "he", "hi", "hr", "hu", "id",
@@ -4142,7 +4143,44 @@ esphome:
     build_flags:
       - -D NSPANEL_EASY_LOCALIZATION
 
+globals:
+  - id: mui_date_format
+    type: std::string
+    restore_value: true
+    max_restore_data_length: 30
+    initial_value: '"${DATE_FORMAT_DEFAULT}"'
+
+  - id: mui_time_format
+    type: std::string
+    restore_value: true
+    max_restore_data_length: 15
+    initial_value: '"${TIME_FORMAT_DEFAULT}"'
+
+  - id: units_separator
+    type: std::string
+    restore_value: true
+    initial_value: '"${units_separator}"'
+    max_restore_data_length: 5
+
 script:
+  - id: !extend action_component_text
+    then:
+      - lambda: |-
+          if (page != "mem") return;
+          if (component == "date_format") {
+            id(mui_date_format) = txt;
+            return;
+          }
+          if (component == "time_format") {
+            id(mui_time_format) = txt;
+            return;
+          }
+          if (component == "units_separator") {
+            id(units_separator) = txt;
+            localization_units_separator_update->execute();
+            return;
+          }
+
   - id: !extend dump_config
     then:
       - lambda: >-
@@ -4153,4 +4191,15 @@ script:
           } else {
             ESP_LOGE("${TAG_LOCALIZATION}", "  Fallback to English");
           }
+          ESP_LOGCONFIG("${TAG_LOCALIZATION}", "  Date format: '%s'", id(mui_date_format).c_str());
+          ESP_LOGCONFIG("${TAG_LOCALIZATION}", "  Time format: '%s'", id(mui_time_format).c_str());
+          ESP_LOGCONFIG("${TAG_LOCALIZATION}", "  Units separator: '%s'", id(units_separator).c_str());
+
+  - id: !extend stop_all
+    then:
+      - lambda: localization_units_separator_update->stop();
+
+  - id: localization_units_separator_update
+    mode: restart
+    then:  # There's nothing here. It is expanded by other packages
 ...

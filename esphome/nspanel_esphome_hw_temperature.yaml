@@ -97,10 +97,12 @@ script:
           static char buffer[15];
           #if NSPANEL_EASY_HW_TEMPERATURE_IS_FAHRENHEIT
           // Fahrenheit with no decimal
-          snprintf(buffer, sizeof(buffer), "%.0f${temp_units}", celsius_to_fahrenheit(temp_nspanel->state));
+          snprintf(buffer, sizeof(buffer), "%.0f%s${temp_units}", celsius_to_fahrenheit(temp_nspanel->state),
+                                                                  id(units_separator).c_str());
           #else
           // Celsius with one decimal
-          snprintf(buffer, sizeof(buffer), "%.1f${temp_units}", temp_nspanel->state);
+          snprintf(buffer, sizeof(buffer), "%.1f%s${temp_units}", temp_nspanel->state,
+                                                                  id(units_separator).c_str());
           #endif
 
           disp1->set_component_text(hmi::home::INDR_TEMP.name,
@@ -110,6 +112,10 @@ script:
     then:
       - lambda: |-
           ESP_LOGCONFIG("${TAG_HW_TEMPERATURE}", "Temperature unit: ${temp_units}");
+
+  - id: !extend localization_units_separator_update
+    then:
+      - script.execute: display_embedded_temp
 
   - id: !extend page_home
     then:

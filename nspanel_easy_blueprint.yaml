@@ -6,7 +6,7 @@
 ##################################################################################################
 ---
 blueprint:
-  name: NSPanel Easy Configuration (v2026.4.23)
+  name: NSPanel Easy Configuration (v9999.99.9)
   author: Edward Firmo (https://github.com/edwardtfn)
   description: >
     # NSPanel Easy Configuration via Blueprint
@@ -214,6 +214,14 @@ blueprint:
                   value: '.'
                 - label: ', (Comma)'
                   value: ','
+        compact_unit_display:
+          name: Compact unit display
+          description: >-
+            When enabled, numeric values and their units are displayed without a
+            space between them (e.g., `21°C` instead of `21 °C`).
+          default: false
+          selector:
+            boolean:
     weather_temperature:
       name: Weather and temperature (optional)
       icon: mdi:weather-partly-snowy-rainy
@@ -4063,7 +4071,7 @@ trigger_variables:
 
 variables:
   # Version will be following release version defined automatically when merging to main
-  blueprint_version: 2026.4.23
+  blueprint_version: 9999.99.9
   pages:
     current: '{{ states(currentpage) }}'
     alarm: "alarm"
@@ -5050,6 +5058,9 @@ actions:
               else version("0.0.0")
             )
         }}
+
+      compact_unit_display: !input compact_unit_display
+      units_separator: "{{ '' if compact_unit_display else ' ' }}"
 
       # yamllint disable rule:line-length rule:braces
       device_class_icons:
@@ -6259,6 +6270,17 @@ actions:
                                 continue_on_error: true
                               - *delay_boot
 
+                      - alias: Localization - Units separator
+                        sequence:
+                          - alias: units_separator
+                            action: 'esphome.{{ nspanel_name }}_component_text'
+                            data:
+                              page: mem
+                              id: units_separator
+                              txt: '{{ units_separator }}'
+                            continue_on_error: true
+                          - *delay_boot
+
                       - alias: Home page
                         sequence:
                           - alias: climate_chip_visibility
@@ -7089,31 +7111,40 @@ actions:
                                       outdoor_temp_entity is match "sensor."
                                     }}
 
-                                  outdoor_temp: >
-                                    {% if outdoor_temp_entity_valid %}
-                                      {{
-                                        states(outdoor_temp_entity, rounded=True, with_unit=True)
-                                        if has_value(outdoor_temp_entity)
-                                        else ""
-                                      }}
-                                    {% elif weather_entity is string and weather_entity is match "weather." %}
-                                      {% set temp_from_weather = state_attr(weather_entity, "temperature") %}
-                                      {% if is_number(temp_from_weather) %}
-                                      {{
-                                        (
-                                          (temp_from_weather | float)
-                                          | round(0 if weather_temp_units in ["F", "f", "°F", "°f"] else 1)
-                                        ) ~ weather_temp_units
-                                      }}
-                                      {% else %}
+                                  outdoor_temp: >-
+                                    {%- if outdoor_temp_entity_valid and has_value(outdoor_temp_entity) -%}
+                                      {%- set with_units = states(outdoor_temp_entity, rounded=True, with_unit=True) -%}
+                                      {%- set without_units = states(outdoor_temp_entity, rounded=True, with_unit=False) -%}
+                                      {%- if with_units == without_units or not is_number(without_units) -%}
+                                        {{ with_units }}
+                                      {%- else -%}
+                                        {%- set unit = with_units.split(without_units)[1] | trim -%}
+                                        {{ without_units ~ units_separator ~ unit }}
+                                      {%- endif -%}
+                                    {%- elif weather_entity is string and
+                                              weather_entity.split(".") | count == 2 and
+                                              weather_entity.split(".")[0] == "weather" -%}
+                                      {%- set temp_from_weather = state_attr(weather_entity, "temperature") -%}
+                                      {%- if is_number(temp_from_weather) -%}
+                                        {{
+                                          (
+                                            (temp_from_weather | float)
+                                            | round(0 if weather_temp_units in ["F", "f", "°F", "°f"] else 1)
+                                          ) ~ units_separator ~ weather_temp_units
+                                        }}
+                                      {%- else -%}
                                         {{ "" }}
-                                      {% endif %}
-                                    {% else %}
+                                      {%- endif -%}
+                                    {%- else -%}
                                       {{ "" }}
-                                    {% endif %}
+                                    {%- endif -%}
 
-                                  outdoor_temp_trimmed: >
-                                    {{ outdoor_temp | regex_replace('\s+', ' ') | trim }}
+                                  outdoor_temp_trimmed: >-
+                                    {%- if compact_unit_display -%}
+                                      {{ outdoor_temp | trim }}
+                                    {%- else -%}
+                                      {{ outdoor_temp | regex_replace('\s+', ' ') | trim }}
+                                    {%- endif -%}
 
                               - condition: "{{ outdoor_temp_trimmed != '' }}"
                               - action: 'esphome.{{ nspanel_name }}_component_text'
@@ -7149,28 +7180,32 @@ actions:
                                   - '{{ not embedded_indoor_temperature }}'
                                   - '{{ has_value(indoor_temperature_sensor) }}'
                               - variables:
-                                  indoor_temp_raw: >
+                                  indoor_temp: >-
                                     {%- if indoor_temperature_sensor.split(".")[0] == "climate" -%}
                                       {%- set current_temp = state_attr(indoor_temperature_sensor, "current_temperature") -%}
-                                      {{ current_temp | round(1) if is_number(current_temp) else none }}
+                                      {%- if is_number(current_temp) -%}
+                                        {%- set unit = state_attr(indoor_temperature_sensor, "temperature_unit") -%}
+                                        {%- set unit = unit if unit is string and unit | length > 0 else temperature_units -%}
+                                        {{ current_temp | round(1) ~ units_separator ~ unit }}
+                                      {%- else -%}
+                                        {{ "" }}
+                                      {%- endif -%}
                                     {%- else -%}
-                                      {{ states(indoor_temperature_sensor, rounded=True, with_unit=True) }}
+                                      {%- set with_units = states(indoor_temperature_sensor, rounded=True, with_unit=True) -%}
+                                      {%- set without_units = states(indoor_temperature_sensor, rounded=True, with_unit=False) -%}
+                                      {%- if with_units == without_units or not is_number(without_units) -%}
+                                        {{ with_units }}
+                                      {%- else -%}
+                                        {%- set unit = with_units.split(without_units)[1] | trim -%}
+                                        {{ without_units ~ units_separator ~ unit }}
+                                      {%- endif -%}
                                     {%- endif -%}
-                                  indoor_temp_unit: >
-                                    {%- if indoor_temperature_sensor.split(".")[0] == "climate" -%}
-                                      {%- set unit = state_attr(indoor_temperature_sensor, "temperature_unit") -%}
-                                      {{ unit if unit is string and unit | length > 0 else temperature_units }}
+                                  indoor_temp_trimmed: >-
+                                    {%- if compact_unit_display -%}
+                                      {{ indoor_temp | trim }}
                                     {%- else -%}
-                                      {{ "" }}
+                                      {{ indoor_temp | regex_replace('\s+', ' ') | trim }}
                                     {%- endif -%}
-                                  indoor_temp: >
-                                    {%- if indoor_temperature_sensor.split(".")[0] == "climate" -%}
-                                      {{ indoor_temp_raw | string ~ " " ~ indoor_temp_unit if is_number(indoor_temp_raw) else none }}
-                                    {%- else -%}
-                                      {{ indoor_temp_raw }}
-                                    {%- endif -%}
-                                  indoor_temp_trimmed: >
-                                    {{ indoor_temp | regex_replace('\s+', ' ') | trim }}
                               - condition: '{{ indoor_temp_trimmed != "" }}'
                               - action: 'esphome.{{ nspanel_name }}_component_text'
                                 data:
@@ -7433,10 +7468,16 @@ actions:
                                                 txt: &value_with_unit_and_translations >
                                                   {{
                                                     (
-                                                      (states(entity_id, rounded=true) ~ (unit_of_measurement if unit_of_measurement is string and unit_of_measurement | length > 0 else ""))
+                                                      (
+                                                        states(entity_id, rounded=true) ~ (
+                                                          units_separator ~ unit_of_measurement
+                                                          if unit_of_measurement is string and unit_of_measurement | length > 0
+                                                          else ""
+                                                        )
+                                                      )
                                                       if is_number(entity_state)
                                                       else state_translated(entity_id)
-                                                    )
+                                                    ) | regex_replace('\s+', ' ') | trim
                                                     if entity_id_valid and entity_has_value
                                                     else "_{_unavailable_}_"
                                                   }}
@@ -9328,7 +9369,7 @@ actions:
                                       parameters:
                                         - name: hours_of_sun
                                           visibility: '{{ is_number(hours_of_sun) }}'
-                                          value: '{{ (hours_of_sun ~ " " ~ weather_units.hours_of_sun) if is_number(hours_of_sun) }}'
+                                          value: '{{ (hours_of_sun ~ units_separator ~ weather_units.hours_of_sun) if is_number(hours_of_sun) }}'
                                           icon: '{{ nextion.icon.weather.sun }}'
                                         - name: thunderstorm_probability
                                           visibility: '{{ is_number(thunderstorm_probability) }}'
@@ -9337,7 +9378,7 @@ actions:
                                         - name: precipitation
                                           visibility: '{{ is_number(precipitation) or is_number(precipitation_probability) }}'
                                           value: >
-                                            {{ (precipitation ~ " " ~ weather_units.precipitation) if is_number(precipitation) }}
+                                            {{ (precipitation ~ units_separator ~ weather_units.precipitation) if is_number(precipitation) }}
                                             {{ "-" if is_number(precipitation) and is_number(precipitation_probability) }}
                                             {{ (precipitation_probability ~ weather_units.precipitation_probability) if is_number(precipitation_probability) }}
                                           icon: '{{ nextion.icon.weather.rain }}'
@@ -9347,15 +9388,15 @@ actions:
                                           icon: '{{ nextion.icon.weather.protect }}'
                                         - name: wind_speed
                                           visibility: '{{ is_number(wind_speed) }}'
-                                          value: '{{ (wind_speed ~ " " ~ weather_units.wind_speed) if is_number(wind_speed) }}'
+                                          value: '{{ (wind_speed ~ units_separator ~ weather_units.wind_speed) if is_number(wind_speed) }}'
                                           icon: '{{ nextion.icon.weather.wind }}'
                                         - name: humidity
                                           visibility: '{{ is_number(humidity) }}'
-                                          value: '{{ (humidity ~ " " ~ weather_units.humidity) if is_number(humidity) }}'
+                                          value: '{{ (humidity ~ units_separator ~ weather_units.humidity) if is_number(humidity) }}'
                                           icon: '{{ all_icons["water-percent"] }}'
                                         - name: pressure
                                           visibility: '{{ is_number(pressure) }}'
-                                          value: '{{ (pressure ~ " " ~ weather_units.pressure) if is_number(pressure) }}'
+                                          value: '{{ (pressure ~ units_separator ~ weather_units.pressure) if is_number(pressure) }}'
                                           icon: '{{ nextion.icon.weather.gauge }}'
 
                                   ##### Display weather PIC when available
@@ -9381,9 +9422,9 @@ actions:
                                   ##### Display temperature min/max when available
                                   - variables:
                                       temperature_string: >
-                                          {{ (temp_min | round(0) ~ weather_temp_units) if is_number(temp_min) }}
-                                          {{ "/" if is_number(temp_min) and is_number(temp_max) and temp_min != temp_max }}
-                                          {{ (temp_max | round(0) ~ weather_temp_units) if is_number(temp_max) and temp_min != temp_max }}
+                                        {{ (temp_min | round(0) ~ units_separator ~ weather_temp_units) if is_number(temp_min) }}
+                                        {{ "/" if is_number(temp_min) and is_number(temp_max) and temp_min != temp_max }}
+                                        {{ (temp_max | round(0) ~ units_separator ~ weather_temp_units) if is_number(temp_max) and temp_min != temp_max }}
                                   - if: '{{ (is_number(temp_min) or is_number(temp_max)) and temperature_string is string and temperature_string | length > 0 }}'
                                     then:
                                       - action: 'esphome.{{ nspanel_name }}_component_text'
@@ -9543,10 +9584,10 @@ actions:
                                         value1_val: &utilities_value_with_unit_and_translations >
                                           {{
                                             (
-                                              (states(entity_id, rounded=true) ~ (unit_of_measurement if unit_of_measurement is string and unit_of_measurement | length > 0 else ""))
+                                              (states(entity_id, rounded=true) ~ (units_separator ~ unit_of_measurement if unit_of_measurement is string and unit_of_measurement | length > 0 else ""))
                                               if is_number(entity_state)
                                               else state_translated(entity_id)
-                                            )
+                                            ) | regex_replace('\s+', ' ') | trim
                                             if value_enabled and entity_id_valid and entity_has_value
                                             else ""
                                           }}

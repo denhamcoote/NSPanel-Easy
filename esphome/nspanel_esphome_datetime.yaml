@@ -22,32 +22,7 @@ esphome:
     build_flags:
       - -D NSPANEL_EASY_DATETIME
 
-globals:
-  - id: mui_date_format
-    type: std::string
-    restore_value: true
-    max_restore_data_length: 30
-    initial_value: '"${DATE_FORMAT_DEFAULT}"'
-  - id: mui_time_format
-    type: std::string
-    restore_value: true
-    max_restore_data_length: 15
-    initial_value: '"${TIME_FORMAT_DEFAULT}"'
-
 script:
-  - id: !extend action_component_text
-    then:
-      - lambda: |-
-          if (page != "mem") return;
-          if (component == "date_format") {
-            id(mui_date_format) = txt;
-            return;
-          }
-          if (component == "time_format") {
-            id(mui_time_format) = txt;
-            return;
-          }
-
   - id: new_minute
     mode: restart
     then:
