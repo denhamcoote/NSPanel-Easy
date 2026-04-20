@@ -79,8 +79,8 @@ Optional packages that extend the base firmware:
 - **Discord** — [discord.gg/KyVPd33znv](https://discord.gg/KyVPd33znv) is the
   fastest channel for questions, discussion, and sharing your setup.
 - **GitHub Issues** — [bug reports and feature requests](https://github.com/edwardtfn/NSPanel-Easy/issues).
-- **Home Assistant Community forum** — the NSPanel Easy thread for
-  longer-form discussion.
+- **Home Assistant Community forum** — [NSPanel Easy thread](https://community.home-assistant.io/t/nspanel-easy-blueprint-configured-nspanel-customization/1005033)
+  for longer-form discussion.
 
 ## Contributing
 
