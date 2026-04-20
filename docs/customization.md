@@ -413,8 +413,7 @@ button:
     on_press:
       then:
         - logger.log: Button Sleep pressed
-        - lambda: |-
-            goto_page->execute(get_page_id("screensaver"));
+        - script.execute: go_sleep
   
   # Adds a button to wake-up the panel (similar to the existing action)
   - name: Wake-up
@@ -424,11 +423,9 @@ button:
     on_press:
       then:
         - logger.log: Button Wake-up pressed
-        - lambda: |-
-            if (current_page_id == get_page_id("screensaver")) disp1->goto_page(wakeup_page_id);
-            // timer_page->execute(); // enable this if you want page timeout to be reset
-            timer_sleep->execute();
-            timer_dim->execute();
+        - script.execute:
+            id: wakeup
+            reset_timer: true
 ```
 
 ### Set display as a light

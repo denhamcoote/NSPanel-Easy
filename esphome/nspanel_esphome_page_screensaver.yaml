@@ -112,6 +112,13 @@ script:
             return;
           }
 
+  - id: go_sleep
+    mode: single
+    then:
+      - lambda: |-
+          ESP_LOGD("${TAG_PAGE_SCREENSAVER}", "Going to sleep from page '%s'", page_names[current_page_id]);
+          goto_page->execute(get_page_id("screensaver"));
+
   - id: !extend ha_button
     then:
       - lambda: |-
@@ -166,6 +173,7 @@ script:
           page_screensaver->stop();
           page_screensaver_apply_settings->stop();
           page_screensaver_apply_settings_with_delay->stop();
+          go_sleep->stop();
           timer_sleep->stop();
 
   - id: timer_sleep  # Handles the sleep (go to screensaver page) after a timeout
@@ -180,8 +188,7 @@ script:
                 if (timeout_sleep->state <= 0) return;                      // Sleep is disabled
                 if (current_page_id == get_page_id("screensaver")) return;  // Already sleeping
                 if (current_page_id == get_page_id("boot")) return;         // Don't sleep during boot
-                ESP_LOGD("${TAG_PAGE_SCREENSAVER}", "Sleep from '%s'", page_names[current_page_id]);
-                goto_page->execute(get_page_id("screensaver"));
+                go_sleep->execute();
 
   - id: !extend timer_reset_all
     then:
