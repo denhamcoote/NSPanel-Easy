@@ -7121,7 +7121,9 @@ actions:
                                         {%- set unit = with_units.split(without_units)[1] | trim -%}
                                         {{ without_units ~ units_separator ~ unit }}
                                       {%- endif -%}
-                                    {%- elif weather_entity is string and weather_entity is match "weather." -%}
+                                    {%- elif weather_entity is string and
+                                              weather_entity.split(".") | count == 2 and
+                                              weather_entity.split(".")[0] == "weather" -%}
                                       {%- set temp_from_weather = state_attr(weather_entity, "temperature") -%}
                                       {%- if is_number(temp_from_weather) -%}
                                         {{
@@ -7186,7 +7188,7 @@ actions:
                                         {%- set unit = unit if unit is string and unit | length > 0 else temperature_units -%}
                                         {{ current_temp | round(1) ~ units_separator ~ unit }}
                                       {%- else -%}
-                                        {{ none }}
+                                        {{ "" }}
                                       {%- endif -%}
                                     {%- else -%}
                                       {%- set with_units = states(indoor_temperature_sensor, rounded=True, with_unit=True) -%}
