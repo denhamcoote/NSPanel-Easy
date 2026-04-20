@@ -48,9 +48,118 @@ substitutions:
                   tft_upload_manual_request = true;
                   upload_tft->execute(url.c_str());
                 }
+  include_button_scan_baud_rate: false
+  _pkg_button_scan_baud_rate:  # To do: move this to an external package after v2024.6.0
+    # NSPanel Easy - Baud Rate Scanner (Diagnostic Add-on)
+    #
+    # Usage: Paste this into your local panel's YAML file.
+    #
+    # This add-on adds a button that:
+    #   1. Power-cycles the Nextion display
+    #   2. Scans all Nextion-supported baud rates for a response
+    #   3. If found, switches the ESP UART to that rate and triggers TFT upload
+    #
+    # Scan order is optimized for NSPanel Easy common cases first.
+    button:
+      - id: baud_scan
+        name: Scan baud rate
+        platform: template
+        icon: mdi:magnify
+        entity_category: diagnostic
+        on_press:
+          - lambda: |-
+              ESP_LOGI("${TAG_UPLOAD_TFT}", "Baud scan: starting");
+
+          # Power-cycle the display to ensure a clean UART state
+          - switch.turn_off: screen_power
+          - delay: 2s
+          - switch.turn_on: screen_power
+          - delay: 2s
+
+          - lambda: |-
+              static const uint32_t BAUD_RATES[] = {
+                  921600, 115200, 9600, 230400, 57600, 38400,
+                  256000, 512000, 250000, 19200, 31250, 4800, 2400
+              };
+              static const size_t BAUD_RATE_COUNT = sizeof(BAUD_RATES) / sizeof(BAUD_RATES[0]);
+              static const uint32_t PROBE_TIMEOUT_MS = 500;
+
+              bool found = false;
+
+              for (size_t i = 0; i < BAUD_RATE_COUNT && !found; ++i) {
+                const uint32_t rate = BAUD_RATES[i];
+                ESP_LOGI("${TAG_UPLOAD_TFT}", "Baud scan: trying %" PRIu32 " bps", rate);
+
+                // Switch ESP UART to candidate rate
+                tf_uart->set_baud_rate(rate);
+                tf_uart->load_settings();
+
+                // Flush any RX noise
+                uint32_t flush_until = millis() + 100;
+                while (millis() < flush_until) {
+                  while (tf_uart->available()) {
+                    uint8_t discard;
+                    tf_uart->read_byte(&discard);
+                  }
+                  delay(1);
+                  App.feed_wdt();
+                }
+
+                // Send probe
+                disp1->send_command("get sleep");
+
+                // Spin waiting for response
+                const uint32_t probe_until = millis() + PROBE_TIMEOUT_MS;
+                bool got_response = false;
+                while (millis() < probe_until) {
+                  if (tf_uart->available() > 0) {
+                    got_response = true;
+                    break;
+                  }
+                  delay(1);
+                  App.feed_wdt();
+                }
+
+                // Flush probe response
+                while (tf_uart->available()) {
+                  uint8_t discard;
+                  tf_uart->read_byte(&discard);
+                }
+
+                if (got_response) {
+                  ESP_LOGI("${TAG_UPLOAD_TFT}", "Baud scan: found active rate %" PRIu32 " bps", rate);
+                  found = true;
+                  // baud_rate_active text sensor updated after lambda
+                } else {
+                  ESP_LOGD("${TAG_UPLOAD_TFT}", "Baud scan: no response at %" PRIu32 " bps", rate);
+                  // Revert to a safe rate before next attempt
+                  tf_uart->set_baud_rate(${BAUD_RATE_FALLBACK});
+                  tf_uart->load_settings();
+                  delay(50);
+                  App.feed_wdt();
+                }
+              }
+
+              if (!found) {
+                ESP_LOGE("${TAG_UPLOAD_TFT}", "Baud scan: no response at any rate");
+                // Restore compiled primary rate so the system is not left stranded
+                tf_uart->set_baud_rate(${BAUD_RATE});
+                tf_uart->load_settings();
+              }
+              // Persist scan outcome — used by the gate below
+              system_flags.baud_scan_success = found;
+
+              // Update baud rate sensor to reflect current UART state
+              baud_rate_active->update();
+              if (system_flags.baud_scan_success) {
+                ESP_LOGI("${TAG_UPLOAD_TFT}", "Baud scan: triggering TFT upload");
+                system_flags.baud_fallback_active = (tf_uart->get_baud_rate() != ${BAUD_RATE});
+                tft_update->press();
+              }
 
 packages:
   action_upload_tft: ${ _pkg_action_upload_tft if include_action_upload_tft else {} }
+  button_scan_baud_rate: ${ _pkg_button_scan_baud_rate if include_button_scan_baud_rate else {} }
 
 esphome:
   platformio_options:
@@ -142,7 +251,7 @@ script:
       - lambda: |-
           const uint32_t upload_baud = system_flags.baud_fallback_active
               ? static_cast<uint32_t>(${BAUD_RATE_FALLBACK})
-              : static_cast<uint32_t>(${upload_tft_baud_rate});
+              : tf_uart->get_baud_rate();
           ESP_LOGD("${TAG_UPLOAD_TFT}", "Starting TFT upload at %" PRIu32 " bps", upload_baud);
           tft_upload_result = disp1->upload_tft(upload_baud, !disp1->is_setup());
 

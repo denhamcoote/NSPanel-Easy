@@ -218,7 +218,9 @@ Slider coverslider
     Events
         Touch Release Event
             covx coverslider.val,va1.txt,0,0
-            cover_value.txt=va1.txt+"%"
+            cover_value.txt=va1.txt
+            cover_value.txt+=home.units_sep.txt
+            cover_value.txt+="%"
             coversetting.txt="cover,position,"+va1.txt
             printh 92
             prints "localevent",0
@@ -229,7 +231,9 @@ Slider coverslider
         
         Touch Move Event
             covx coverslider.val,va1.txt,0,0
-            cover_value.txt=va1.txt+"%"
+            cover_value.txt=va1.txt
+            cover_value.txt+=home.units_sep.txt
+            cover_value.txt+="%"
         
 Button cover_open
     Attributes

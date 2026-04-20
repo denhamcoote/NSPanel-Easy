@@ -39,8 +39,11 @@ struct SystemFlags {
   uint16_t baud_fallback_active : 1;      ///< UART is operating at fallback baud rate
   uint16_t baud_negotiation_enabled : 1;  ///< Baud rate negotiation is active (BAUD_RATE != BAUD_RATE_FALLBACK)
 
-  // Reserved flags (bits 14-15)
-  uint16_t reserved : 2;  ///< Reserved for future expansion
+  // Baud scan flag (bit 14)
+  uint16_t baud_scan_success : 1;  ///< Last baud rate scan found a responsive rate
+
+  // Reserved flags (bit 15)
+  uint16_t reserved : 1;
 
   // Default constructor - all flags start as false (zero-initialized)
   SystemFlags()
@@ -58,6 +61,7 @@ struct SystemFlags {
         display_sleep(0),
         baud_fallback_active(0),
         baud_negotiation_enabled(0),
+        baud_scan_success(0),
         reserved(0) {}
 };
 

@@ -76,6 +76,13 @@ Variable (string) click_comp
         Text          : 
         Max. Text Size: 14
     
+Variable (string) units_sep
+    Attributes
+        ID            : 48
+        Scope         : global
+        Text          :  
+        Max. Text Size: 5
+    
 Text time
     Attributes
         ID                      : 3

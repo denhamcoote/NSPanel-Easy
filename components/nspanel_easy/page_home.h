@@ -97,6 +97,9 @@ constexpr HMIComponent TIMER_SETTINGS = {"home.settings_timer", 34};     ///< Se
 constexpr HMIComponent TIMER_CLICK = {"home.click_timer", 39};           ///< Click timer
 constexpr HMIComponent TIMER_SHORT_CLICK = {"home.short_click_tm", 47};  ///< Short click timer
 
+// Global localization
+constexpr HMIComponent UNITS_SEP = {"home.units_sep", 48};  ///< Localization - Units separator
+
 }  // namespace hmi::home
 }  // namespace esphome::nspanel_easy
 

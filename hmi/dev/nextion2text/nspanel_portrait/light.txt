@@ -792,8 +792,12 @@ Slider lightslider
     Events
         Touch Release Event
             covx lightslider.val,va1.txt,0,0
-            light_value.txt=va1.txt+"%"
-            light_value_2.txt=va1.txt+"%"
+            light_value.txt=va1.txt
+            light_value.txt+=home.units_sep.txt
+            light_value.txt+="%"
+            light_value_2.txt=va1.txt
+            light_value_2.txt+=home.units_sep.txt
+            light_value_2.txt+="%"
             lightsetting.txt="light,brightness_pct,"+va1.txt
             printh 92
             prints "localevent",0
@@ -804,8 +808,12 @@ Slider lightslider
         
         Touch Move Event
             covx lightslider.val,va1.txt,0,0
-            light_value.txt=va1.txt+"%"
-            light_value_2.txt=va1.txt+"%"
+            light_value.txt=va1.txt
+            light_value.txt+=home.units_sep.txt
+            light_value.txt+="%"
+            light_value_2.txt=va1.txt
+            light_value_2.txt+=home.units_sep.txt
+            light_value_2.txt+="%"
         
 Slider tempslider
     Attributes
@@ -836,8 +844,10 @@ Slider tempslider
             sys0=tempslider.minval+tempslider.maxval-tempslider.val
             covx sys0,va1.txt,0,0
             temp_value.txt=va1.txt
+            temp_value.txt+=home.units_sep.txt
             temp_value.txt+="K"
             temp_value_2.txt=va1.txt
+            temp_value_2.txt+=home.units_sep.txt
             temp_value_2.txt+="K"
             lightsetting.txt="light,color_temp_kelvin,"+va1.txt
             printh 92
@@ -851,8 +861,10 @@ Slider tempslider
             sys0=tempslider.minval+tempslider.maxval-tempslider.val
             covx sys0,va1.txt,0,0
             temp_value.txt=va1.txt
+            temp_value.txt+=home.units_sep.txt
             temp_value.txt+="K"
             temp_value_2.txt=va1.txt
+            temp_value_2.txt+=home.units_sep.txt
             temp_value_2.txt+="K"
         
 Button button_back
