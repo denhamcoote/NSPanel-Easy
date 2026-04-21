@@ -360,12 +360,10 @@ script:
           ESP_LOGI("${TAG_UPLOAD_TFT}", "Stopping Bluetooth stack to free memory for TFT upload");
           ESP_LOGI("${TAG_UPLOAD_TFT}", "Free heap before: %u bytes, largest block: %u bytes",
                                         esp_get_free_heap_size(), heap_caps_get_largest_free_block(MALLOC_CAP_8BIT));
-          App.feed_wdt();
 
           // Hide Bluetooth icon on page "home"
           disp1->send_command("vis_bt_icon=0");
           if (current_page_id == get_page_id("home")) disp1->hide_component(hmi::home::BT_ICON.name);
-          App.feed_wdt();
 
           // Disable BLE stack
           if (esp32_ble::global_ble != nullptr) {
@@ -387,7 +385,6 @@ script:
           // Release BT memory back to the heap — not done by disable().
           // Required to reclaim RAM for the TFT upload.
           #ifdef USE_BLUETOOTH_PROXY
-          App.feed_wdt();
           ESP_LOGD("${TAG_UPLOAD_TFT}", "Releasing Bluetooth memory (BTDM)");
           esp_err_t err = esp_bt_controller_mem_release(ESP_BT_MODE_BTDM);
           if (err == ESP_OK) {

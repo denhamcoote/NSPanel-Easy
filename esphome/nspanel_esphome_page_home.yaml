@@ -85,7 +85,7 @@ script:
             for (int i = 1; i <= 7; ++i) {
               disp1->send_command_printf("home.button%02d.font=%" PRIu8, i, val);
             }
-            App.feed_wdt();
+
             disp1->set_component_font(hmi::home::BT_NOTIFIC.name, val);
             disp1->set_component_font(hmi::home::BT_QRCODE.name, val);
             disp1->set_component_font(hmi::home::BT_ENTITIES.name, val);
@@ -151,7 +151,7 @@ script:
           // Draw the filled circle behind the button, then trigger a repaint
           disp1->send_command_printf("cirs %" PRIu16 ",%" PRIu16 ",%" PRIu16 ",color_containers",
                                       circle_x, circle_y, circle_radius);
-          App.feed_wdt();
+
           disp1->send_command_printf("ref %s", component_id.c_str());
 
           ESP_LOGD("${TAG_PAGE_HOME}", "Drew circle for %s at (%" PRIu16 ",%" PRIu16 ")",
