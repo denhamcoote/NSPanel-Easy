@@ -181,7 +181,7 @@ api:
               // underlying position across consecutive polls. Prevents the bar from
               // freezing after paused->playing transitions or when prg_timer is off.
               // std::max(..., 0) guards against a negative delta (clock skew on HA side).
-              const int capped_pos = std::min(media_position + std::max(media_position_delta, 0), media_duration);
+              const int capped_pos = std::min(media_position + std::max(media_position_delta, 0L), media_duration);
               if (media_duration != last_media_duration || capped_pos != last_media_position) {
                 last_media_duration = media_duration;
                 last_media_position = capped_pos;
