@@ -76,6 +76,8 @@ api:
             // so hide every actionable control, stop the progress timer, and return.
             if (state_unavailable) {
               ESP_LOGD("${TAG_PAGE_MEDIA_PLAYER}", "Entity %s is %s; hiding controls", entity.c_str(), state.c_str());
+              disp1->set_component_text("track", "");
+              disp1->set_component_text("artist", "");
               disp1->set_component_visibility("bt_on_off", false);
               disp1->set_component_visibility("bt_play_pause", false);
               disp1->set_component_visibility("bt_prev", false);
