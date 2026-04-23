@@ -4097,6 +4097,7 @@ variables:
     light: "light"
     media_player: "media_player"
     notification: "notification"
+    popup_select: "popup_select"
     qrcode: "qrcode"
     screensaver: "screensaver"
     settings: "settings"
@@ -7906,6 +7907,86 @@ actions:
                                   ids: ["color_button", "color_touch"]
                                   visible: true
                                 continue_on_error: true
+
+                          ##### LIGHT Effects #####
+                          - alias: Light effects
+                            if: '{{ supported_features | bitwise_and(4) > 0 }}'
+                            then:
+                              - variables:
+                                  current_effect_raw: '{{ state_attr(entity_id, "effect") }}'
+                                  current_effect: >
+                                    {{
+                                      current_effect_raw
+                                      if current_effect_raw is defined and current_effect_raw is string and current_effect_raw | length > 0
+                                      else ""
+                                    }}
+
+                              ##### Construction-only: push options + show effect button #####
+                              - if: '{{ nspanel_event is defined and nspanel_event.type == "page_changed" }}'
+                                then:
+                                  - action: 'esphome.{{ nspanel_name }}_components_visibility'
+                                    data:
+                                      page: light
+                                      ids: ["effect_button"]
+                                      visible: true
+                                    continue_on_error: true
+                                  - *delay_default
+                                  - variables:
+                                      effect_list_raw_attr: '{{ state_attr(entity_id, "effect_list") }}'
+                                      effect_list_raw: >
+                                        {{
+                                          effect_list_raw_attr
+                                          if
+                                            effect_list_raw_attr is defined and
+                                            effect_list_raw_attr is iterable and
+                                            effect_list_raw_attr is not string
+                                          else []
+                                        }}
+
+                                      # Truncation rule: current always included.
+                                      # If <=8: send all in HA order.
+                                      # If >8 and current in first 8: send first 8.
+                                      # If >8 and current in positions 8+: send [current] + first 7 excluding current.
+                                      effect_list_truncated: >
+                                        {%- if effect_list_raw | length <= 8 -%}
+                                          {{ effect_list_raw }}
+                                        {%- elif current_effect in effect_list_raw[:8] -%}
+                                          {{ effect_list_raw[:8] }}
+                                        {%- else -%}
+                                          {{ [current_effect] + (effect_list_raw[:7] | reject("equalto", current_effect) | list) }}
+                                        {%- endif -%}
+                                  - action: 'esphome.{{ nspanel_name }}_component_text_list'
+                                    data:
+                                      page: mem
+                                      id: popup_select_context
+                                      txt_list:
+                                        - 'light_effect'
+                                    continue_on_error: true
+                                  - *delay_default
+                                  - action: 'esphome.{{ nspanel_name }}_component_val'
+                                    data:
+                                      page: mem
+                                      id: popup_select_mode
+                                      val: 0
+                                    continue_on_error: true
+                                  - *delay_default
+                                  - action: 'esphome.{{ nspanel_name }}_component_text_list'
+                                    data:
+                                      page: mem
+                                      id: popup_select_options
+                                      txt_list: '{{ effect_list_truncated }}'
+                                    continue_on_error: true
+                                  - *delay_default
+
+                              ##### Always (construction and updates): push current effect #####
+                              - action: 'esphome.{{ nspanel_name }}_component_text_list'
+                                data:
+                                  page: mem
+                                  id: popup_select_current
+                                  txt_list:
+                                    - '{{ current_effect }}'
+                                continue_on_error: true
+                              - *delay_default
 
                       - alias: Cover settings page
                         conditions: '{{ nspanel_event.page == pages.cover }}'

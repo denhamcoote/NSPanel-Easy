@@ -1,0 +1,242 @@
+#####################################################################################################
+#####                 NSPanel Easy - https://github.com/edwardtfn/NSPanel-Easy                  #####
+#####################################################################################################
+##### ESPHOME - Page Popup Select                                                               #####
+##### PLEASE only make changes if it is necessary and also the required knowledge is available. #####
+##### For normal use with the Blueprint, no changes are necessary.                              #####
+#####################################################################################################
+---
+substitutions:
+  TAG_PAGE_POPUP_SELECT: nspanel.page.popup_select
+
+esphome:
+  platformio_options:
+    build_flags:
+      - -D NSPANEL_EASY_PAGE_POPUP_SELECT
+
+display:
+  - id: !extend disp1
+    on_touch:
+      then:
+        - lambda: |-
+            if (page_id != get_page_id("popup_select")) return;  // Only on popup_select page
+            if (touch_event) return;                             // Only on release
+
+            // Options are at component IDs 6..13 (opt0..opt7, contiguous by design).
+            // Other components (card, header, btn_back, timers, variables) are outside this range.
+            if (component_id < 6 || component_id > 13) {
+              // btn_back has id 3 — a tap on it triggers page navigation via Nextion's
+              // own "page caller_page_id.val" in its Touch Release event, not handled here.
+              return;
+            }
+
+            const uint8_t opt_index = component_id - 6;
+            const auto& options = popup_select_cache_options;
+            if (opt_index >= options.size()) {
+              ESP_LOGW("${TAG_PAGE_POPUP_SELECT}", "Tap on opt%" PRIu8 " but cache only has %zu options",
+                                                    opt_index, options.size());
+              return;
+            }
+
+            // Compute new mask: toggle off if tapping the currently-selected row,
+            // otherwise select this row (single-select).
+            const uint32_t bit = (1u << opt_index);
+            const uint32_t new_mask = (popup_select_cache_mask == bit) ? 0u : bit;
+            popup_select_cache_mask = new_mask;
+
+            const std::string value = (new_mask == 0) ? std::string() : options[opt_index];
+
+            ESP_LOGD("${TAG_PAGE_POPUP_SELECT}", "Selection: entity=%s context=%s mask=%" PRIu32 " value=%s",
+                                                  popup_select_cache_entity.c_str(),
+                                                  popup_select_cache_context.c_str(),
+                                                  new_mask,
+                                                  value.c_str());
+
+            fire_ha_event("picker_selected", {
+              {"entity", popup_select_cache_entity.c_str()},
+              {"context", popup_select_cache_context.c_str()},
+              {"mask", to_string(new_mask).c_str()},
+              {"value", value.c_str()}
+            });
+
+script:
+  # Blueprint pushes each field via the existing mem-extension pattern on the
+  # singular action_component_text / action_component_val. The list of options
+  # uses action_component_text_list (the new plural script) because the list
+  # must be preserved in full.
+
+  - id: !extend action_component_text
+    then:
+      - lambda: |-
+          if (page != "mem") return;
+          if (component == "popup_select_context") {
+            popup_select_cache_context = txt;
+            return;
+          }
+          if (component == "popup_select_current") {
+            // Blueprint tells us which option is currently selected by value name.
+            // Look it up in cache.options and derive the bitmask position.
+            const auto& options = popup_select_cache_options;
+            popup_select_cache_mask = 0;
+            if (txt.empty()) return;
+            for (size_t i = 0; i < options.size(); ++i) {
+              if (options[i] == txt) {
+                popup_select_cache_mask = (1u << i);
+                return;
+              }
+            }
+            ESP_LOGW("${TAG_PAGE_POPUP_SELECT}", "popup_select_current value '%s' not in options list", txt.c_str());
+            return;
+          }
+
+  - id: !extend action_component_text_list
+    then:
+      - lambda: |-
+          if (page != "mem") return;
+          if (component == "popup_select_options") {
+            popup_select_cache_options = txt_list;
+            ESP_LOGV("${TAG_PAGE_POPUP_SELECT}", "Cached %zu options", txt_list.size());
+            return;
+          }
+
+  - id: !extend action_component_val
+    then:
+      - lambda: |-
+          if (page != "mem") return;
+          if (component == "popup_select_mode") {
+            popup_select_cache_mode = static_cast<uint8_t>(val);
+            return;
+          }
+
+  - id: !extend page_change
+    then:
+      - lambda: |-
+          if (new_page_id != get_page_id("popup_select")) return;
+          popup_select_cache_entity = detailed_entity->state.c_str();
+          page_popup_select->execute();
+
+  - id: page_popup_select
+    mode: single
+    then:  # This is a placeholder for others to extend
+
+  # Opens the picker on the display. Called by Blueprint after cache is populated.
+  # Sets up Nextion-side variables and kicks the init timer.
+  - id: popup_select_open
+    mode: single
+    parameters:
+      caller_page_id: uint8_t  # Page to return to when back button is tapped.
+      title: string            # Localized title text for the picker header.
+    then:
+      - lambda: |-
+          ESP_LOGV("${TAG_PAGE_POPUP_SELECT}", "Script: popup_select_open");
+          ESP_LOGV("${TAG_PAGE_POPUP_SELECT}", "  caller_page_id: %" PRIu8, caller_page_id);
+          ESP_LOGV("${TAG_PAGE_POPUP_SELECT}", "  title: %s", title.c_str());
+
+          if (popup_select_cache_mode == UINT8_MAX) {
+            ESP_LOGW("${TAG_PAGE_POPUP_SELECT}", "Cache mode not set; picker would be non-functional");
+            return;
+          }
+
+          const auto& options = popup_select_cache_options;
+          if (options.empty()) {
+            ESP_LOGW("${TAG_PAGE_POPUP_SELECT}", "Cache has no options; picker would be empty, not navigating");
+            return;
+          }
+          if (options.size() > 8) {
+            ESP_LOGW("${TAG_PAGE_POPUP_SELECT}", "Cache has %zu options but picker supports 8; "
+                                                  "excess will be truncated by Blueprint",
+                                                  options.size());
+          }
+
+          goto_page_popup_select->execute(caller_page_id, title.c_str());
+
+  # Second-stage: actually navigate to the page and push values.
+  # Uses page-prefixed writes to popup_select.* so variable writes don't
+  # depend on popup_select being the current page. Order is:
+  #   1. Write all picker-local variables (page-prefixed).
+  #   2. Write the option labels into opt0..opt7 (page-prefixed).
+  #   3. Navigate to the page (triggers Preinitialize which hides all components).
+  #   4. Trigger init timer (draws card, shows header, shows populated buttons).
+  - id: goto_page_popup_select
+    mode: queued
+    max_runs: 2
+    parameters:
+      caller_page_id: uint8_t
+      title: string
+    then:
+      - lambda: |-
+          const auto& options = popup_select_cache_options;
+          const uint8_t opt_count = static_cast<uint8_t>(std::min(options.size(), static_cast<size_t>(8)));
+
+          // 1. Write picker-local variables (page-prefixed, works from any current page).
+          disp1->send_command_printf("popup_select.caller_page_id.val=%" PRIu8, caller_page_id);
+          disp1->send_command_printf("popup_select.select_mode.val=%" PRIu8, popup_select_cache_mode);
+          disp1->send_command_printf("popup_select.opt_count.val=%" PRIu8, opt_count);
+          disp1->send_command_printf("popup_select.total_count.val=%" PRIu8, opt_count);  // == opt_count in v1
+          disp1->send_command_printf("popup_select.selection_mask.val=%" PRIu32, popup_select_cache_mask);
+
+          // 2. Option labels (opt0..opt7, page-prefixed so writes reach popup_select regardless of current page).
+          //    set_component_text doesn't support cross-page addressing, so use send_command_printf
+          //    with a constructed "page.component.txt=..." string.
+          for (uint8_t i = 0; i < opt_count; ++i) {
+            std::string escaped = options[i];
+            for (size_t pos = 0; (pos = escaped.find('\\', pos)) != std::string::npos; pos += 2) {
+              escaped.replace(pos, 1, "\\\\");
+            }
+            for (size_t pos = 0; (pos = escaped.find('"', pos)) != std::string::npos; pos += 2) {
+              escaped.replace(pos, 1, "\\\"");
+            }
+            disp1->send_command_printf("popup_select.opt%" PRIu8 ".txt=\"%s\"", i, escaped.c_str());
+          }
+
+          // 3. Localized header title (also page-prefixed).
+          {
+            std::string escaped = title;
+            for (size_t pos = 0; (pos = escaped.find('\\', pos)) != std::string::npos; pos += 2) {
+              escaped.replace(pos, 1, "\\\\");
+            }
+            for (size_t pos = 0; (pos = escaped.find('"', pos)) != std::string::npos; pos += 2) {
+              escaped.replace(pos, 1, "\\\"");
+            }
+            disp1->send_command_printf("popup_select.lbl_title.txt=\"%s\"", escaped.c_str());
+          }
+
+          // 4. Navigate to popup_select. Preinitialize runs, hiding all components via vis 255,0.
+          goto_page->execute(get_page_id("popup_select"));
+
+          // 5. Trigger init (draws card, shows header, shows populated opt buttons, kicks render).
+          //    Nextion timers cannot be page-prefixed — init.en=1 targets the current page's init timer.
+          //    The pacer ensures page popup_select is acknowledged before this command is sent,
+          //    so init refers to popup_select.init as intended.
+          disp1->send_command("init.en=1");
+
+          ESP_LOGD("${TAG_PAGE_POPUP_SELECT}", "Picker opened (caller=%" PRIu8 ", opts=%" PRIu8 ", mask=%" PRIu32 ")",
+                                                caller_page_id, opt_count, popup_select_cache_mask);
+
+  - id: !extend stop_all
+    then:
+      - lambda: |-
+
+
+  - id: !extend stop_page_constructors
+    then:
+      - lambda: |-
+          goto_page_popup_select->stop();
+          page_popup_select->stop()
+          popup_select_open->stop();
+
+text_sensor:
+  - id: !extend detailed_entity
+    # When the detailed entity changes, the picker cache becomes stale.
+    # Clear it so a subsequent open starts from a known-empty state.
+    on_value:
+      then:
+        - lambda: |-
+            if (popup_select_cache_entity == x) return;
+            ESP_LOGV("${TAG_PAGE_POPUP_SELECT}", "detailed_entity changed, clearing picker cache");
+            popup_select_cache_entity = "";
+            popup_select_cache_context = "";
+            popup_select_cache_mask = 0;
+            popup_select_cache_mode = 0;
+            popup_select_cache_options.clear();
+...
