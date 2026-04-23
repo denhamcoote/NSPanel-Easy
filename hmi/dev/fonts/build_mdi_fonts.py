@@ -67,6 +67,7 @@ import json
 import os
 import re
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -356,8 +357,8 @@ def build_cheatsheet(name_to_ttf_cp, zi_map, ttf_filename, output_path, version_
     ZI codepoints (post-ZiLib remapping) are shown and noted on click.
 
     Click-to-copy behaviour (context-sensitive):
-      - Click the glyph  -> copies the Unicode character (paste into Nextion Editor)
-      - Click the name   -> copies "mdi:<n>"
+      - Click the glyph  -> copies the ZI Unicode character (paste into Nextion Editor)
+      - Click the name   -> copies "mdi:<name>"
       - Click the code   -> copies the ZI codepoint string (e.g. "U+E1C8")
     """
     icon_count = len(zi_map)
@@ -366,12 +367,13 @@ def build_cheatsheet(name_to_ttf_cp, zi_map, ttf_filename, output_path, version_
     for name in sorted(zi_map):
         ttf_cp = name_to_ttf_cp[name]
         zi_cp  = zi_map[name]
-        char   = chr(ttf_cp)  # render glyph using TTF codepoint
+        glyph  = chr(ttf_cp)  # Rendered glyph (TTF codepoint, required by @font-face)
+        paste  = chr(zi_cp)   # Copy payload (ZI codepoint, matches Nextion .zi indexing)
         zi_str = f"U+{zi_cp:04X}"
         full   = f"mdi:{name} — {zi_str}"  # context shown in every toast
         icon_html.append(
             f'  <div class="icon">\n'
-            f'    <span class="glyph" onclick="copy(this,\'{char}\',\'glyph\',\'{full}\')">{char}</span>\n'
+            f'    <span class="glyph" onclick="copy(this,\'{paste}\',\'glyph\',\'{full}\')">{glyph}</span>\n'
             f'    <span class="name"  onclick="copy(this,\'mdi:{name}\',\'name\',\'{full}\')">'
             f'mdi:{name}</span>\n'
             f'    <span class="cp"   onclick="copy(this,\'{zi_str}\',\'code\',\'{full}\')">'
@@ -486,6 +488,16 @@ def build_header(zi_map, version_str, output_path):
     Write all_icons.h — constexpr ZI codepoint constants following ESPHome /
     NSPanel Easy coding conventions: clang-format aligned, Doxygen ///<,
     esphome::nspanel_easy::Icons namespace.
+
+    The generator emits a readable first pass, then pipes the result through
+    clang-format so the file on disk is byte-identical to what CI would produce.
+    This keeps regeneration diffs focused on real content changes (new icons,
+    codepoint shifts) rather than formatting churn.
+
+    clang-format discovers .clang-format by walking up from --assume-filename.
+    The output is initially written outside the repo tree, so we point
+    --assume-filename at a virtual path inside the repo (derived from this
+    script's location: .github/scripts/build_mdi_fonts.py -> repo root).
     """
     const_names = {
         name: "MDI_" + name.upper().replace("-", "_")
@@ -493,7 +505,7 @@ def build_header(zi_map, version_str, output_path):
     }
     if not const_names:
         raise ValueError("No icon constants generated (zi_map is empty).")
-    max_len = max(len(c) for c in const_names.values())
+
     lines = [
         "// all_icons.h",
         f"// Auto-generated from MDI v{version_str} — do not edit manually.",
@@ -524,11 +536,11 @@ def build_header(zi_map, version_str, output_path):
     ]
 
     for name, zi_cp in sorted(zi_map.items()):
-        const     = const_names[name]
-        pad       = " " * (max_len - len(const))
-        cp_str    = f"\\u{zi_cp:04X}"
-        value_str = f'  constexpr const char *{const} = "{cp_str}";'
-        lines.append(f'{value_str}{pad}  ///< mdi:{name}')
+        const  = const_names[name]
+        cp_str = f"\\u{zi_cp:04X}"
+        # Emit with minimum spacing; clang-format below assigns the final
+        # alignment column based on the repo's .clang-format settings.
+        lines.append(f'constexpr const char *{const} = "{cp_str}";  ///< mdi:{name}')
 
     lines += [
         "",
@@ -538,8 +550,29 @@ def build_header(zi_map, version_str, output_path):
         "",
     ]
 
+    content = "\n".join(lines)
+
+    # Normalize through clang-format so the file on disk matches exactly what
+    # CI would produce. Script path: .github/scripts/build_mdi_fonts.py,
+    # so the repo root is two parents up, and .clang-format lives there.
+    repo_root       = Path(__file__).resolve().parent.parent.parent
+    style_hint_path = repo_root / "components" / "nspanel_easy" / "all_icons.h"
+    try:
+        result = subprocess.run(
+            ["clang-format", "--style=file",
+             f"--assume-filename={style_hint_path}"],
+            input=content, capture_output=True, text=True, check=True,
+        )
+        content = result.stdout
+    except FileNotFoundError:
+        print("  WARNING: clang-format not on PATH — file written unformatted.")
+        print("           CI will reformat on next run, causing a spurious diff.")
+    except subprocess.CalledProcessError as e:
+        print(f"  WARNING: clang-format failed ({e.returncode}): {e.stderr.strip()}")
+        print("           File written unformatted; CI will reformat on next run.")
+
     with open(output_path, "w", encoding="utf-8") as f:
-        f.write("\n".join(lines))
+        f.write(content)
     print(f"  Saved: {output_path}  ({len(zi_map)} constants)")
 
 
