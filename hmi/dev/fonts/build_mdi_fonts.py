@@ -553,8 +553,8 @@ def build_header(zi_map, version_str, output_path):
     content = "\n".join(lines)
 
     # Normalize through clang-format so the file on disk matches exactly what
-    # CI would produce. Script path: .github/scripts/build_mdi_fonts.py,
-    # so the repo root is two parents up, and .clang-format lives there.
+    # CI would produce. Script path: hmi/dev/fonts/build_mdi_fonts.py,
+    # so the repo root is three parents up, and .clang-format lives there.
     repo_root       = Path(__file__).resolve().parent.parent.parent
     style_hint_path = repo_root / "components" / "nspanel_easy" / "all_icons.h"
     try:

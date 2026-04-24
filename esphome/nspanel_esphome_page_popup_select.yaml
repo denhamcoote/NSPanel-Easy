@@ -99,11 +99,10 @@ script:
           }
 
   # Second-stage: actually navigate to the page and push values.
-  # Uses page-prefixed writes to popup_select.* so variable writes don't
-  # depend on popup_select being the current page. Order is:
+  # Order is:
   #   1. Navigate to the page (triggers Preinitialize which hides all components).
-  #   2. Write all picker-local variables (page-prefixed).
-  #   3. Write the option labels into opt0..opt7 (page-prefixed).
+  #   2. Write all picker-local variables.
+  #   3. Write the option labels into opt0..opt7.
   #   4. Write title
   #   5. Trigger init timer (draws card, shows header, shows populated buttons).
   - id: goto_page_popup_select
@@ -120,14 +119,14 @@ script:
           // 1. Navigate to popup_select. Preinitialize runs, hiding all components via vis 255,0.
           goto_page->execute(get_page_id("popup_select"));
 
-          // 2. Write picker-local variables (page-prefixed, works from any current page).
+          // 2. Write picker-local variables.
           disp1->send_command_printf("caller_page_id.val=%" PRIu8, caller_page_id);
           disp1->send_command_printf("select_mode.val=%" PRIu8, popup_select_cache_mode);
           disp1->send_command_printf("opt_count.val=%" PRIu8, opt_count);
           disp1->send_command_printf("total_count.val=%" PRIu8, opt_count);  // == opt_count in v1
           disp1->send_command_printf("selection_mask.val=%" PRIu32, popup_select_cache_mask);
 
-          // 3. Option labels (opt0..opt7, page-prefixed so writes reach popup_select regardless of current page).
+          // 3. Option labels (opt0..opt7).
           //    set_component_text doesn't support cross-page addressing, so use send_command_printf
           //    with a constructed "page.component.txt=..." string.
           for (uint8_t i = 0; i < opt_count; ++i) {
@@ -141,7 +140,7 @@ script:
             disp1->send_command_printf("opt%" PRIu8 ".txt=\"%s\"", i, escaped.c_str());
           }
 
-          // 4. Localized header title (also page-prefixed).
+          // 4. Localized header title.
           {
             std::string escaped = title;
             for (size_t pos = 0; (pos = escaped.find('\\', pos)) != std::string::npos; pos += 2) {

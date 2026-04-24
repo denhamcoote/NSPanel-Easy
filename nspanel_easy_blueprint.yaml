@@ -7920,14 +7920,6 @@ actions:
                                       if current_effect_raw is defined and current_effect_raw is string and current_effect_raw | length > 0
                                       else ""
                                     }}
-                              - action: 'esphome.{{ nspanel_name }}_component_text_list'
-                                data:
-                                  page: mem
-                                  id: popup_select_current
-                                  txt_list:
-                                    - '{{ current_effect }}'
-                                continue_on_error: true
-                              - *delay_default
 
                               ##### Construction-only: push options + show effect button #####
                               - if: '{{ nspanel_event is defined and nspanel_event.type == "page_changed" }}'

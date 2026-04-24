@@ -426,6 +426,7 @@ script:
       - lambda: |-
           action_component_color->stop();
           action_component_text->stop();
+          action_component_text_list->stop();
           action_component_val->stop();
           action_component_visibility->stop();
           ha_button->stop();
