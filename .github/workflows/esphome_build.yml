@@ -124,6 +124,10 @@ jobs:
             yaml-file: .test/esphome_idf_climate_dual.yaml
           - name: Cover
             yaml-file: .test/esphome_idf_cover.yaml
+          - name: Core
+            yaml-file: .test/esphome_idf_core.yaml
+          - name: Standard
+            yaml-file: .test/esphome_idf_standard.yaml
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -170,6 +174,10 @@ jobs:
             yaml-file: .test/esphome_idf_climate_dual.yaml
           - name: Cover
             yaml-file: .test/esphome_idf_cover.yaml
+          - name: Core
+            yaml-file: .test/esphome_idf_core.yaml
+          - name: Standard
+            yaml-file: .test/esphome_idf_standard.yaml
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6

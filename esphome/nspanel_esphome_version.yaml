@@ -26,6 +26,10 @@ substitutions:
 
   TAG_VERSIONING: nspanel.versioning
 
+  # Those are safe-net for allowing compile when TFT Upload package isn't included
+  upload_tft_automatically: false
+  upload_tft_wait_ms_after_boot: 0
+
 esphome:
   project:
     version: '"${version}"'
