@@ -6600,13 +6600,16 @@ actions:
                                       else
                                         qrcode_fallback_value
                                     }}
-                              - action: 'esphome.{{ nspanel_name }}_qrcode'
-                                data:
-                                  title: !input qrcode_label
-                                  qrcode: '{{ qrcode_value }}'
-                                  show: false
-                                continue_on_error: true
-                              - *delay_boot
+                              - alias: Call QR code action
+                                if: '{{ qrcode_value is defined and qrcode_value is string and qrcode_value | length > 0 }}'
+                                then:
+                                  - action: 'esphome.{{ nspanel_name }}_qrcode'
+                                    data:
+                                      title: !input qrcode_label
+                                      qrcode: '{{ qrcode_value }}'
+                                      show: false
+                                    continue_on_error: true
+                                  - *delay_boot
 
                       - alias: Relay settings
                         sequence:
