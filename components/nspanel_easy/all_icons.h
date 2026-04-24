@@ -1,6 +1,6 @@
 // all_icons.h
 // Auto-generated from MDI v7.4.47 — do not edit manually.
-// To regenerate: python3 .github/scripts/build_mdi_fonts.py
+// To regenerate: python3 hmi/dev/fonts/build_mdi_fonts.py
 // Source: https://github.com/Templarian/MaterialDesign-SVG
 
 #pragma once

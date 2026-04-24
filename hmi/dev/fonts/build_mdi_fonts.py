@@ -80,6 +80,35 @@ UNITS_PER_EM = 2048     # Matches original MaterialDesignIconsDesktop.ttf
 SVG_SIZE     = 24.0     # MDI viewBox is always 0 0 24 24
 SCALE        = UNITS_PER_EM / SVG_SIZE
 
+# -----------------------------------------------------------------------------
+# Vertical metrics mirrored from the official @mdi/font webfont (UPM=512),
+# scaled to our UPM=2048 (factor = 4).  These give MDI glyphs the same
+# ~12.5% descender space the font is designed for, preventing bottom
+# clipping of glyphs whose outlines extend below the SVG viewBox baseline
+# (the vast majority — 4772 of the ~7600 icons in 7.4.47 have yMin < 0
+# in the reference build).
+#
+# Reference values @ UPM=512   ->   Scaled values @ UPM=2048
+#   ascent          = 448                1792
+#   descent         = -64                -256
+#   usWinAscent     = 453                1812
+#   usWinDescent    = 66                 264
+#   sTypoLineGap    = 46                 184
+# -----------------------------------------------------------------------------
+ASCENT         = 1792   # sTypoAscender / hhea.ascent
+DESCENT        = -256   # sTypoDescender / hhea.descent  (negative)
+WIN_ASCENT     = 1812   # usWinAscent  (includes a small safety margin vs ASCENT)
+WIN_DESCENT    = 264    # usWinDescent (positive; includes safety margin vs |DESCENT|)
+TYPO_LINE_GAP  = 184    # sTypoLineGap
+
+# Horizontal shift applied to every glyph when building the TTF, used to
+# visually center MDI icons within their Nextion .zi render cell.  Applied
+# both as a transform x-offset (shifts outline geometry right) and as the
+# hmtx lsb value (ZiLib additively honours it).  Higher values center
+# narrow glyphs better but can cause wide glyphs (e.g. qrcode-scan) to
+# clip on the right edge of the advance box.
+ICON_H_SHIFT   = 100
+
 # ZiLib codepoint remapping offset, as used in Generate-HASP-Fonts.ps1:
 #   zi_codepoint = ttf_codepoint - ZI_CP_OFFSET
 ZI_CP_OFFSET = 0xE2001
@@ -212,25 +241,35 @@ def build_ttf(meta, svg_dir, output_path, version_str):
     fb.setupGlyphOrder([".notdef"] + [name for _, name, _ in icons])
     fb.setupCharacterMap({cp: name for cp, name, _ in icons})
 
+    # All glyphs share the same advance (= UPM) and zero LSB, matching the
+    # reference @mdi/font webfont build.  Per-glyph horizontal centering is
+    # encoded in the SVG source itself, not in hmtx.
     metrics = {".notdef": (UNITS_PER_EM, 0)}
-    metrics.update({name: (UNITS_PER_EM, 0) for _, name, _ in icons})
     fb.setupHorizontalMetrics(metrics)
-    fb.setupHorizontalHeader(ascent=UNITS_PER_EM, descent=0)
+    fb.setupHorizontalHeader(ascent=ASCENT, descent=DESCENT, lineGap=0)
     fb.setupNameTable({
         "familyName": "Material Design Icons",
         "styleName":  "Regular",
     })
+    # OS/2 metrics mirror the reference build.  sxHeight/sCapHeight are
+    # meaningless for an icon-only font but Windows/GDI still reads them,
+    # so we set them to ASCENT (same value the reference uses at its scale).
     fb.setupOS2(
-        sTypoAscender=UNITS_PER_EM, sTypoDescender=0,
-        sTypoLineGap=0, usWinAscent=UNITS_PER_EM, usWinDescent=0,
-        sxHeight=UNITS_PER_EM, sCapHeight=UNITS_PER_EM,
+        sTypoAscender=ASCENT, sTypoDescender=DESCENT,
+        sTypoLineGap=TYPO_LINE_GAP,
+        usWinAscent=WIN_ASCENT, usWinDescent=WIN_DESCENT,
+        sxHeight=ASCENT, sCapHeight=ASCENT,
         achVendID="MDI ",
     )
     fb.setupPost()
     fb.setupHead(unitsPerEm=UNITS_PER_EM)
 
-    # Y-flip transform: SVG origin is top-left, TTF origin is bottom-left
-    transform = (SCALE, 0, 0, -SCALE, 0, UNITS_PER_EM)
+    # Y-flip transform: SVG origin is top-left, TTF origin is bottom-left.
+    # Mapping SVG y=0 → TTF y=ASCENT and SVG y=24 → TTF y=DESCENT gives
+    # each glyph the full UPM of vertical room (ASCENT above baseline,
+    # |DESCENT| below) — matching how the reference build positions
+    # glyphs relative to the baseline.
+    transform = (SCALE, 0, 0, -SCALE, ICON_H_SHIFT, ASCENT)
 
     glyphs = {".notdef": TTGlyphPen(None).glyph()}
     failed = []
@@ -275,6 +314,15 @@ def build_ttf(meta, svg_dir, output_path, version_str):
             sys.exit(2)
 
     fb.setupGlyf(glyphs)
+
+    # All glyphs use advance=UPM and lsb=ICON_H_SHIFT to horizontally shift
+    # the rendered glyph right within the Nextion cell.  ZiLib appears to
+    # additively apply the hmtx lsb on top of the glyph's own xMin, so a
+    # single flat value works well enough for visual centering across the
+    # icon set.  Tune ICON_H_SHIFT (at module top) if the overall shift
+    # looks off.
+    metrics = {".notdef": (UNITS_PER_EM, 0)}
+    metrics.update({name: (UNITS_PER_EM, ICON_H_SHIFT) for _, name, _ in icons})
     fb.setupHorizontalMetrics(metrics)
     fb.font.save(str(output_path))
     print(f"  Saved: {output_path}")
