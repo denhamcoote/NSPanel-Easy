@@ -7952,7 +7952,11 @@ actions:
                                       # If >8 and current in positions 8+: send [current] + first 7 excluding current.
                                       effect_list_truncated: >
                                         {%- if effect_list_raw | length <= 8 -%}
-                                          {{ effect_list_raw }}
+                                          {%- if current_effect | length == 0 or current_effect in effect_list_raw -%}
+                                            {{ effect_list_raw }}
+                                          {%- else -%}
+                                            {{ [current_effect] + (effect_list_raw | list) }}
+                                          {%- endif -%}
                                         {%- elif current_effect | length == 0 or current_effect in effect_list_raw[:8] -%}
                                           {{ effect_list_raw[:8] }}
                                         {%- else -%}

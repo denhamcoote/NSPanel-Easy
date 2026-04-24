@@ -70,8 +70,8 @@ struct SystemFlags {
  *
  * Uses bitfields to pack 8 boolean states into 1 byte (uint8_t).
  * These flags track specific blueprint initialization steps.
- * Bits 0-4 are active flags used in percentage calculation.
- * Bits 5-7 are reserved and not used in calculations.
+ * Bits 0-3 are active flags used in percentage calculation.
+ * Bits 4-7 are reserved and not used in calculations.
  */
 struct BlueprintStatusFlags {
   uint8_t page_home : 1;            ///< Home page initialization completed
@@ -143,7 +143,7 @@ inline bool is_device_ready_for_tasks() {
 
 /**
  * @brief Check if all non-reserved blueprint status flags are set
- * @return true if all active flags (bits 1-5) are set, false otherwise
+ * @return true if all active flags are set, false otherwise
  */
 inline bool is_blueprint_fully_ready() {
   bool fully_ready = blueprint_status_flags.all_active_flags_set();
