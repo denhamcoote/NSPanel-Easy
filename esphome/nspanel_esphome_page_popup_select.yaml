@@ -252,6 +252,6 @@ text_sensor:
             popup_select_cache_entity = "";
             popup_select_cache_context = "";
             popup_select_cache_mask = 0;
-            popup_select_cache_mode = 0;
+            popup_select_cache_mode = UINT8_MAX;
             popup_select_cache_options.clear();
 ...

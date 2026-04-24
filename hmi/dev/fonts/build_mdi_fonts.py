@@ -497,7 +497,7 @@ def build_header(zi_map, version_str, output_path):
     clang-format discovers .clang-format by walking up from --assume-filename.
     The output is initially written outside the repo tree, so we point
     --assume-filename at a virtual path inside the repo (derived from this
-    script's location: .github/scripts/build_mdi_fonts.py -> repo root).
+    script's location: hmi/dev/fonts/build_mdi_fonts.py -> repo root).
     """
     const_names = {
         name: "MDI_" + name.upper().replace("-", "_")
@@ -509,7 +509,7 @@ def build_header(zi_map, version_str, output_path):
     lines = [
         "// all_icons.h",
         f"// Auto-generated from MDI v{version_str} — do not edit manually.",
-        "// To regenerate: python3 .github/scripts/build_mdi_fonts.py",
+        "// To regenerate: python3 hmi/dev/fonts/build_mdi_fonts.py",
         "// Source: https://github.com/Templarian/MaterialDesign-SVG",
         "",
         "#pragma once",
