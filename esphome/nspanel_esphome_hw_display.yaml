@@ -339,7 +339,7 @@ script:
           stop_page_constructors->execute();
 
           // Reset globals
-          reset_globals->execute();
+          reset_globals->execute(new_page_id);
 
         # Wait for other processes to finish before telling the blueprint about a new page
       - script.wait: reset_globals
@@ -368,6 +368,8 @@ script:
 
   - id: reset_globals
     mode: restart
+    parameters:
+      new_page_id: uint8_t
     then:
       - lambda: |-
           ESP_LOGV("${TAG_HW_DISPLAY}", "Reset globals");
