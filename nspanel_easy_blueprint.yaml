@@ -7955,7 +7955,7 @@ actions:
                                           {%- if current_effect | length == 0 or current_effect in effect_list_raw -%}
                                             {{ effect_list_raw }}
                                           {%- else -%}
-                                            {{ [current_effect] + (effect_list_raw | list) }}
+                                            {{ ([current_effect] + (effect_list_raw | list))[:8] }}
                                           {%- endif -%}
                                         {%- elif current_effect | length == 0 or current_effect in effect_list_raw[:8] -%}
                                           {{ effect_list_raw[:8] }}
