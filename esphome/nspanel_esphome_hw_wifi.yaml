@@ -67,14 +67,6 @@ script:
             return;
           }
 
-          // Update API status (only when changed)
-          static bool api_previous = false;
-          const bool api_new = system_flags.wifi_ready and system_flags.api_ready and system_flags.blueprint_ready;
-          if (api_new != api_previous) {
-            disp1->send_command_printf("api=%i", api_new ? 1 : 0);
-            api_previous = api_new;
-          }
-
           // Determine current icon
           const char* icon_new = system_flags.wifi_ready ?
             (system_flags.api_ready ?

@@ -422,6 +422,16 @@ script:
           });
           ESP_LOGV("${TAG_API}", "'button_click' event sent");
 
+  - id: !extend refresh_wifi_icon
+    then:
+      - lambda: |-
+          // Update API status (only when changed)
+          static bool api_previous = false;
+          if (system_flags.api_ready != api_previous) {
+            disp1->send_command_printf("api=%i", system_flags.api_ready ? 1 : 0);
+            api_previous = system_flags.api_ready;
+          }
+
   - id: !extend stop_all
     then:
       - lambda: |-
