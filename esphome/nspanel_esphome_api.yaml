@@ -426,16 +426,6 @@ script:
     then:
       - script.execute: update_flag_api_ready
 
-  - id: !extend refresh_wifi_icon
-    then:
-      - lambda: |-
-          // Update API status (only when changed)
-          static bool api_previous = false;
-          if (api_server->is_connected() != api_previous) {
-            
-            api_previous = api_server->is_connected();
-          }
-
   - id: !extend stop_all
     then:
       - lambda: |-
