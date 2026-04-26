@@ -119,6 +119,7 @@ static_assert(get_page_id("popup_select") != UINT8_MAX, "Missing required page: 
 static_assert(get_page_id("qrcode") != UINT8_MAX, "Missing required page: qrcode");
 static_assert(get_page_id("screensaver") != UINT8_MAX, "Missing required page: screensaver");
 static_assert(get_page_id("settings") != UINT8_MAX, "Missing required page: settings");
+static_assert(get_page_id("select") != UINT8_MAX, "Missing required page: select");
 static_assert(get_page_id("switch") != UINT8_MAX, "Missing required page: switch");
 static_assert(get_page_id("theme_apply") != UINT8_MAX, "Missing required page: theme_apply");
 static_assert(get_page_id("utilities") != UINT8_MAX, "Missing required page: utilities");
