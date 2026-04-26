@@ -6191,7 +6191,6 @@ actions:
                 }}
           - condition: '{{ nspanel_event is not none }}'
           - choose:
-              ##### BOOT NSPANEL - boot init #####
               - alias: Boot init
                 conditions:
                   - '{{ nspanel_event.type == "boot"}}'
