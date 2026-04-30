@@ -90,9 +90,9 @@ Text time
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
-        x coordinate            : 111
+        x coordinate            : 100
         y coordinate            : 50
-        Width                   : 160
+        Width                   : 171
         Height                  : 62
         Effect                  : load
         Effect Priority         : 0
