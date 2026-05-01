@@ -35,8 +35,9 @@ that text will be replaced by the IP address, which can be useful for troublesho
 #### Baud rate (bps)
 
 On the top right corner, it’s shown the baud rate used by the display to communicate to ESPHome.
-By default, all the communication should happen at 115200 bps, but as 921600 bps is also supported,
-the display will alternate between these 2 rates every 30 seconds until ESPHome gets connected.
+If the display does not respond at the configured rate (default 921600 bps) within 41 seconds,
+the panel will scan all Nextion-supported rates to find a working rate.
+This typically completes within seconds for known-good displays.
 
 #### Framework
 

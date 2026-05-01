@@ -544,20 +544,28 @@ script:
             - wait_until:
                 condition:
                   - lambda: return disp1->is_setup();
-                timeout: 19s
+                timeout: 41s  # Prime; gives primary rate enough time before scan triggers
             - if:
                 condition:
                   - lambda: return !disp1->is_setup();
                 then:
-                  # Primary baud rate did not produce a setup — attempt fallback
-                  # negotiation. If baud_negotiate is not compiled in (equal rates),
-                  # the #if gate inside it stops it immediately and the while loop
-                  # below takes over with the existing power-cycle reboot behaviour.
-                  - lambda: |-
-                      #if ${BAUD_RATE} != ${BAUD_RATE_FALLBACK}
-                        baud_negotiate->execute();
-                      #endif  // ${BAUD_RATE} != ${BAUD_RATE_FALLBACK}
-                  - script.wait: baud_negotiate
+                  # Primary rate did not produce a setup within 41s.
+                  # Scan all Nextion-supported rates to find where the display speaks.
+                  # baud_scan power-cycles the display itself.
+                  - script.execute: baud_scan
+                  - script.wait: baud_scan
+
+                  # If scan succeeded, give the display a moment to fire on_setup
+                  # at the discovered rate.
+                  - if:
+                      condition:
+                        - lambda: return system_flags.baud_scan_success;
+                      then:
+                        - wait_until:
+                            condition:
+                              - lambda: return disp1->is_setup();
+                            timeout: 19s
+
                   - while:
                       condition:
                         - lambda: return !disp1->is_setup();
@@ -567,7 +575,7 @@ script:
                             screen_power->turn_off();
                         - delay: 2s
                         - switch.turn_on: screen_power
-                        - delay: 19s
+                        - delay: 41s
 
   - id: wait_for_version_tft
     mode: single
