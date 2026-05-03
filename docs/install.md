@@ -278,16 +278,17 @@ display, which can take some time on first boot, especially if the panel still h
 the original Sonoff firmware (which uses a different baud rate than NSPanel Easy).
 
 Once the baud rate is detected, the firmware checks the TFT version. If the version
-does not match what the firmware expects (which is always the case on first install),
-the auto-upload starts automatically and the TFT transfer takes 10–20 minutes. You
-can follow the progress in the ESPHome logs.
+does not match what the firmware expects, auto-upload can start automatically when
+`upload_tft_automatically: true` and a valid non-blank **Display Model** is selected.
+The TFT transfer typically takes 10–20 minutes, and you can follow progress in ESPHome logs.
 
 > [!TIP]
 > Auto-upload of the TFT is enabled by default. To disable it, add the substitution
 > `upload_tft_automatically: false` to your ESPHome YAML and re-flash.
 
-If after a few minutes the panel is still showing only `Not connected` warnings and
-no upload has started, see the [TFT Transfer Troubleshooting Guide](tft_upload.md).
+If `upload_tft_automatically` is enabled and, after a few minutes, the panel is still
+showing only `Not connected` warnings with no upload start, see the
+[TFT Transfer Troubleshooting Guide](tft_upload.md).
 
 ### Integrating your panel to Home Assistant
 
