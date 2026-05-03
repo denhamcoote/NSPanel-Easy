@@ -22,9 +22,19 @@ api:
   on_client_connected:
     then:
       - lambda: |-
-          update_flag_api_ready->execute();
           boot_log->execute("API", "Client connected");
-          // dump_config->execute();
+      - wait_until:
+          condition:
+            api.connected:
+              state_subscription_only: true
+          timeout: 30s
+      - lambda: |-
+          if (!api_server->is_connected_with_state_subscription()) {
+            ESP_LOGD("${TAG_API}", "Client connected but did not subscribe to states (likely logger-only)");
+            return;
+          }
+          boot_log->execute("API", "Home Assistant is connected");
+          update_flag_api_ready->execute();
 
   on_client_disconnected:
     then:
