@@ -97,6 +97,35 @@ script:
     then:
       - logger.log: button_right_release
 
+switch:
+  # Expose relay local control switch to Home Assistant
+  - name: Relay 1 Local
+    platform: template
+    id: relay1_local
+    entity_category: config
+    internal: false
+    optimistic: true
+    lambda: |-
+      return static_cast<bool>(id(hardware_settings).relay1_local);
+    on_state:
+      then:
+        - lambda: |-
+            id(hardware_settings).relay1_local = x;
+            ESP_LOGI("custom", "Relay 1 Local turned %s", ONOFF(x));
+  - name: Relay 2 Local
+    platform: template
+    id: relay2_local
+    entity_category: config
+    internal: false
+    optimistic: true
+    lambda: |-
+      return static_cast<bool>(id(hardware_settings).relay2_local);
+    on_state:
+      then:
+        - lambda: |-
+            id(hardware_settings).relay2_local = x;
+            ESP_LOGI("custom", "Relay 2 Local turned %s", ONOFF(x));
+
 time:
   - id: !extend time_provider
     timezone: "America/Cancun"
