@@ -155,7 +155,10 @@ script:
                                         sizeof(rx_log) - rx_log_idx,
                                         "%02X ", b);
                 }
-                got_response = true;
+                if (b == 0xFF) {
+                  got_response = true;
+                  break;
+                }
               }
               delay(1);
               App.feed_wdt();
@@ -169,6 +172,11 @@ script:
             while (tf_uart->available()) {
               uint8_t discard;
               tf_uart->read_byte(&discard);
+            }
+
+            if (total_bytes > 0 && !got_response) {
+              ESP_LOGD("${TAG_HW_UART}", "Baud scan: rx %" PRIu32 " bytes at %" PRIu32
+                      " bps but no 0xFF terminator - likely framing garbage", total_bytes, rate);
             }
 
             if (got_response) {
