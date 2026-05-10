@@ -57,10 +57,6 @@ climate:
       then:
         - lambda: |-
             ESP_LOGV("${TAG_ADDON_CLIMATE}", "Climate have a new state");
-            if (!is_device_ready_for_tasks()) {
-              ESP_LOGV("${TAG_ADDON_CLIMATE}", "Device not ready to work with the new state");
-              return;
-            }
             if (current_page_id == get_page_id("climate") and detailed_entity->state == "embedded_climate") {
               ESP_LOGV("${TAG_ADDON_CLIMATE}", "Update page 'climate'");
               page_climate->execute();
@@ -209,9 +205,11 @@ script:
       - lambda: |-
           if (current_page_id != get_page_id("climate")) return;
           if (not id(is_embedded_thermostat)) return;
-          if (detailed_entity->state.empty()) return;
-          if (detailed_entity->state != "embedded_climate") return;
-
+          if (climate_main_from_home and !api_server->is_connected()) {
+            detailed_entity->publish_state("embedded_climate");  // Fallback to embedded climate when API is out
+          } else if (detailed_entity->state != "embedded_climate") {
+            return;
+          }
           ESP_LOGV("${TAG_ADDON_CLIMATE}", "Construct climate page with embedded climate");
 
           // Get climate traits

@@ -746,46 +746,34 @@ Subsequent activations will trigger `light.toggle` from the blueprint, as this f
 > In this scenario, the bulb must be set to turn `on` automatically when power is restored.
 
 ```yaml
-# Expose relay local control switch to Home Assistant
 switch:
+  # Expose relay local control switch to Home Assistant
   - name: Relay 1 Local
     platform: template
     id: relay1_local
     entity_category: config
     internal: false
+    optimistic: true
     lambda: |-
-      return (id(relay_settings) & nspanel_easy::RelaySettings::Relay1_Local);
-    turn_on_action:
+      return static_cast<bool>(id(hardware_settings).relay1_local);
+    on_state:
       then:
-        - lambda: nspanel_easy::update_bitwise_setting(id(relay_settings), true, RelaySettings::Relay1_Local);
-    on_turn_on:
-      then:
-        - logger.log: "Relay 1 Local turned On!"
-    turn_off_action:
-      then:
-        - lambda: nspanel_easy::update_bitwise_setting(id(relay_settings), false, RelaySettings::Relay1_Local);
-    on_turn_off:
-      then:
-        - logger.log: "Relay 1 Local turned Off!"
+        - lambda: |-
+            id(hardware_settings).relay1_local = x;
+            ESP_LOGI("custom", "Relay 1 Local turned %s", ONOFF(x));
   - name: Relay 2 Local
     platform: template
     id: relay2_local
     entity_category: config
     internal: false
+    optimistic: true
     lambda: |-
-      return (id(relay_settings) & nspanel_easy::RelaySettings::Relay2_Local);
-    turn_on_action:
+      return static_cast<bool>(id(hardware_settings).relay2_local);
+    on_state:
       then:
-        - lambda: nspanel_easy::update_bitwise_setting(id(relay_settings), true, RelaySettings::Relay2_Local);
-    on_turn_on:
-      then:
-        - logger.log: "Relay 2 Local turned On!"
-    turn_off_action:
-      then:
-        - lambda: nspanel_easy::update_bitwise_setting(id(relay_settings), false, RelaySettings::Relay2_Local);
-    on_turn_off:
-      then:
-        - logger.log: "Relay 2 Local turned Off!"
+        - lambda: |-
+            id(hardware_settings).relay2_local = x;
+            ESP_LOGI("custom", "Relay 2 Local turned %s", ONOFF(x));
 ```
 
 ### Relay Interlocking

@@ -81,7 +81,7 @@ script:
 
           #if ${_WIFI_ICON_COLORS}
           // Determine new color based on connection state and WiFi signal strength
-          uint16_t color_new;
+          uint16_t color_new = Colors::RGB565_GRAY_MOSS;
           if (wifi_component->is_connected() &&
               api_server->is_connected_with_state_subscription() &&
               system_flags.blueprint_ready) {

@@ -72,10 +72,10 @@ script:
             return;
           }
           if (component == "is_entitypages") {  // Visibility of entity pages button on page "Home"
-            const uint8_t is_entitypages = (val > 0) ? 1 : 0;
-            disp1->send_command_printf("vis_bt_entities=%d", is_entitypages);
+            page_entities_enabled = (val != 0);
+            disp1->send_command_printf("vis_bt_entities=%d", page_entities_enabled ? 1 : 0);
             if (current_page_id == get_page_id("home")) {
-              disp1->send_command_printf("vis bt_entities,%d", is_entitypages);
+              disp1->set_component_visibility("bt_entities", page_entities_enabled);
             }
           }
 
@@ -102,6 +102,11 @@ script:
               disp1->send_command_printf("value%02d.xcen=%" PRIu8, i, page_entities_value_horizontal_alignment);
             }
           }
+
+  - id: !extend page_home
+    then:
+      - lambda: |-
+          disp1->set_component_visibility("bt_entities", page_entities_enabled);
 
   - id: !extend stop_page_constructors
     then:

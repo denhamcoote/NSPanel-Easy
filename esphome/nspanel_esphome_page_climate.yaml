@@ -44,6 +44,8 @@ api:
             if (current_page_id == get_page_id("climate"))
               detailed_entity->publish_state(entity.c_str());
 
+            climate_main_from_home = false;
+
             set_climate_current_temp = current_temp;
             set_climate_supported_features = supported_features;
             set_climate_target_temp = target_temp;
@@ -67,6 +69,7 @@ display:
                 id(is_climate) and                                // Is climate available?
                 (component_id == hmi::home::INDR_TEMP.id or       // Indoor temperature
                 component_id == hmi::home::INDR_TEMP_ICON.id)) {  // Indoor temp icon
+              climate_main_from_home = true;
               detailed_entity->publish_state((id(is_embedded_thermostat)) ? "embedded_climate" : "");
               disp1->set_component_value("climate.embedded", id(is_embedded_thermostat) ? 1 : 0);
               goto_page->execute(get_page_id("climate"));
@@ -95,7 +98,6 @@ script:
       value: string
     then:
       - lambda: |-
-          if (!is_device_ready_for_tasks()) return;
           if (embedded) return;
           if (key == "hvac_mode") {
             fire_ha_event("action_call", {
@@ -142,7 +144,12 @@ script:
 
   - id: !extend page_change
     then:
-      - lambda: if (new_page_id == get_page_id("climate")) page_climate->execute();
+      - lambda: |-
+          if (new_page_id != get_page_id("climate")) {
+            climate_main_from_home = false;
+            return;
+          }
+          page_climate->execute();
 
   - id: page_climate
     mode: single
@@ -151,9 +158,8 @@ script:
   - id: !extend reset_globals
     then:
       - lambda: |-
-          if (new_page_id == get_page_id("climate")) {
-            display_entity_keep = true;
-          }
+          if (new_page_id != get_page_id("climate")) return;
+          display_entity_keep = true;
 
   - id: set_climate
     mode: restart
@@ -179,10 +185,6 @@ script:
 
           if (current_page_id != get_page_id("climate")) {
             ESP_LOGW("${TAG_PAGE_CLIMATE}", "'set_climate' was called when page 'climate' is not visible");
-            return;
-          }
-          if (!is_device_ready_for_tasks()) {
-            ESP_LOGW("${TAG_PAGE_CLIMATE}", "'set_climate' was called while the device is not ready for tasks");
             return;
           }
           if (set_climate_temp_step <= 0) {
