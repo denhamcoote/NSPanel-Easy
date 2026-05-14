@@ -176,7 +176,7 @@ script:
 
           // Other components icons size and color
           disp1->set_component_font(hmi::home::BT_ENTITIES.name, id(home_custom_buttons_font_id));
-          disp1->set_component_font(hmi::home::WIFI_ICON.name, id(chip_font_id));
+          disp1->set_component_font(hmi::home::WIFI_ICON.name,   id(chip_font_id));
 
   - id: !extend boot_wrap_up
     then:

@@ -73,7 +73,7 @@ script:
 
           // Update chip-like global components on page home
           disp1->set_component_font(hmi::home::WIFI_ICON.name, new_font);
-          disp1->set_component_font(hmi::home::BT_ICON.name, new_font);
+          disp1->set_component_font(hmi::home::BT_ICON.name,   new_font);
 
           // Apply font to all chip components on the current page (if supported)
           if (!is_chips_page) return;
@@ -150,8 +150,8 @@ script:
             const char *name = CHIP_NAMES[chip_index];
             const ChipState &the_chip = chip_states[chip_index];
             ESP_LOGV("${TAG_CHIPS}", "render chip[%" PRIu8 "]: %s vis=%s", chip_index, name, YESNO(the_chip.visible));
-            disp1->set_component_visibility(name, the_chip.visible);
             disp1->set_component_font_color(name, the_chip.color);
             disp1->set_component_text(name, the_chip.icon);
+            disp1->set_component_visibility(name, the_chip.visible);
           }  // for each chip
 ...

@@ -139,8 +139,8 @@ script:
           if (!disp1->is_setup()) boot_nextion->stop();
           // Display settings
           boot_log->execute("Boot", "Sending display settings");
-          disp1->send_command_printf("brightness=%i", int(display_brightness->state));
-          disp1->send_command_printf("brightness_dim=%i", int(display_dim_brightness->state));
+          disp1->send_command_printf("brightness=%i",       int(display_brightness->state));
+          disp1->send_command_printf("brightness_dim=%i",   int(display_dim_brightness->state));
           disp1->send_command_printf("brightness_sleep=%i", int(display_sleep_brightness->state));
           disp1->send_command_printf("wakeup_page_id=%" PRIu8, get_page_id(wakeup_page_name->current_option()));
 
@@ -180,24 +180,12 @@ script:
           boot_preparation->stop();
           boot_request_blueprint_settings->stop();
           boot_wrap_up->stop();
-          wait_for_boot_completed->stop();
-
-  - id: wait_for_boot_completed
-    mode: single
-    then:
-      - repeat:
-          count: 300  # seconds
-          then:
-            - lambda: |-
-                if (wifi_component->is_connected()) wait_for_wifi->stop();
-                if (iteration % 5 == 1) boot_log->execute("Boot", "Waiting for Wi-Fi...");
-            - delay: 1s
 
   - id: !extend watchdog_round
     then:
       - lambda: |-
+          if (system_flags.boot_completed) return;
+          if (boot->is_running()) return;
           boot_request_blueprint_settings->execute("timeout");
-          if (not system_flags.boot_completed and not boot->is_running()) {
-            boot->execute();
-          }
+          boot->execute();
 ...

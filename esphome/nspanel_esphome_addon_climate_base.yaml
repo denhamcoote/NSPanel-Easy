@@ -225,13 +225,13 @@ script:
           // Extract temperature values (static since they don't change during runtime)
           ESP_LOGV("${TAG_ADDON_CLIMATE}", "Extracted temperature values:");
           #if NSPANEL_EASY_HW_TEMPERATURE_IS_FAHRENHEIT
-          static const float temp_step = traits.get_visual_target_temperature_step() * 1.8f;
+          static const float temp_step =   traits.get_visual_target_temperature_step() * 1.8f;
           static const float temp_offset = celsius_to_fahrenheit(traits.get_visual_min_temperature());
-          static const float temp_max = celsius_to_fahrenheit(traits.get_visual_max_temperature());
+          static const float temp_max =    celsius_to_fahrenheit(traits.get_visual_max_temperature());
           #else  // Celsius
-          static const float temp_step = traits.get_visual_target_temperature_step();
+          static const float temp_step =   traits.get_visual_target_temperature_step();
           static const float temp_offset = traits.get_visual_min_temperature();
-          static const float temp_max = traits.get_visual_max_temperature();
+          static const float temp_max =    traits.get_visual_max_temperature();
           #endif  // NSPANEL_EASY_HW_TEMPERATURE_IS_FAHRENHEIT
           ESP_LOGV("${TAG_ADDON_CLIMATE}", "  temp_step: %f${temp_units}", temp_step);
           ESP_LOGV("${TAG_ADDON_CLIMATE}", "  temp_offset: %f${temp_units}", temp_offset);
@@ -255,9 +255,9 @@ script:
           static float temp_target_high;
           static float temp_target_low;
           #if NSPANEL_EASY_HW_TEMPERATURE_IS_FAHRENHEIT
-          temp_target = celsius_to_fahrenheit(thermostat_embedded->target_temperature);
-          temp_target_high = celsius_to_fahrenheit(thermostat_embedded->target_temperature_high);
-          temp_target_low = celsius_to_fahrenheit(thermostat_embedded->target_temperature_low);
+          temp_target =              celsius_to_fahrenheit(thermostat_embedded->target_temperature);
+          temp_target_high =         celsius_to_fahrenheit(thermostat_embedded->target_temperature_high);
+          temp_target_low =          celsius_to_fahrenheit(thermostat_embedded->target_temperature_low);
           const float temp_current = celsius_to_fahrenheit(thermostat_embedded->current_temperature);
           #else  // Celsius
           temp_target = thermostat_embedded->target_temperature;
@@ -284,18 +284,18 @@ script:
           set_climate_current_temp = temp_current;
           set_climate_supported_features = 0;
           #ifdef NSPANEL_EASY_ADDON_CLIMATE_DUAL
-          set_climate_target_temp = -999;
+          set_climate_target_temp =      -999;
           set_climate_target_temp_high = temp_target_high;
-          set_climate_target_temp_low = temp_target_low;
+          set_climate_target_temp_low =  temp_target_low;
           #else
-          set_climate_target_temp = temp_target;
+          set_climate_target_temp =      temp_target;
           set_climate_target_temp_high = -999;
-          set_climate_target_temp_low = -999;
+          set_climate_target_temp_low =  -999;
           #endif  // NSPANEL_EASY_ADDON_CLIMATE_DUAL
-          set_climate_temp_step = int(roundf(temp_step*10));
-          set_climate_total_steps = total_steps;
-          set_climate_temp_offset = int(roundf(temp_offset*10));
-          set_climate_climate_icon = "";
+          set_climate_temp_step =        int(roundf(temp_step*10));
+          set_climate_total_steps =      total_steps;
+          set_climate_temp_offset =      int(roundf(temp_offset*10));
+          set_climate_climate_icon =     "";
           set_climate_embedded_climate = true;
 
           if (current_page_id != get_page_id("climate")) return;
@@ -379,7 +379,7 @@ script:
           ESP_LOGV("${TAG_ADDON_CLIMATE}", "  visibility: %" PRIu8, id(climate_chip_visibility));
 
           const uint action = int(thermostat_embedded->action);
-          const uint mode = int(thermostat_embedded->mode);
+          const uint mode =   int(thermostat_embedded->mode);
 
           // Determine visibility based on user preference and current climate state
           const auto visibility = static_cast<nspanel_easy::ClimateChipVisibility>(id(climate_chip_visibility));
@@ -406,16 +406,16 @@ script:
             if (action == nspanel_easy::CLIMATE_ACTION_OFF) {
               // Handle OFF action — only reached when visibility != NEVER
               if (mode <= nspanel_easy::CLIMATE_MODE_AUTO) {
-                icon = climate_off_mode_icons[mode].icon;
+                icon =  climate_off_mode_icons[mode].icon;
                 color = climate_off_mode_icons[mode].color;
               }
             } else if (is_active) {
               // Handle actively running states (heating/cooling/drying/fan)
-              icon = climate_action_icons[action].icon;
+              icon =  climate_action_icons[action].icon;
               color = climate_action_icons[action].color;
             } else if (action == nspanel_easy::CLIMATE_ACTION_IDLE) {
               // Handle idle — only reached when visibility == ALWAYS
-              icon = climate_action_icons[nspanel_easy::CLIMATE_ACTION_IDLE].icon;
+              icon =  climate_action_icons[nspanel_easy::CLIMATE_ACTION_IDLE].icon;
               color = climate_action_icons[nspanel_easy::CLIMATE_ACTION_IDLE].color;
             }
           }  // #endif visible — icon/color remain NONE/BLACK when hidden
