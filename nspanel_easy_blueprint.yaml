@@ -6,7 +6,7 @@
 ##################################################################################################
 ---
 blueprint:
-  name: NSPanel Easy Configuration (v2026.5.4)
+  name: NSPanel Easy Configuration (v9999.99.9)
   author: Edward Firmo (https://github.com/edwardtfn)
   description: >
     # NSPanel Easy Configuration via Blueprint
@@ -4071,7 +4071,7 @@ trigger_variables:
 
 variables:
   # Version will be following release version defined automatically when merging to main
-  blueprint_version: 2026.5.4
+  blueprint_version: 9999.99.9
   pages:
     current: '{{ states(currentpage) }}'
     alarm: "alarm"
@@ -5861,33 +5861,6 @@ actions:
 
       # yamllint disable rule:truthy rule:line-length rule:comments-indentation
       enum:
-        ColorMode:  # Possible light color modes. - https://github.com/home-assistant/core/blob/dev/homeassistant/components/light/__init__.py
-          UNKNOWN: "[<ColorMode.UNKNOWN: 'unknown'>]"
-          ONOFF: "[<ColorMode.ONOFF: 'onoff'>]"
-          BRIGHTNESS: "[<ColorMode.BRIGHTNESS: 'brightness'>]"
-          COLOR_TEMP: "[<ColorMode.COLOR_TEMP: 'color_temp'>]"
-          HS: "[<ColorMode.HS: 'hs'>]"
-          XY: "[<ColorMode.XY: 'xy'>]"
-          RGB: "[<ColorMode.RGB: 'rgb'>]"
-          RGBW: "[<ColorMode.RGBW: 'rgbw'>]"
-          RGBWW: "[<ColorMode.RGBWW: 'rgbww'>]"
-          WHITE: "[<ColorMode.WHITE: ''>]"
-        HVACMode:  # Possible HVAC modes. - https://github.com/home-assistant/core/blob/dev/homeassistant/components/climate/const.py#L13
-          "OFF": "[<HVACMode.OFF: 'off'>]"                  # All activity disabled / Device is off/standby
-          HEAT: "[<HVACMode.HEAT: 'heat'>]"                 # Heating
-          COOL: "[<HVACMode.COOL: 'cool'>]"                 # Cooling
-          HEAT_COOL: "[<HVACMode.HEAT_COOL: 'heat_cool'>]"  # The device supports heating/cooling to a range
-          AUTO: "[<HVACMode.AUTO: 'auto'>]"                 # The temperature is set based on a schedule, learned behavior, AI or some other related mechanism. User is not able to adjust the temperature
-          DRY: "[<HVACMode.DRY: 'dry'>]"                    # Device is in Dry/Humidity mode
-          FAN_ONLY: "[<HVACMode.FAN_ONLY: 'fan_only'>]"     # Only the fan is on, not fan and another mode like cool
-        HVACMode_bits:
-          "OFF": 1
-          HEAT: 2
-          COOL: 4
-          HEAT_COOL: 8
-          AUTO: 16
-          DRY: 32
-          FAN_ONLY: 64
         states:
           "on": ["on", "open", "opening", "true", "True", true, True, "playing", "heat", "cold", "dry", "armed_home", "armed_away", "armed_vacation", "armed_custom_bypass", "triggered", "pending", "arming", "unlocked", 1]
           "off": ["off", "closed", "closing", "false", "False", false, False, "standby", "paused", "idle", "disarmed", "disarming", "locked"]
@@ -7762,43 +7735,34 @@ actions:
                               entity_id_valid: '{{ entity_id is defined and entity_id is string and entity_id.split(".") | count == 2 }}'
                               entity_domain: '{{ entity_id.split(".")[0] if entity_id_valid }}'
                               supported_features: '{{ state_attr(entity_id, "supported_features") | int(0) }}'
-                              supported_color_modes_temp: '{{ state_attr(entity_id, "supported_color_modes") | default([]) }}'
-                              supported_color_modes: '{{ supported_color_modes_temp if supported_color_modes_temp else [] }}'
-                              color_mode_brightness: >
+                              supported_color_modes: '{{ state_attr(entity_id, "supported_color_modes") | default([]) }}'
+                              color_mode_brightness: >-
                                 {{
                                   entity_domain == "light" and
                                   (
                                     supported_features | bitwise_and(1) > 0 or
-                                    enum.ColorMode.BRIGHTNESS in supported_color_modes or
-                                    "brightness" in supported_color_modes or
+                                    supported_color_modes | select("in", ["brightness", "color_temp", "hs", "xy",
+                                                                          "rgb", "rgbw", "rgbww", "white"])
+                                                          | list | length > 0 or
                                     state_attr(entity_id, "brightness") | int(-1) >= 0
                                   )
                                 }}
-                              color_mode_color: >
+                              color_mode_color: >-
                                 {{
                                   entity_domain == "light" and
                                   (
                                     supported_features | bitwise_and(16) > 0 or
-                                    enum.ColorMode.HS in supported_color_modes or
-                                    enum.ColorMode.XY in supported_color_modes or
-                                    enum.ColorMode.RGB in supported_color_modes or
-                                    enum.ColorMode.RGBW in supported_color_modes or
-                                    enum.ColorMode.RGBWW in supported_color_modes or
-                                    "hs" in supported_color_modes or
-                                    "xy" in supported_color_modes or
-                                    "rgb" in supported_color_modes or
-                                    "rgbw" in supported_color_modes or
-                                    "rgbww" in supported_color_modes or
-                                    state_attr(entity_id, "rgb_color") | default("unknown") is list
+                                    supported_color_modes | select("in", ["hs", "xy", "rgb", "rgbw", "rgbww"])
+                                                          | list | length > 0
                                   )
                                 }}
-                              color_mode_color_temp: >
+                              color_mode_color_temp: >-
                                 {{
                                   entity_domain == "light" and
                                   (
                                     supported_features | bitwise_and(2) > 0 or
-                                    enum.ColorMode.COLOR_TEMP in supported_color_modes or
-                                    "color_temp" in supported_color_modes or
+                                    supported_color_modes | select("in", ["color_temp", "rgbww"])
+                                                          | list | length > 0 or
                                     state_attr(entity_id, "color_temp_kelvin") | int(-1) >= 0
                                   )
                                 }}
@@ -9975,6 +9939,17 @@ actions:
                                           - '{{ entity_domain in ["alarm_control_panel", "button", "climate", "cover",
                                                                   "fan", "input_boolean", "input_button", "input_select",
                                                                   "light", "media_player", "select", "switch", "water_heater"] }}'
+                                          - >-
+                                            {{
+                                              entity_domain != "light" or
+                                              (
+                                                state_attr(entity_id, "supported_color_modes")
+                                                | default([])
+                                                | select("in", ["brightness", "color_temp", "hs", "rgb", "rgbw", "rgbww", "xy", "white"])
+                                                | list
+                                                | length > 0
+                                              )
+                                            }}
                                         sequence:
                                           - *variable_entity
                                           - variables:
@@ -10122,6 +10097,17 @@ actions:
                                   - '{{ entity_domain in ["alarm_control_panel", "button", "climate", "cover", "fan",
                                                           "input_boolean", "input_button", "input_select", "light",
                                                           "media_player", "select", "switch", "water_heater"] }}'
+                                  - >-
+                                    {{
+                                      entity_domain != "light" or
+                                      (
+                                        state_attr(entity_id, "supported_color_modes")
+                                        | default([])
+                                        | select("in", ["brightness", "color_temp", "hs", "rgb", "rgbw", "rgbww", "xy", "white"])
+                                        | list
+                                        | length > 0
+                                      )
+                                    }}
                                 sequence:
                                   - variables:
                                       back_page: '{{ nspanel_event.page }}'
