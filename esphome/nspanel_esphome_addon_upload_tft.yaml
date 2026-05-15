@@ -248,7 +248,7 @@ script:
             - delay: 5s
       - lambda: |-
           ESP_LOGD("${TAG_UPLOAD_TFT}", "Set Nextion unavailable for blueprint calls");
-          nextion_init->publish_state(false);
+          system_flags.nextion_ready = false;
 
           ESP_LOGD("${TAG_UPLOAD_TFT}", "Preparing for upload");
 
