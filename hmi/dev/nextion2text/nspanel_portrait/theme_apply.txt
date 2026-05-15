@@ -80,44 +80,30 @@ Page theme_apply
             home.meridiem.pco=color_pco_main
             // home hw button's labels
             home.right_bt_text.picc=pic_background_main
-            home.right_bt_text.pco=color_pco_main
             home.left_bt_text.picc=pic_background_main
-            home.left_bt_text.pco=color_pco_main
             home.wifi_icon.picc=pic_background_main
-            home.wifi_icon.pco=color_pco_secondary
             home.bt_icon.picc=pic_background_main
             // home values 01-04
             home.value01.picc=pic_background_main
-            home.value01.pco=color_pco_secondary
             home.value01_icon.picc=pic_background_main
-            home.value01_icon.pco=color_pco_secondary
             home.value02.picc=pic_background_main
-            home.value02.pco=color_pco_secondary
             home.value02_icon.picc=pic_background_main
-            home.value02_icon.pco=color_pco_secondary
             home.value03.picc=pic_background_main
-            home.value03.pco=color_pco_secondary
             home.value03_icon.picc=pic_background_main
-            home.value03_icon.pco=color_pco_secondary
             home.value04.picc=pic_background_main
-            home.value04.pco=color_pco_secondary
             home.value04_icon.picc=pic_background_main
-            home.value04_icon.pco=color_pco_secondary
             // home buttons
             for(sys0=28;sys0<=31;sys0++)
             {
                 home.b[sys0].picc=pic_background_main
-                home.b[sys0].pco=color_pco_secondary
             }
             for(sys0=35;sys0<=37;sys0++)
             {
                 home.b[sys0].picc=pic_background_main
-                home.b[sys0].pco=color_pco_secondary
             }
             for(sys0=40;sys0<=43;sys0++)
             {
                 home.b[sys0].picc=pic_background_main
-                home.b[sys0].pco=color_pco_secondary
             }
             // return to previously visible page
             page previous_page.val
