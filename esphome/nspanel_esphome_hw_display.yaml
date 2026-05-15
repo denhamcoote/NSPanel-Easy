@@ -552,7 +552,9 @@ script:
                   # Display still not setup after another ${BAUD_RATE_TIMEOUT} — rescan.
                   # baud_scan power-cycles the display itself, so the
                   # next iteration's power-off is redundant but harmless.
-                  - script.execute: baud_scan
+                  - script.execute:
+                      id: baud_scan
+                      target_rate: 0
                   - script.wait: baud_scan
                   - if:
                       condition:

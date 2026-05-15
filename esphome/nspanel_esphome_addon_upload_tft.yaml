@@ -71,7 +71,9 @@ substitutions:
       - id: baud_scan_with_upload
         mode: single
         then:
-          - script.execute: baud_scan
+          - script.execute:
+              id: baud_scan
+              target_rate: 0
           - script.wait: baud_scan
           - lambda: |-
               if (!system_flags.baud_scan_success) {

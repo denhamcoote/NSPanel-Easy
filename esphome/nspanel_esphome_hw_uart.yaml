@@ -26,6 +26,14 @@ esphome:
       - -D NSPANEL_EASY_HW_UART
 
 script:
+  - id: !extend action_component_val
+    then:
+      - lambda: |-
+          if (page != "mem") return;
+          if (component == "baud_rate") {
+            baud_scan->execute(static_cast<uint32_t>(val));
+          }
+
   # ---------------------------------------------------------------------------
   # baud_scan
   #
@@ -46,9 +54,13 @@ script:
   # ---------------------------------------------------------------------------
   - id: baud_scan
     mode: single
+    parameters:
+      target_rate: uint32_t
     then:
       - lambda: |-
-          ESP_LOGI("${TAG_HW_UART}", "Baud scan: starting");
+          const uint32_t resolved_target = (target_rate != 0) ? static_cast<uint32_t>(target_rate)
+                                                              : static_cast<uint32_t>(${BAUD_RATE});
+          ESP_LOGI("${TAG_HW_UART}", "Baud scan: starting (target %" PRIu32 " bps)", resolved_target);
           boot_log->execute("Baud", "Scanning baud rates");
 
       # Power-cycle the display to ensure a clean UART state
@@ -58,56 +70,18 @@ script:
       - delay: ${BAUD_RATE_DELAY_AFTER_POWER_ON}
 
       - lambda: |-
-          // Scan order: primary first, then 921600 (if not already primary),
-          // then the rest of Nextion-supported rates ordered by likelihood.
-          static const uint32_t BAUD_RATES[] = {
-              ${BAUD_RATE},
-              #if ${BAUD_RATE} != 921600
-                921600,
-              #endif  // ${BAUD_RATE} != 921600
-              #if ${BAUD_RATE} != 115200
-                115200,
-              #endif  // ${BAUD_RATE} != 115200
-              #if ${BAUD_RATE} != 9600
-                9600,
-              #endif  // ${BAUD_RATE} != 9600
-              #if ${BAUD_RATE} != 230400
-                230400,
-              #endif  // ${BAUD_RATE} != 230400
-              #if ${BAUD_RATE} != 57600
-                57600,
-              #endif  // ${BAUD_RATE} != 57600
-              #if ${BAUD_RATE} != 38400
-                38400,
-              #endif  // ${BAUD_RATE} != 38400
-              #if ${BAUD_RATE} != 256000
-                256000,
-              #endif  // ${BAUD_RATE} != 256000
-              #if ${BAUD_RATE} != 512000
-                512000,
-              #endif  // ${BAUD_RATE} != 512000
-              #if ${BAUD_RATE} != 250000
-                250000,
-              #endif  // ${BAUD_RATE} != 250000
-              #if ${BAUD_RATE} != 19200
-                19200,
-              #endif  // ${BAUD_RATE} != 19200
-              #if ${BAUD_RATE} != 31250
-                31250,
-              #endif  // ${BAUD_RATE} != 31250
-              #if ${BAUD_RATE} != 4800
-                4800,
-              #endif  // ${BAUD_RATE} != 4800
-              #if ${BAUD_RATE} != 2400
-                2400,
-              #endif  // ${BAUD_RATE} != 2400
-          };
-          static const size_t BAUD_RATE_COUNT = sizeof(BAUD_RATES) / sizeof(BAUD_RATES[0]);
+          // Scan order: caller-provided target first, then the Nextion-supported
+          // rates in their declared likelihood order. The target is not removed
+          // from the second pass; trying it twice in the worst case is the
+          // acceptable cost of keeping the shared list in hw_uart.h flat.
+          const uint32_t resolved_target = (target_rate != 0) ? static_cast<uint32_t>(target_rate)
+                                                              : static_cast<uint32_t>(${BAUD_RATE});
 
           bool found = false;
+          const size_t total_count = 1 + NEXTION_SUPPORTED_BAUD_RATES_COUNT;
 
-          for (size_t i = 0; i < BAUD_RATE_COUNT && !found; ++i) {
-            const uint32_t rate = BAUD_RATES[i];
+          for (size_t i = 0; i < total_count && !found; ++i) {
+            const uint32_t rate = (i == 0) ? resolved_target : NEXTION_SUPPORTED_BAUD_RATES[i - 1];
             ESP_LOGI("${TAG_HW_UART}", "Baud scan: trying %" PRIu32 " bps", rate);
 
             // Switch ESP UART to candidate rate
