@@ -68,10 +68,6 @@ script:
             boot_log->execute("Boot", "API not available");
           }
 
-          // Publish Nextion state
-          boot_log->execute("Boot", "Publish Nextion state");
-          nextion_init->publish_state(disp1->is_setup());
-
           // Wait for a response from the blueprint
           boot_request_blueprint_settings->execute("start");
           wait_for_blueprint->execute();
