@@ -139,14 +139,14 @@ api:
       then:
         - lambda: |-
             ESP_LOGV("${TAG_API}", "Action: entity_details_show");
-            ESP_LOGV("${TAG_API}", "  entity: %s", entity.c_str());
-            ESP_LOGV("${TAG_API}", "  back_page: %s", back_page.c_str());
+            ESP_LOGV("${TAG_API}", "  entity:    '%s'", entity.c_str());
+            ESP_LOGV("${TAG_API}", "  back_page: '%s'", back_page.c_str());
             HomeAssistantEntity entity_id = extractHomeAssistantEntity(entity);
-            if (entity == "embedded_climate") entity_id.domain = "climate";
+            if (entity == "embedded_climate")                   entity_id.domain = "climate";
             else if (entity_id.domain == "alarm_control_panel") entity_id.domain = "alarm";
-            else if (entity_id.domain == "input_boolean") entity_id.domain = "switch";
-            else if (entity_id.domain == "input_button") entity_id.domain = "button";
-            else if (entity_id.domain == "input_select") entity_id.domain = "select";
+            else if (entity_id.domain == "input_boolean")       entity_id.domain = "switch";
+            else if (entity_id.domain == "input_button")        entity_id.domain = "button";
+            else if (entity_id.domain == "input_select")        entity_id.domain = "select";
             if (entity_id.domain != "invalid" or entity == "embedded_climate") {
               detailed_entity->publish_state(entity);
               goto_page->execute(get_page_id(entity_id.domain.c_str()));
@@ -173,8 +173,8 @@ api:
               return;
             }
 
-            ESP_LOGV("${TAG_API}", "Processing component ID: %s", id.c_str());
-            ESP_LOGV("${TAG_API}", "  page: %s", page.c_str());
+            ESP_LOGV("${TAG_API}", "Processing component ID: '%s'", id.c_str());
+            ESP_LOGV("${TAG_API}", "  page: '%s'", page.c_str());
 
             const bool is_chip_target = (page == "chips");
             const bool is_home_page = (page == hmi::home::PAGE.name);
@@ -198,7 +198,7 @@ api:
             }
             #endif  // ESP_LOG_LEVEL >= ESP_LOG_VERBOSE
             ESP_LOGV("${TAG_API}", "  icon_color: %" PRIu16, rgbTo565(icon_color));
-            ESP_LOGV("${TAG_API}", "  visible: %s", YESNO(visible));
+            ESP_LOGV("${TAG_API}", "  visible:    %s", YESNO(visible));
 
             action_icon->execute(
               page.c_str(),
@@ -225,9 +225,9 @@ script:
     then:
       - lambda: |-
           ESP_LOGV("${TAG_API}", "Script: action_component_color");
-          ESP_LOGV("${TAG_API}", "  page: %s", page.c_str());
-          ESP_LOGV("${TAG_API}", "  component: %s", component.c_str());
-          ESP_LOGV("${TAG_API}", "  color: %" PRIu16, color);
+          ESP_LOGV("${TAG_API}", "  page:      '%s'", page.c_str());
+          ESP_LOGV("${TAG_API}", "  component: '%s'", component.c_str());
+          ESP_LOGV("${TAG_API}", "  color:     %" PRIu16, color);
           if (page == "mem") return;
           if (page == "chips") return;
           if (display_easy) return;  // To do: Implement logic for new format
@@ -275,15 +275,15 @@ script:
     then:
       - lambda: |-
           ESP_LOGV("${TAG_API}", "Script: action_component_text_list");
-          ESP_LOGV("${TAG_API}", "  page: %s", page.c_str());
-          ESP_LOGV("${TAG_API}", "  component: %s", component.c_str());
+          ESP_LOGV("${TAG_API}", "  page:          '%s'", page.c_str());
+          ESP_LOGV("${TAG_API}", "  component:     '%s'", component.c_str());
           ESP_LOGV("${TAG_API}", "  txt_list size: %zu", txt_list.size());
           // Take last element (final state wins), reuse singular script which
           // handles Nextion dispatch and whose !extend chain handles mem namespaces.
           std::string txt_str = txt_list.back();
-          if (txt_str == "${SENTINEL_UNAVAILABLE}") txt_str = "${LOCALIZATION[LANG].unavailable}";
-          else if (txt_str == "${SENTINEL_UNKNOWN}") txt_str = "${LOCALIZATION[LANG].unknown}";
-          else if (txt_str == "${SENTINEL_NO_NAME}") txt_str = "${LOCALIZATION[LANG].no_name}";
+          if      (txt_str == "${SENTINEL_UNAVAILABLE}") txt_str = "${LOCALIZATION[LANG].unavailable}";
+          else if (txt_str == "${SENTINEL_UNKNOWN}")     txt_str = "${LOCALIZATION[LANG].unknown}";
+          else if (txt_str == "${SENTINEL_NO_NAME}")     txt_str = "${LOCALIZATION[LANG].no_name}";
           action_component_text->execute(
             page.c_str(),
             component.c_str(),
@@ -325,13 +325,13 @@ script:
     then:
       - lambda: |-
           ESP_LOGV("${TAG_API}", "Action: component_visibility");
-          ESP_LOGV("${TAG_API}", "  page: %s", page.c_str());
+          ESP_LOGV("${TAG_API}", "  page:      '%s'", page.c_str());
           if (component.empty()) {
             ESP_LOGW("${TAG_API}", "Empty component ID");
             return;
           }
-          ESP_LOGV("${TAG_API}", "  component: %s", component.c_str());
-          ESP_LOGV("${TAG_API}", "  visible: %s", YESNO(visible));
+          ESP_LOGV("${TAG_API}", "  component: '%s'", component.c_str());
+          ESP_LOGV("${TAG_API}", "  visible:   %s", YESNO(visible));
           if (page == "mem") return;
 
           // Extract component information using helper function
@@ -346,10 +346,10 @@ script:
           // regardless of which page is currently active
           if (is_home_page &&
               strcmp(target_id, "indr_temp_icon") != 0 &&
-              strcmp(target_id, "value01_icon") != 0 &&
-              strcmp(target_id, "value02_icon") != 0 &&
-              strcmp(target_id, "value03_icon") != 0 &&
-              strcmp(target_id, "value04_icon") != 0)
+              strcmp(target_id, "value01_icon")   != 0 &&
+              strcmp(target_id, "value02_icon")   != 0 &&
+              strcmp(target_id, "value03_icon")   != 0 &&
+              strcmp(target_id, "value04_icon")   != 0)
             disp1->send_command_printf("vis_%s=%" PRIu8, target_id, (uint8_t)visible);
 
           // Apply the vis command only when the target page is currently visible
@@ -394,7 +394,7 @@ script:
             target_id = full_id;
           }
 
-          ESP_LOGV("${TAG_API}", "  target: %s", target_id);
+          ESP_LOGV("${TAG_API}", "  target: '%s'", target_id);
 
           // Set icon and color
           disp1->set_component_text(target_id, icon.c_str());
@@ -422,9 +422,9 @@ script:
     then:
       - lambda: |-
           ESP_LOGV("${TAG_API}", "Send 'button_click' event to HA:");
-          ESP_LOGV("${TAG_API}", "  page: %s", page.c_str());
-          ESP_LOGV("${TAG_API}", "  component: %s", component.c_str());
-          ESP_LOGV("${TAG_API}", "  command: %s", command.c_str());
+          ESP_LOGV("${TAG_API}", "  page:      '%s'", page.c_str());
+          ESP_LOGV("${TAG_API}", "  component: '%s'", component.c_str());
+          ESP_LOGV("${TAG_API}", "  command:   '%s'", command.c_str());
           fire_ha_event("button_click", {
             {"page", page.c_str()},
             {"component", component.c_str()},
@@ -456,12 +456,12 @@ script:
     then:
       - lambda: |-
           update_flag_api_ready->execute();
-          if (!api_server->is_connected_with_state_subscription() and
-              current_page_id != get_page_id("boot") and
-              current_page_id != get_page_id("confirm") and
-              current_page_id != get_page_id("home") and
-              current_page_id != get_page_id("qrcode") and
-              current_page_id != get_page_id("screensaver") and
+          if (!api_server->is_connected_with_state_subscription() &&
+              current_page_id != get_page_id("boot")        &&
+              current_page_id != get_page_id("confirm")     &&
+              current_page_id != get_page_id("home")        &&
+              current_page_id != get_page_id("qrcode")      &&
+              current_page_id != get_page_id("screensaver") &&
               current_page_id != get_page_id("settings")) {
             ESP_LOGW("${TAG_API}", "API disconnected. Falling back to Home page.");
             goto_page->execute(get_page_id("home"));

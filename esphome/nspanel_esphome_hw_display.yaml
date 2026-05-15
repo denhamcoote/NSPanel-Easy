@@ -88,19 +88,6 @@ substitutions:
 packages:
   action_wake_up: ${ _pkg_action_wake_up if include_action_wake_up else {} }
 
-binary_sensor:
-  - id: nextion_init  # Delays initial info from HA to the display
-    name: Nextion display
-    platform: template
-    device_class: connectivity
-    entity_category: diagnostic
-    icon: mdi:tablet-dashboard
-    lambda: |-
-      return is_device_ready_for_tasks();
-    on_release:
-      then:
-        - lambda: system_flags.nextion_ready = false;
-
 display:
   - id: disp1
     platform: nextion
@@ -114,7 +101,6 @@ display:
             wait_for_display->stop();
             ESP_LOGI("${TAG_HW_DISPLAY}", "Nextion setup triggered");
             system_flags.nextion_ready = true;
-            nextion_init->publish_state(true);
 
     on_page:
       then:
@@ -233,7 +219,7 @@ script:
             ESP_LOGW("${TAG_HW_DISPLAY}", "  Is detected: %s", YESNO(disp1->is_detected()));
             //exit_reparse->execute();
           }
-          if (nextion_init->state) {
+          if (system_flags.nextion_ready) {
             ESP_LOGCONFIG("${TAG_HW_DISPLAY}", "  Init: True");
           } else
             ESP_LOGW("${TAG_HW_DISPLAY}", "  Init: False");
@@ -552,7 +538,9 @@ script:
                   # Display still not setup after another ${BAUD_RATE_TIMEOUT} — rescan.
                   # baud_scan power-cycles the display itself, so the
                   # next iteration's power-off is redundant but harmless.
-                  - script.execute: baud_scan
+                  - script.execute:
+                      id: baud_scan
+                      target_rate: 0
                   - script.wait: baud_scan
                   - if:
                       condition:
@@ -718,7 +706,7 @@ switch:
     internal: true
     on_turn_off:
       then:
-        - lambda: nextion_init->publish_state(false);
+        - lambda: system_flags.nextion_ready = false;
 
 text_sensor:
   - id: current_page  # Current page name

@@ -67,10 +67,10 @@ interval:
     startup_delay: 89s
     then:
       - lambda: |-
-          if (!system_flags.ota_in_progress and !system_flags.tft_upload_active) {
-            ESP_LOGV("${TAG_BASE}", "Calling the watchdog");
-            watchdog_round->execute();
-          }
+          if (system_flags.ota_in_progress) return;
+          if (system_flags.tft_upload_active) return;
+          ESP_LOGV("${TAG_BASE}", "Calling the watchdog");
+          watchdog_round->execute();
 
 logger:
 

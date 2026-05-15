@@ -200,7 +200,7 @@ script:
           ESP_LOGV("${TAG_ADDON_COVER}", "  active index: %i", cover_relays_active_index.value());
           const bool cover_mode_std = (cover_relays_active_index.value() == 0);
           ESP_LOGV("${TAG_ADDON_COVER}", "  standard mode: %s", YESNO(cover_mode_std));
-          auto relay_open = cover_mode_std ? relay_1 : relay_2;
+          auto relay_open =  cover_mode_std ? relay_1 : relay_2;
           auto relay_close = cover_mode_std ? relay_2 : relay_1;
 
           if (opening) {
@@ -261,12 +261,16 @@ switch:
     optimistic: true
     on_turn_on:
       then:
-        - lambda: |-
-            set_physical_relays->execute(true, true);
+        - script.execute:
+            id: set_physical_relays
+            opening: true
+            state: true
     on_turn_off:
       then:
-        - lambda: |-
-            set_physical_relays->execute(true, false);
+        - script.execute:
+            id: set_physical_relays
+            opening: true
+            state: false
 
   - id: cover_close_virtual_relay
     platform: template
@@ -275,10 +279,14 @@ switch:
     optimistic: true
     on_turn_on:
       then:
-        - lambda: |-
-            set_physical_relays->execute(false, true);
+        - script.execute:
+            id: set_physical_relays
+            opening: false
+            state: true
     on_turn_off:
       then:
-        - lambda: |-
-            set_physical_relays->execute(false, false);
+        - script.execute:
+            id: set_physical_relays
+            opening: false
+            state: false
 ...
