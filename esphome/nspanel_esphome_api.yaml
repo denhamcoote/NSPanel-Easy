@@ -47,7 +47,7 @@ api:
         cmd: string  # Command string to be sent. Refer to the Nextion Instruction Set for supported commands: https://nextion.tech/instruction-set/
       then:
         - lambda: |-
-            ESP_LOGV("${TAG_API}", "Action: command");
+            ESP_LOGW("${TAG_API}", "Action: command (DEPRECATED)");
             ESP_LOGV("${TAG_API}", "  cmd: %s", cmd.c_str());
             disp1->send_command(cmd.c_str());
 

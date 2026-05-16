@@ -61,21 +61,20 @@ script:
   - id: !extend action_component_text
     then:
       - lambda: |-
-          if (page == "mem") {
-            if (component == "relay1_icon" && id(home_relay1_icon) != txt) {
-              id(home_relay1_icon) = txt;
-              strncpy(chip_states[CHIP_IDX_RELAY1].icon, txt.c_str(), sizeof(chip_states[CHIP_IDX_RELAY1].icon) - 1);
-              chip_states[CHIP_IDX_RELAY1].icon[sizeof(chip_states[CHIP_IDX_RELAY1].icon) - 1] = '\0';
-              if (is_chips_page) {
-                disp1->set_component_text(CHIP_NAMES[CHIP_IDX_RELAY1], chip_states[CHIP_IDX_RELAY1].icon);
-              }
-            } else if (component == "relay2_icon" && id(home_relay2_icon) != txt) {
-              id(home_relay2_icon) = txt;
-              strncpy(chip_states[CHIP_IDX_RELAY2].icon, txt.c_str(), sizeof(chip_states[CHIP_IDX_RELAY2].icon) - 1);
-              chip_states[CHIP_IDX_RELAY2].icon[sizeof(chip_states[CHIP_IDX_RELAY2].icon) - 1] = '\0';
-              if (is_chips_page) {
-                disp1->set_component_text(CHIP_NAMES[CHIP_IDX_RELAY2], chip_states[CHIP_IDX_RELAY2].icon);
-              }
+          if (page != "mem") return;
+          if (component == "relay1_icon" && id(home_relay1_icon) != txt) {
+            id(home_relay1_icon) = txt;
+            strncpy(chip_states[CHIP_IDX_RELAY1].icon, txt.c_str(), sizeof(chip_states[CHIP_IDX_RELAY1].icon) - 1);
+            chip_states[CHIP_IDX_RELAY1].icon[sizeof(chip_states[CHIP_IDX_RELAY1].icon) - 1] = '\0';
+            if (is_chips_page) {
+              disp1->set_component_text(CHIP_NAMES[CHIP_IDX_RELAY1], chip_states[CHIP_IDX_RELAY1].icon);
+            }
+          } else if (component == "relay2_icon" && id(home_relay2_icon) != txt) {
+            id(home_relay2_icon) = txt;
+            strncpy(chip_states[CHIP_IDX_RELAY2].icon, txt.c_str(), sizeof(chip_states[CHIP_IDX_RELAY2].icon) - 1);
+            chip_states[CHIP_IDX_RELAY2].icon[sizeof(chip_states[CHIP_IDX_RELAY2].icon) - 1] = '\0';
+            if (is_chips_page) {
+              disp1->set_component_text(CHIP_NAMES[CHIP_IDX_RELAY2], chip_states[CHIP_IDX_RELAY2].icon);
             }
           }
 

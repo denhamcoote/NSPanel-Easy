@@ -191,6 +191,16 @@ script:
             wakeup->execute(val!=0);
           }
 
+  - id: !extend action_component_text
+    then:
+      - lambda: |-
+          if (page != "mem") return;
+          if (txt.empty()) return;
+          if (component == "command") {
+            disp1->send_command(txt.c_str());
+            return;
+          }
+
   - id: !extend boot_nextion
     then:
       - lambda: |-
