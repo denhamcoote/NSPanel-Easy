@@ -581,10 +581,12 @@ script:
           }
           if (current_page_id == get_page_id("screensaver") or current_page_id == get_page_id("boot")) {
             ESP_LOGD("${TAG_HW_DISPLAY}", "Wake-up on page %s", page_names[wakeup_page_id]);
+            #ifdef NSPANEL_EASY_PAGE_CLIMATE
             if (wakeup_page_id == get_page_id("climate")) {
               detailed_entity->publish_state((id(is_embedded_thermostat)) ? "embedded_climate" : "");
               disp1->set_component_value("climate.embedded", id(is_embedded_thermostat) ? 1 : 0);
             }
+            #endif  // NSPANEL_EASY_PAGE_CLIMATE
             if (id(theme_pending_apply)) {
               // Call page theme_apply
               disp1->send_command_printf("theme_apply.previous_page.val=%" PRIu8, wakeup_page_id);

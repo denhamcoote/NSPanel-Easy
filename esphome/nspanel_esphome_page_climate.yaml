@@ -78,12 +78,6 @@ esphome:
     build_flags:
       - -D NSPANEL_EASY_PAGE_CLIMATE
 
-globals:
-  - id: is_embedded_thermostat  # Is embedded thermostat set as main climate entity?
-    type: bool
-    restore_value: true
-    initial_value: 'false'
-
 script:
   - id: !extend action_component_val
     then:
