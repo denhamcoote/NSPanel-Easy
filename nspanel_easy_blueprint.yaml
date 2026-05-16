@@ -3262,7 +3262,7 @@ blueprint:
         utilities_page01_label:
           name: Utilities page - Label (Optional)
           description: "Label which should be displayed in the top of the page."
-          default: "Utilitites Dashboard"
+          default: "Utilities Dashboard"
           selector:
             text: {}
         utilities_page01_icon:
