@@ -57,7 +57,7 @@ climate:
       then:
         - lambda: |-
             ESP_LOGV("${TAG_ADDON_CLIMATE}", "Climate have a new state");
-            if (current_page_id == get_page_id("climate") and detailed_entity->state == "embedded_climate") {
+            if (current_page_id == get_page_id("climate") and climate_embedded_visible) {
               ESP_LOGV("${TAG_ADDON_CLIMATE}", "Update page 'climate'");
               page_climate->execute();
             }
@@ -119,16 +119,13 @@ script:
     then:
       - lambda: |-
           ESP_LOGV("${TAG_ADDON_CLIMATE}", "Add-on climate code starting");
-          if (!embedded) {
+          if (!climate_embedded_visible) {
             ESP_LOGV("${TAG_ADDON_CLIMATE}", "Not showing the embedded climate");
             return;
           }
 
           auto call = thermostat_embedded->make_call();
           float temperature;
-
-          ESP_LOGV("${TAG_ADDON_CLIMATE}", "Inform display that is showing embedded climate");
-          disp1->set_component_value("climate.embedded", 1);
 
           if (key == "hvac_mode") {
             ESP_LOGV("${TAG_ADDON_CLIMATE}", "Set 'hvac_mode' to '%s'", value.c_str());
@@ -203,13 +200,9 @@ script:
   - id: !extend page_climate
     then:
       - lambda: |-
+          if (!climate_embedded_visible) return;
           if (current_page_id != get_page_id("climate")) return;
-          if (not id(is_embedded_thermostat)) return;
-          if (climate_main_from_home and !api_server->is_connected()) {
-            detailed_entity->publish_state("embedded_climate");  // Fallback to embedded climate when API is out
-          } else if (detailed_entity->state != "embedded_climate") {
-            return;
-          }
+
           ESP_LOGV("${TAG_ADDON_CLIMATE}", "Construct climate page with embedded climate");
 
           // Get climate traits
@@ -441,9 +434,17 @@ script:
           }
 
           if (current_page_id != get_page_id("climate")) return;
-          if (detailed_entity->state != "embedded_climate") return;
+          if (!climate_embedded_visible) return;
 
           // Apply the icon and color to the target icon on climate page
           disp1->set_component_text("target_icon", icon);
           disp1->set_component_font_color("target_icon", static_cast<uint16_t>(color));
+
+text_sensor:
+  - id: !extend detailed_entity  # Defined by hw_display
+    on_raw_value:
+      then:
+        - lambda: |-
+            climate_embedded_visible = (x == "${CLIMATE_EMBEDDED_SENTINEL}");
+            disp1->send_command_printf("climate_embedded=%i", climate_embedded_visible ? 1 : 0);
 ...
