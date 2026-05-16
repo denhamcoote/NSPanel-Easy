@@ -125,13 +125,19 @@ script:
           }
 
           auto call = thermostat_embedded->make_call();
-          float temperature;
 
           if (key == "hvac_mode") {
             ESP_LOGV("${TAG_ADDON_CLIMATE}", "Set 'hvac_mode' to '%s'", value.c_str());
             call.set_mode(value);
-          } else {
-            temperature = stof(value) / 10;
+          } else if (key == "temperature" || key == "target_temp_high" || key == "target_temp_low") {
+            auto parsed = parse_number<float>(value);
+            if (!parsed.has_value()) {
+              ESP_LOGW("${TAG_ADDON_CLIMATE}", "Cannot parse '%s' as number for key '%s'",
+                                                value.c_str(), key.c_str());
+              return;
+            }
+            const float temperature = parsed.value() / 10.0f;
+
             if (key == "temperature") {
               ESP_LOGV("${TAG_ADDON_CLIMATE}", "Set target temperature to %f${temp_units}", temperature);
               #if NSPANEL_EASY_HW_TEMPERATURE_IS_FAHRENHEIT
@@ -146,7 +152,7 @@ script:
               #else  // Celsius
               call.set_target_temperature_high(temperature);
               #endif  // NSPANEL_EASY_HW_TEMPERATURE_IS_FAHRENHEIT
-            } else if (key == "target_temp_low") {
+            } else {  // target_temp_low
               ESP_LOGV("${TAG_ADDON_CLIMATE}", "Set target temperature low to %f${temp_units}", temperature);
               #if NSPANEL_EASY_HW_TEMPERATURE_IS_FAHRENHEIT
               call.set_target_temperature_low(roundf(fahrenheit_to_celsius(temperature) * 1000.0f) / 1000.0f);
@@ -154,6 +160,8 @@ script:
               call.set_target_temperature_low(temperature);
               #endif  // NSPANEL_EASY_HW_TEMPERATURE_IS_FAHRENHEIT
             }
+          } else {
+            ESP_LOGW("${TAG_ADDON_CLIMATE}", "Unhandled climate key '%s' (value: '%s')", key.c_str(), value.c_str());
           }
 
           ESP_LOGV("${TAG_ADDON_CLIMATE}", "Perform action");
