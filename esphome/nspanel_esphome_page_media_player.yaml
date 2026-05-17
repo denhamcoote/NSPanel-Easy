@@ -158,6 +158,17 @@ api:
             disp1->set_component_visibility("bt_mute", has_mute);
 
             // Volume set / step controls.
+            // The HMI bt_vol_down / bt_vol_up buttons do not call the HA
+            // volume_down / volume_up services. They locally nudge vol_slider
+            // by one and schedule timer0, which then sends
+            // "media_player,volume_set,<val>". That means both buttons are
+            // functionally slider nudgers and only require VOLUME_SET to work;
+            // VOLUME_STEP is irrelevant to them. Many common players (Sonos,
+            // Spotify, some Chromecast targets) expose VOLUME_SET without
+            // VOLUME_STEP, so gating bt_vol_down / bt_vol_up on has_vol_step
+            // hid working controls. Tie their visibility to has_vol_set, the
+            // same flag that governs vol_slider and vol_text, so the whole
+            // volume row appears and hides as a unit.
             if (has_vol_set && last_volume_level != volume_level) {
               last_volume_level = volume_level;
               disp1->set_component_text_printf("vol_text", "%d%%", volume_level);
@@ -165,8 +176,8 @@ api:
             }
             disp1->set_component_visibility("vol_slider", has_vol_set);
             disp1->set_component_visibility("vol_text", has_vol_set);
-            disp1->set_component_visibility("bt_vol_down", has_vol_step);
-            disp1->set_component_visibility("bt_vol_up", has_vol_step);
+            disp1->set_component_visibility("bt_vol_down", has_vol_set);
+            disp1->set_component_visibility("bt_vol_up", has_vol_set);
 
             // Media progress bar.
             // "media_duration > 0" is the cue that a finite track is loaded
