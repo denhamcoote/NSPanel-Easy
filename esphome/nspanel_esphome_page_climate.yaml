@@ -24,7 +24,6 @@ api:
         total_steps: int         # Total adjustment steps available, derived from the device's temperature range and step size.
         temp_offset: int         # Calibration offset applied to the temperature reading (multiplied by 10 for precision).
         climate_icon: string     # Icon codepoint representing the current climate status, chosen from HASwitchPlate Material Design Icons.
-        embedded_climate: bool   # Indicates if climate control is integrated into the interface.
         entity: string           # Entity ID of the climate device, allowing for direct control and status updates.
       then:
         - lambda: |-
@@ -38,25 +37,23 @@ api:
             ESP_LOGV("${TAG_PAGE_CLIMATE}", "  total_steps: %i", total_steps);
             ESP_LOGV("${TAG_PAGE_CLIMATE}", "  temp_offset: %i", temp_offset);
             ESP_LOGV("${TAG_PAGE_CLIMATE}", "  climate_icon: %s", climate_icon.c_str());
-            ESP_LOGV("${TAG_PAGE_CLIMATE}", "  embedded_climate: %s", YESNO(embedded_climate));
             ESP_LOGV("${TAG_PAGE_CLIMATE}", "  entity: %s", entity.c_str());
 
             // Set detailed entity sensor
             if (current_page_id == get_page_id("climate"))
               detailed_entity->publish_state(entity.c_str());
 
-            set_climate_current_temp = current_temp;
-            set_climate_supported_features = supported_features;
-            set_climate_target_temp = target_temp;
-            set_climate_target_temp_high = target_temp_high;
-            set_climate_target_temp_low = target_temp_low;
-            set_climate_temp_step = temp_step;
-            set_climate_total_steps = total_steps;
-            set_climate_temp_offset = temp_offset;
-            set_climate_climate_icon = climate_icon;
-            set_climate_embedded_climate = embedded_climate;
-
-        - script.execute: set_climate
+            set_climate->execute(
+              current_temp,
+              static_cast<uint32_t>(supported_features),
+              target_temp,
+              target_temp_high,
+              target_temp_low,
+              temp_step,
+              total_steps,
+              temp_offset,
+              climate_icon
+            );
 
 display:
   - id: !extend disp1
@@ -136,7 +133,11 @@ script:
     then:
       - lambda: |-
           if (current_page_id != get_page_id("climate")) return;
-          set_climate->execute();
+          const std::string& sep = id(mui_decimal_separator);
+          const char dec_sep = sep.empty() ? '.' : sep[0];
+          const char dec_separator_str[2] = {dec_sep, '\0'};
+          disp1->set_component_text("temp_unit", (id(units_separator) + id(temperature_unit)).c_str());
+          disp1->set_component_text("dec_separator", dec_separator_str);
 
   - id: !extend page_change
     then:
@@ -156,55 +157,61 @@ script:
 
   - id: set_climate
     mode: restart
+    parameters:
+      current_temp: float
+      supported_features: uint32_t
+      target_temp: float
+      target_temp_high: float
+      target_temp_low: float
+      temp_step: uint8_t
+      total_steps: uint16_t
+      temp_offset: uint16_t
+      climate_icon: string
     then:
       - lambda: |-
           ESP_LOGV("${TAG_PAGE_CLIMATE}", "Script: set_climate");
-          ESP_LOGV("${TAG_PAGE_CLIMATE}", "  set_climate_current_temp: %f%s${temp_units}", set_climate_current_temp,
-                                                                                          id(units_separator).c_str());
-          ESP_LOGV("${TAG_PAGE_CLIMATE}", "  set_climate_supported_features: %i", set_climate_supported_features);
-          ESP_LOGV("${TAG_PAGE_CLIMATE}", "  set_climate_target_temp: %f%s${temp_units}", set_climate_target_temp,
-                                                                                          id(units_separator).c_str());
-          ESP_LOGV("${TAG_PAGE_CLIMATE}", "  set_climate_target_temp_high: %f%s${temp_units}",
-                                                            set_climate_target_temp_high, id(units_separator).c_str());
-          ESP_LOGV("${TAG_PAGE_CLIMATE}", "  set_climate_target_temp_low: %f%s${temp_units}",
-                                                            set_climate_target_temp_low, id(units_separator).c_str());
-          ESP_LOGV("${TAG_PAGE_CLIMATE}", "  set_climate_temp_step: %u%s${temp_units}", set_climate_temp_step,
-                                                                                        id(units_separator).c_str());
-          ESP_LOGV("${TAG_PAGE_CLIMATE}", "  set_climate_total_steps: %u", set_climate_total_steps);
-          ESP_LOGV("${TAG_PAGE_CLIMATE}", "  set_climate_temp_offset: %i%s${temp_units}", set_climate_temp_offset,
-                                                                                          id(units_separator).c_str());
-          ESP_LOGV("${TAG_PAGE_CLIMATE}", "  set_climate_climate_icon: %s", set_climate_climate_icon.c_str());
-          ESP_LOGV("${TAG_PAGE_CLIMATE}", "  set_climate_embedded_climate: %s", YESNO(set_climate_embedded_climate));
+          ESP_LOGV("${TAG_PAGE_CLIMATE}", "  current_temp: %f%s${temp_units}", current_temp,
+                                                                              id(units_separator).c_str());
+          ESP_LOGV("${TAG_PAGE_CLIMATE}", "  supported_features: %i", supported_features);
+          ESP_LOGV("${TAG_PAGE_CLIMATE}", "  target_temp: %f%s${temp_units}", target_temp, id(units_separator).c_str());
+          ESP_LOGV("${TAG_PAGE_CLIMATE}", "  target_temp_high: %f%s${temp_units}", target_temp_high,
+                                                                                    id(units_separator).c_str());
+          ESP_LOGV("${TAG_PAGE_CLIMATE}", "  target_temp_low: %f%s${temp_units}", target_temp_low,
+                                                                                  id(units_separator).c_str());
+          ESP_LOGV("${TAG_PAGE_CLIMATE}", "  temp_step: %u%s${temp_units}", temp_step, id(units_separator).c_str());
+          ESP_LOGV("${TAG_PAGE_CLIMATE}", "  total_steps: %u", total_steps);
+          ESP_LOGV("${TAG_PAGE_CLIMATE}", "  temp_offset: %i%s${temp_units}", temp_offset, id(units_separator).c_str());
+          ESP_LOGV("${TAG_PAGE_CLIMATE}", "  climate_icon: %s", climate_icon.c_str());
 
           if (current_page_id != get_page_id("climate")) {
             ESP_LOGW("${TAG_PAGE_CLIMATE}", "'set_climate' was called when page 'climate' is not visible");
             return;
           }
-          if (set_climate_temp_step <= 0) {
+          if (temp_step <= 0) {
             ESP_LOGW("${TAG_PAGE_CLIMATE}", "Invalid temp_step (<= 0); skipping climate render");
             return;
           }
-          disp1->set_component_value("embedded", set_climate_embedded_climate ? 1 : 0);
-          disp1->send_command_printf("climateslider.maxval=%i", set_climate_total_steps);
-          disp1->send_command_printf("slider_high.maxval=%i", set_climate_total_steps);
-          disp1->send_command_printf("slider_low.maxval=%i", set_climate_total_steps);
-          disp1->set_component_value("temp_offset", set_climate_temp_offset);
-          disp1->set_component_value("temp_step", set_climate_temp_step);
-          disp1->set_component_text("temp_unit", (id(units_separator) + id(temperature_unit)).c_str());
+          disp1->send_command_printf("climateslider.maxval=%i", total_steps);
+          disp1->send_command_printf("slider_high.maxval=%i",   total_steps);
+          disp1->send_command_printf("slider_low.maxval=%i",    total_steps);
+          disp1->set_component_value("temp_offset",             temp_offset);
+          disp1->set_component_value("temp_step",               temp_step);
+          disp1->set_component_text("temp_unit",                (id(units_separator) + id(temperature_unit)).c_str());
           const std::string& sep = id(mui_decimal_separator);
           const char dec_sep = sep.empty() ? '.' : sep[0];
           const char dec_separator_str[2] = {dec_sep, '\0'};
-          disp1->set_component_text("dec_separator", dec_separator_str);
+          disp1->set_component_text("dec_separator",            dec_separator_str);
           disp1->show_component("current_temp");
           char buffer[15];
-          const bool useDecimal = (set_climate_temp_step % 10 != 0);
+          const bool useDecimal = (temp_step % 10 != 0);
 
           if (current_page_id != get_page_id("climate")) return;
 
-          if (set_climate_current_temp > -999) {  // Current temp enabled
+          if (current_temp > -999) {  // Current temp enabled
             ESP_LOGV("${TAG_PAGE_CLIMATE}", "Show current temperature");
             snprintf(buffer, sizeof(buffer), (useDecimal) ? "%.1f%s${temp_units}" : "%.0f%s${temp_units}",
-                                              set_climate_current_temp, id(units_separator).c_str());
+                                                                                    current_temp,
+                                                                                    id(units_separator).c_str());
             disp1->set_component_text("current_temp", adjustDecimalSeparator(buffer, dec_sep).c_str());
           } else {
             ESP_LOGV("${TAG_PAGE_CLIMATE}", "Show current temperature 'unavailable'");
@@ -215,15 +222,15 @@ script:
 
           uint8_t active_slider = UINT8_MAX;
 
-          if (set_climate_target_temp > -999) {  // Target temp enabled
+          if (target_temp > -999) {  // Target temp enabled
             active_slider = 0;
 
             snprintf(buffer, sizeof(buffer), (useDecimal) ? "%.1f%s${temp_units}" : "%.0f%s${temp_units}",
-                                              set_climate_target_temp, id(units_separator).c_str());
+                                                                                    target_temp,
+                                                                                    id(units_separator).c_str());
             disp1->set_component_text("target_high", adjustDecimalSeparator(buffer, dec_sep).c_str());
 
-            disp1->set_component_value("climateslider",
-                              round(((10*set_climate_target_temp) - set_climate_temp_offset) / set_climate_temp_step));
+            disp1->set_component_value("climateslider", round(((10*target_temp) - temp_offset) / temp_step));
 
             disp1->hide_component("slider_high");
             disp1->hide_component("slider_low");
@@ -236,15 +243,15 @@ script:
 
             disp1->hide_component("slider_high");
 
-            if (set_climate_target_temp_low > -999) {  // Target temp low enabled
+            if (target_temp_low > -999) {  // Target temp low enabled
               active_slider = 2;
 
               snprintf(buffer, sizeof(buffer), (useDecimal) ? "%.1f%s${temp_units}" : "%.0f%s${temp_units}",
-                                                set_climate_target_temp_low, id(units_separator).c_str());
+                                                                                      target_temp_low,
+                                                                                      id(units_separator).c_str());
               disp1->set_component_text("target_low", adjustDecimalSeparator(buffer, dec_sep).c_str());
 
-              disp1->set_component_value("slider_low",
-                          round(((10*set_climate_target_temp_low) - set_climate_temp_offset) / set_climate_temp_step));
+              disp1->set_component_value("slider_low", round(((10*target_temp_low) - temp_offset) / temp_step));
 
               disp1->show_component("target_low");
               disp1->show_component("slider_low");
@@ -256,15 +263,15 @@ script:
 
             if (current_page_id != get_page_id("climate")) return;
 
-            if (set_climate_target_temp_high > -999) {  // Target temp high enabled
+            if (target_temp_high > -999) {  // Target temp high enabled
               active_slider = 1;
 
               snprintf(buffer, sizeof(buffer), (useDecimal) ? "%.1f%s${temp_units}" : "%.0f%s${temp_units}",
-                                                set_climate_target_temp_high, id(units_separator).c_str());
+                                                                                      target_temp_high,
+                                                                                      id(units_separator).c_str());
               disp1->set_component_text("target_high", adjustDecimalSeparator(buffer, dec_sep).c_str());
 
-              disp1->set_component_value("slider_high",
-                        round(((10*set_climate_target_temp_high) - set_climate_temp_offset) / set_climate_temp_step));
+              disp1->set_component_value("slider_high", round(((10*target_temp_high) - temp_offset) / temp_step));
 
               disp1->show_component("target_high");
               disp1->show_component("slider_high");
@@ -277,11 +284,11 @@ script:
           if (current_page_id != get_page_id("climate")) return;
 
           if (
-                set_climate_target_temp > -999 or       // Target temp enabled
-                set_climate_target_temp_high > -999 or  // Target temp high enabled
-                set_climate_target_temp_low > -999      // Target temp low enabled
+                target_temp > -999 or       // Target temp enabled
+                target_temp_high > -999 or  // Target temp high enabled
+                target_temp_low > -999      // Target temp low enabled
               ) {
-            disp1->set_component_text("target_icon", set_climate_climate_icon.c_str());
+            disp1->set_component_text("target_icon", climate_icon.c_str());
             disp1->show_component("target_icon");
             disp1->show_component("decrease_temp");
             disp1->show_component("increase_temp");
@@ -295,8 +302,6 @@ script:
 
           if (active_slider != UINT8_MAX)
             disp1->set_component_value("active_slider", active_slider);
-
-          disp1->set_component_value("embedded", (set_climate_embedded_climate) ? 1 : 0);
 
   - id: !extend stop_all
     then:
