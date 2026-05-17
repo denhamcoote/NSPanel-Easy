@@ -176,6 +176,8 @@ api:
             }
             disp1->set_component_visibility("vol_slider", has_vol_set);
             disp1->set_component_visibility("vol_text", has_vol_set);
+            // HMI buttons call volume_set (slider nudgers), not volume_up/down.
+            // Gate on VOLUME_SET, not VOLUME_STEP (Sonos lacks VOLUME_STEP). See #202.
             disp1->set_component_visibility("bt_vol_down", has_vol_set);
             disp1->set_component_visibility("bt_vol_up", has_vol_set);
 
@@ -187,6 +189,10 @@ api:
             // there is no duration since they have nothing to show.
             const bool has_duration = media_duration > 0;
             if (has_duration) {
+              // NOTE: the blueprint also computes this clamp in Jinja for the cheap
+              // prg_current resync path (component_val). Keep both implementations
+              // in sync — see refresh_page_media_player in nspanel_easy_blueprint.yaml.
+
               // Change detection uses capped_pos (not raw media_position) so a growing
               // media_position_delta still pushes an update when HA reports the same
               // underlying position across consecutive polls. Prevents the bar from
