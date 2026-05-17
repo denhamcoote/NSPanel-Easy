@@ -191,6 +191,16 @@ script:
             wakeup->execute(val!=0);
           }
 
+  - id: !extend action_component_text
+    then:
+      - lambda: |-
+          if (page != "mem") return;
+          if (txt.empty()) return;
+          if (component == "command") {
+            disp1->send_command(txt.c_str());
+            return;
+          }
+
   - id: !extend boot_nextion
     then:
       - lambda: |-
@@ -378,14 +388,6 @@ script:
             disp1->set_backlight_brightness(brightness / 100.0f);
           }
 
-  - id: set_component_font_color_DEPRECATED
-    mode: single
-    parameters:
-      component_id: string
-      color: uint16_t
-    then:
-      - lambda: disp1->set_component_font_color(component_id.c_str(), color);
-
   - id: !extend stop_all
     then:
       - lambda: |-
@@ -395,7 +397,6 @@ script:
           page_change->stop();
           reset_globals->stop();
           set_brightness->stop();
-          set_component_font_color_DEPRECATED->stop();
           theme_update->stop();
           theme_update_all->stop();
           theme_update_dark->stop();
@@ -590,10 +591,12 @@ script:
           }
           if (current_page_id == get_page_id("screensaver") or current_page_id == get_page_id("boot")) {
             ESP_LOGD("${TAG_HW_DISPLAY}", "Wake-up on page %s", page_names[wakeup_page_id]);
+            #ifdef NSPANEL_EASY_PAGE_CLIMATE
             if (wakeup_page_id == get_page_id("climate")) {
               detailed_entity->publish_state((id(is_embedded_thermostat)) ? "embedded_climate" : "");
               disp1->set_component_value("climate.embedded", id(is_embedded_thermostat) ? 1 : 0);
             }
+            #endif  // NSPANEL_EASY_PAGE_CLIMATE
             if (id(theme_pending_apply)) {
               // Call page theme_apply
               disp1->send_command_printf("theme_apply.previous_page.val=%" PRIu8, wakeup_page_id);
@@ -724,6 +727,8 @@ text_sensor:
     internal: false
     disabled_by_default: false
     update_interval: never
+    # Extended by:
+    #   - addon_climate_base
 
   - id: disp1_local_event
     name: NSPanel local event

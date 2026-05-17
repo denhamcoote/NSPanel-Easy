@@ -47,7 +47,7 @@ api:
         cmd: string  # Command string to be sent. Refer to the Nextion Instruction Set for supported commands: https://nextion.tech/instruction-set/
       then:
         - lambda: |-
-            ESP_LOGV("${TAG_API}", "Action: command");
+            ESP_LOGW("${TAG_API}", "Action: command (DEPRECATED)");
             ESP_LOGV("${TAG_API}", "  cmd: %s", cmd.c_str());
             disp1->send_command(cmd.c_str());
 
@@ -142,18 +142,21 @@ api:
             ESP_LOGV("${TAG_API}", "  entity:    '%s'", entity.c_str());
             ESP_LOGV("${TAG_API}", "  back_page: '%s'", back_page.c_str());
             HomeAssistantEntity entity_id = extractHomeAssistantEntity(entity);
-            if (entity == "embedded_climate")                   entity_id.domain = "climate";
-            else if (entity_id.domain == "alarm_control_panel") entity_id.domain = "alarm";
+            if      (entity_id.domain == "alarm_control_panel") entity_id.domain = "alarm";
             else if (entity_id.domain == "input_boolean")       entity_id.domain = "switch";
             else if (entity_id.domain == "input_button")        entity_id.domain = "button";
             else if (entity_id.domain == "input_select")        entity_id.domain = "select";
-            if (entity_id.domain != "invalid" or entity == "embedded_climate") {
+            #ifdef NSPANEL_EASY_ADDON_CLIMATE_BASE
+            if (entity == "embedded_climate")                   entity_id.domain = "climate";
+            #endif  // NSPANEL_EASY_ADDON_CLIMATE_BASE
+            if (entity_id.domain != "invalid"
+                #ifdef NSPANEL_EASY_ADDON_CLIMATE_BASE
+                or entity == "embedded_climate"
+                #endif  // NSPANEL_EASY_ADDON_CLIMATE_BASE
+                ) {
               detailed_entity->publish_state(entity);
               goto_page->execute(get_page_id(entity_id.domain.c_str()));
               disp1->send_command_printf("back_page_id=%" PRIu8, get_page_id(back_page.c_str()));
-              if (entity_id.domain == "climate") {
-                disp1->set_component_value("climate.embedded", (entity == "embedded_climate") ? 1 : 0);
-              }
             }
 
     - action: icon  # Updates icon, color, and visibility for display components
@@ -450,19 +453,27 @@ script:
   - id: update_flag_api_ready
     then:
       - lambda: |-
-          disp1->send_command(api_server->is_connected_with_state_subscription() ? "api=1" : "api=0");
+          disp1->send_command_printf("api=%i", api_server->is_connected_with_state_subscription() ? 1 : 0);
 
   - id: !extend watchdog_round
     then:
       - lambda: |-
           update_flag_api_ready->execute();
+
+          #ifdef NSPANEL_EASY_ADDON_CLIMATE_BASE
+          const bool climate_offline_safe = (current_page_id == get_page_id("climate") && climate_embedded_visible);
+          #else  // NSPANEL_EASY_ADDON_CLIMATE_BASE
+          constexpr bool climate_offline_safe = false;
+          #endif  // NSPANEL_EASY_ADDON_CLIMATE_BASE
+
           if (!api_server->is_connected_with_state_subscription() &&
               current_page_id != get_page_id("boot")        &&
               current_page_id != get_page_id("confirm")     &&
               current_page_id != get_page_id("home")        &&
               current_page_id != get_page_id("qrcode")      &&
               current_page_id != get_page_id("screensaver") &&
-              current_page_id != get_page_id("settings")) {
+              current_page_id != get_page_id("settings")    &&
+              !climate_offline_safe) {
             ESP_LOGW("${TAG_API}", "API disconnected. Falling back to Home page.");
             goto_page->execute(get_page_id("home"));
           }

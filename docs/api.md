@@ -6,7 +6,7 @@ This document provides details on custom actions designed for integration with H
 
 - [Action Documentation](#action-documentation)
   - [Button Action (`button`)](#button-action-button): Configures properties and state of buttons on a specified button page.
-  - [Command Action (`command`)](#command-action-command): Sends a custom command directly to the display.
+  - [Command Action (`command`) - DEPRECATED](#command-action-command): Sends a custom command directly to the display.
   - [Component Color Action (`component_color`)](#component-color-action-component_color): Changes the foreground color of a specified component on the display.
   - [Component Text List Action (`component_text_list`)](#component-text-list-action-component_text_list): Updates the text of a specified component on the display using a list of values.
   - [Component Value Action (`component_val`)](#component-value-action-component_val): Updates the value of a specified component on the display.
@@ -128,6 +128,9 @@ data:
 > This action dynamically updates the specified button's properties to match the provided parameters.
 
 ### Command Action: `command`
+
+> [!IMPORTANT]
+> This command is deprecated and will be removed soon.
 
 Sends a custom command directly to the display, enabling direct interaction and dynamic content updates.
 

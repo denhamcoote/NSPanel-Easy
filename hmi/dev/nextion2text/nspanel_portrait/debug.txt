@@ -43,6 +43,9 @@ Page debug
             global_vars.txt+="\r- display_mode: "
             covx display_mode,aux.txt,0,0
             global_vars.txt+=aux.txt
+            global_vars.txt+="\r- climate_embedded: "
+            covx climate_embedded,aux.txt,0,0
+            global_vars.txt+=aux.txt
             pages_flags.txt+="\r- is_buttonpage01: "
             covx is_buttonpage01,aux.txt,0,0
             pages_flags.txt+=aux.txt
@@ -71,7 +74,7 @@ Page debug
             covx vis_bt_entities,aux.txt,0,0
             pages_flags.txt+=aux.txt
             system_vars.txt+="\r- bauds: "
-            covx bauds,aux.txt,0,0
+            covx baud,aux.txt,0,0
             system_vars.txt+=aux.txt
             system_vars.txt+="\r- recmod: "
             covx recmod,aux.txt,0,0

@@ -72,9 +72,9 @@ script:
               Icons::MDI_API_OFF) :
             Icons::MDI_WIFI_OFF;
 
-          // Update WiFi icon (only when changed)
-          static const char* icon_previous = nullptr;
-          if (icon_new != icon_previous) {
+          // Update WiFi icon only when changed
+          static std::string icon_previous;
+          if (icon_previous != icon_new) {
             disp1->set_component_text("home.wifi_icon", icon_new);
             icon_previous = icon_new;
           }
@@ -106,10 +106,10 @@ script:
           const uint16_t color_new = system_flags.blueprint_ready ? Colors::RGB565_GRAY_MOSS : Colors::RGB565_RED;
           #endif  // _WIFI_ICON_COLORS
 
-          // Update WiFi icon color (only when changed)
-          static uint16_t color_previous = 0;
-          if (color_new != color_previous) {
-            disp1->set_component_font_color("home.wifi_icon", static_cast<uint16_t>(color_new));
+          // Update WiFi icon color only when changed
+          static uint16_t color_previous = Colors::RGB565_GRAY_MOSS;
+          if (color_previous != color_new) {
+            disp1->set_component_font_color("home.wifi_icon", color_new);
             color_previous = color_new;
           }
 

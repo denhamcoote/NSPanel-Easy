@@ -6,7 +6,7 @@
 ##################################################################################################
 ---
 blueprint:
-  name: NSPanel Easy Configuration (v2026.5.5)
+  name: NSPanel Easy Configuration (v9999.99.9)
   author: Edward Firmo (https://github.com/edwardtfn)
   description: >
     # NSPanel Easy Configuration via Blueprint
@@ -3262,7 +3262,7 @@ blueprint:
         utilities_page01_label:
           name: Utilities page - Label (Optional)
           description: "Label which should be displayed in the top of the page."
-          default: "Utilitites Dashboard"
+          default: "Utilities Dashboard"
           selector:
             text: {}
         utilities_page01_icon:
@@ -4071,7 +4071,7 @@ trigger_variables:
 
 variables:
   # Version will be following release version defined automatically when merging to main
-  blueprint_version: 2026.5.5
+  blueprint_version: 9999.99.9
   pages:
     current: '{{ states(currentpage) }}'
     alarm: "alarm"
@@ -5861,33 +5861,6 @@ actions:
 
       # yamllint disable rule:truthy rule:line-length rule:comments-indentation
       enum:
-        ColorMode:  # Possible light color modes. - https://github.com/home-assistant/core/blob/dev/homeassistant/components/light/__init__.py
-          UNKNOWN: "[<ColorMode.UNKNOWN: 'unknown'>]"
-          ONOFF: "[<ColorMode.ONOFF: 'onoff'>]"
-          BRIGHTNESS: "[<ColorMode.BRIGHTNESS: 'brightness'>]"
-          COLOR_TEMP: "[<ColorMode.COLOR_TEMP: 'color_temp'>]"
-          HS: "[<ColorMode.HS: 'hs'>]"
-          XY: "[<ColorMode.XY: 'xy'>]"
-          RGB: "[<ColorMode.RGB: 'rgb'>]"
-          RGBW: "[<ColorMode.RGBW: 'rgbw'>]"
-          RGBWW: "[<ColorMode.RGBWW: 'rgbww'>]"
-          WHITE: "[<ColorMode.WHITE: ''>]"
-        HVACMode:  # Possible HVAC modes. - https://github.com/home-assistant/core/blob/dev/homeassistant/components/climate/const.py#L13
-          "OFF": "[<HVACMode.OFF: 'off'>]"                  # All activity disabled / Device is off/standby
-          HEAT: "[<HVACMode.HEAT: 'heat'>]"                 # Heating
-          COOL: "[<HVACMode.COOL: 'cool'>]"                 # Cooling
-          HEAT_COOL: "[<HVACMode.HEAT_COOL: 'heat_cool'>]"  # The device supports heating/cooling to a range
-          AUTO: "[<HVACMode.AUTO: 'auto'>]"                 # The temperature is set based on a schedule, learned behavior, AI or some other related mechanism. User is not able to adjust the temperature
-          DRY: "[<HVACMode.DRY: 'dry'>]"                    # Device is in Dry/Humidity mode
-          FAN_ONLY: "[<HVACMode.FAN_ONLY: 'fan_only'>]"     # Only the fan is on, not fan and another mode like cool
-        HVACMode_bits:
-          "OFF": 1
-          HEAT: 2
-          COOL: 4
-          HEAT_COOL: 8
-          AUTO: 16
-          DRY: 32
-          FAN_ONLY: 64
         states:
           "on": ["on", "open", "opening", "true", "True", true, True, "playing", "heat", "cold", "dry", "armed_home", "armed_away", "armed_vacation", "armed_custom_bypass", "triggered", "pending", "arming", "unlocked", 1]
           "off": ["off", "closed", "closing", "false", "False", false, False, "standby", "paused", "idle", "disarmed", "disarming", "locked"]
@@ -5976,7 +5949,7 @@ actions:
               if entity_id_valid
             }}
           entity_state_is_unknown: '{{ ((not entity_state_is_on) and (not entity_state_is_off)) if entity_id_valid }}'
-          entity_icon_color: >
+          entity_icon_color_tmp: >
             {%- if entity_id_valid -%}
               {%- set default_color = overlap.icon_color if overlap_icon_color_valid else nextion.color.on -%}
               {{ default_color if (not entity_state_is_off and not entity_state_is_unknown) else nextion.color.off }}
@@ -5985,6 +5958,79 @@ actions:
             {%- endif -%}
           entity_friendly_name: '{{ states[entity_id].name if entity_id_valid }}'
           entity_device_class: '{{ state_attr(entity_id, "device_class") | default("") if entity_id_valid else "" }}'
+          entity_icon_color: >
+              {%- if entity_id_valid -%}
+                {%- if entity_domain == "alarm_control_panel" -%}
+                  {%- if entity_state == "disarmed" -%}
+                    {{ nextion.color.off }}
+                  {%- elif entity_state in ["armed_home", "armed_away", "armed_night", "armed_vacation", "armed_bypass"] -%}
+                    {{ nextion.color.green }}
+                  {%- elif entity_state in ["pending", "arming", "disarming"] -%}
+                    {{ nextion.color.amber }}
+                  {%- elif entity_state == "triggered" -%}
+                    {{ nextion.color.red }}
+                  {%- else -%}
+                    {{ entity_icon_color_tmp }}
+                  {%- endif -%}
+                {%- elif entity_domain == "climate" -%}
+                  {%- set entity_hvac_action = state_attr(entity_id, "hvac_action") | default("") -%}
+                  {%- set entity_climate_action = entity_hvac_action if entity_hvac_action and entity_hvac_action not in enum.states.unknown else entity_state -%}
+                  {%- if "off" in entity_climate_action -%}
+                    {{ nextion.color.off }}
+                  {%- elif "heat_cool" in entity_climate_action -%}
+                    {{ nextion.color.amber }}
+                  {%- elif "heating" in entity_climate_action or "heat" in entity_climate_action -%}
+                    {{ nextion.color.deep_orange }}
+                  {%- elif "cooling" in entity_climate_action or "cool" in entity_climate_action -%}
+                    {{ nextion.color.blue }}
+                  {%- elif "drying" in entity_climate_action or "dry" in entity_climate_action -%}
+                    {{ nextion.color.orange }}
+                  {%- elif "fan" in entity_climate_action or "fan_only" in entity_climate_action -%}
+                    {{ nextion.color.cyan }}
+                  {%- elif "auto" in entity_climate_action -%}
+                    {{ nextion.color.green }}
+                  {%- elif "idle" in entity_climate_action -%}
+                    {{ nextion.color.off }}
+                  {%- else -%}
+                    {{ entity_icon_color_tmp }}
+                  {%- endif -%}
+                {%- elif entity_domain == "light" -%}
+                  {%- if entity_state != "on" -%}
+                    {{ nextion.color.off }}
+                  {%- else -%}
+                    {%- set entity_rgb_color_attr = state_attr(entity_id, "rgb_color") | default("") -%}
+                    {%- if entity_rgb_color_attr is list and entity_rgb_color_attr | count == 3 -%}
+                      {{ entity_rgb_color_attr }}
+                    {%- else -%}
+                      {{ entity_icon_color_tmp }}
+                    {%- endif -%}
+                  {%- endif -%}
+                {%- elif entity_domain == "lock" -%}
+                  {%- if entity_state == "locked" -%}
+                    {{ nextion.color.green }}
+                  {%- elif entity_state == "unlocked" -%}
+                    {{ nextion.color.red }}
+                  {%- else -%}
+                    {{ entity_icon_color_tmp }}
+                  {%- endif -%}
+                {%- elif entity_domain == "water_heater" -%}
+                  {%- set wh_mode = state_attr(entity_id, "operation_mode") | default(entity_state) -%}
+                  {%- set wh_color_map = {
+                    'off': nextion.color.off,
+                    'on': nextion.color.orange,
+                    'eco': nextion.color.green,
+                    'electric': nextion.color.amber,
+                    'gas': nextion.color.deep_orange,
+                    'heat_pump': nextion.color.blue,
+                    'performance': nextion.color.red,
+                    'high_demand': nextion.color.red
+                  } -%}
+                  {{ wh_color_map.get(wh_mode, entity_icon_color_tmp) }}
+                {%- else -%}
+                  {{ entity_icon_color_tmp }}
+                {%- endif -%}
+              {%- endif -%}
+
           entity:
             name: >
               {%- if entity_id_valid -%}
@@ -6079,78 +6125,14 @@ actions:
                 {%- endif -%}
               {%- endif -%}
 
-            icon_color: >
-              {%- if entity_id_valid -%}
-                {%- if entity_domain == "alarm_control_panel" -%}
-                  {%- if entity_state == "disarmed" -%}
-                    {{ nextion.color.off }}
-                  {%- elif entity_state in ["armed_home", "armed_away", "armed_night", "armed_vacation", "armed_bypass"] -%}
-                    {{ nextion.color.green }}
-                  {%- elif entity_state in ["pending", "arming", "disarming"] -%}
-                    {{ nextion.color.amber }}
-                  {%- elif entity_state == "triggered" -%}
-                    {{ nextion.color.red }}
-                  {%- else -%}
-                    {{ entity_icon_color }}
-                  {%- endif -%}
-                {%- elif entity_domain == "climate" -%}
-                  {%- set entity_hvac_action = state_attr(entity_id, "hvac_action") | default("") -%}
-                  {%- set entity_climate_action = entity_hvac_action if entity_hvac_action and entity_hvac_action not in enum.states.unknown else entity_state -%}
-                  {%- if "off" in entity_climate_action -%}
-                    {{ nextion.color.off }}
-                  {%- elif "heat_cool" in entity_climate_action -%}
-                    {{ nextion.color.amber }}
-                  {%- elif "heating" in entity_climate_action or "heat" in entity_climate_action -%}
-                    {{ nextion.color.deep_orange }}
-                  {%- elif "cooling" in entity_climate_action or "cool" in entity_climate_action -%}
-                    {{ nextion.color.blue }}
-                  {%- elif "drying" in entity_climate_action or "dry" in entity_climate_action -%}
-                    {{ nextion.color.orange }}
-                  {%- elif "fan" in entity_climate_action or "fan_only" in entity_climate_action -%}
-                    {{ nextion.color.cyan }}
-                  {%- elif "auto" in entity_climate_action -%}
-                    {{ nextion.color.green }}
-                  {%- elif "idle" in entity_climate_action -%}
-                    {{ nextion.color.off }}
-                  {%- else -%}
-                    {{ entity_icon_color }}
-                  {%- endif -%}
-                {%- elif entity_domain == "light" -%}
-                  {%- if entity_state != "on" -%}
-                    {{ nextion.color.off }}
-                  {%- else -%}
-                    {%- set entity_rgb_color_attr = state_attr(entity_id, "rgb_color") | default("") -%}
-                    {%- if entity_rgb_color_attr is list and entity_rgb_color_attr | count == 3 -%}
-                      {{ entity_rgb_color_attr }}
-                    {%- else -%}
-                      {{ entity_icon_color }}
-                    {%- endif -%}
-                  {%- endif -%}
-                {%- elif entity_domain == "lock" -%}
-                  {%- if entity_state == "locked" -%}
-                    {{ nextion.color.green }}
-                  {%- elif entity_state == "unlocked" -%}
-                    {{ nextion.color.red }}
-                  {%- else -%}
-                    {{ entity_icon_color }}
-                  {%- endif -%}
-                {%- elif entity_domain == "water_heater" -%}
-                  {%- set wh_mode = state_attr(entity_id, "operation_mode") | default(entity_state) -%}
-                  {%- set wh_color_map = {
-                    'off': nextion.color.off,
-                    'on': nextion.color.orange,
-                    'eco': nextion.color.green,
-                    'electric': nextion.color.amber,
-                    'gas': nextion.color.deep_orange,
-                    'heat_pump': nextion.color.blue,
-                    'performance': nextion.color.red,
-                    'high_demand': nextion.color.red
-                  } -%}
-                  {{ wh_color_map.get(wh_mode, entity_icon_color) }}
-                {%- else -%}
-                  {{ entity_icon_color }}
-                {%- endif -%}
-              {%- endif -%}
+            icon_color: '{{ entity_icon_color }}'
+            icon_color_rgb565: >-
+              {{ int(
+                      ((entity_icon_color[0] //(2**3)) *(2**11)) +
+                      ((entity_icon_color[1] //(2**2)) *(2**5)) +
+                      ((entity_icon_color[2] //(2**3)))
+                    )
+              }}
 
   - alias: Main choices
     choose:
@@ -6699,16 +6681,20 @@ actions:
 
                           - alias: Embedded climate
                             sequence:
+                              - variables:
+                                  embedded_climate: '{{ climate == thermostat_embedded }}'
                               - action: 'esphome.{{ action_prefix }}_component_val'
                                 data:
                                   page: mem
                                   id: embedded_climate
-                                  val: '{{ 1 if climate == thermostat_embedded else 0 }}'
+                                  val: '{{ 1 if embedded_climate else 0 }}'
                                 continue_on_error: true
                               - *delay_boot
 
                           - alias: Embedded indoor temperature
                             sequence:
+                              - variables:
+                                  embedded_indoor_temperature: '{{ indoor_temperature_sensor == nspaneltemp }}'
                               - action: 'esphome.{{ action_prefix }}_component_val'
                                 data:
                                   page: mem
@@ -6893,45 +6879,53 @@ actions:
                           - *delay_boot
 
                       - alias: Disable empty buttons pages
-                        repeat:
-                          for_each: '{{ pages.buttonpages }}'
-                          sequence:
-                            - action: 'esphome.{{ action_prefix }}_command'
-                              data:
-                                cmd: >
-                                  {% set ns = namespace(mask=0) %}
+                        sequence:
+                          - variables:
+                              txt_list_payload: >
+                                {% set ns = namespace(items=[]) %}
+                                {% for page in pages.buttonpages %}
+                                  {% set pns = namespace(mask=0) %}
                                   {% for btn in buttons_pages.buttons
-                                        | selectattr("page", "eq", repeat.item)
+                                        | selectattr("page", "eq", page)
                                         | selectattr("entity", "defined")
                                         | rejectattr("entity", "eq", []) %}
                                     {% set slot = btn.component | replace("button", "") | int - 1 %}
-                                    {% set ns.mask = ns.mask + (2 ** slot) %}
+                                    {% set pns.mask = pns.mask + (2 ** slot) %}
                                   {% endfor %}
-                                  is_{{ repeat.item }}={{ ns.mask }}
-                              continue_on_error: true
-                            - *delay_boot
+                                  {% set ns.items = ns.items + ["is_" ~ page ~ "=" ~ pns.mask] %}
+                                {% endfor %}
+                                {{ ns.items }}
+                          - action: 'esphome.{{ action_prefix }}_component_text_list'
+                            data:
+                              page: mem
+                              id: command
+                              txt_list: '{{ txt_list_payload }}'
+                            continue_on_error: true
+                          - *delay_boot
 
                       - alias: Disable empty entity pages
-                        repeat:
-                          for_each: '{{ pages.entitypages }}'
-                          sequence:
-                            - action: 'esphome.{{ action_prefix }}_command'
-                              data:
-                                cmd: >
-                                  is_{{ repeat.item }}={{
-                                    1
-                                    if
-                                      entities_pages.entities
-                                      | selectattr("page", "defined")
-                                      | selectattr("page", "eq", repeat.item)
-                                      | selectattr("entity", "defined")
-                                      | rejectattr("entity", "eq", [])
-                                      | list
-                                      | count > 0
-                                    else 0
-                                  }}
-                              continue_on_error: true
-                            - *delay_boot
+                        sequence:
+                          - variables:
+                              txt_list_payload: >
+                                {% set ns = namespace(items=[]) %}
+                                {% for page in pages.entitypages %}
+                                  {% set has_entities = entities_pages.entities
+                                        | selectattr("page", "defined")
+                                        | selectattr("page", "eq", page)
+                                        | selectattr("entity", "defined")
+                                        | rejectattr("entity", "eq", [])
+                                        | list
+                                        | count > 0 %}
+                                  {% set ns.items = ns.items + ["is_" ~ page ~ "=" ~ (1 if has_entities else 0)] %}
+                                {% endfor %}
+                                {{ ns.items }}
+                          - action: 'esphome.{{ action_prefix }}_component_text_list'
+                            data:
+                              page: mem
+                              id: command
+                              txt_list: '{{ txt_list_payload }}'
+                            continue_on_error: true
+                          - *delay_boot
 
                       - alias: Entity pages button visibility
                         action: 'esphome.{{ action_prefix }}_component_val'
@@ -7762,43 +7756,34 @@ actions:
                               entity_id_valid: '{{ entity_id is defined and entity_id is string and entity_id.split(".") | count == 2 }}'
                               entity_domain: '{{ entity_id.split(".")[0] if entity_id_valid }}'
                               supported_features: '{{ state_attr(entity_id, "supported_features") | int(0) }}'
-                              supported_color_modes_temp: '{{ state_attr(entity_id, "supported_color_modes") | default([]) }}'
-                              supported_color_modes: '{{ supported_color_modes_temp if supported_color_modes_temp else [] }}'
-                              color_mode_brightness: >
+                              supported_color_modes: '{{ state_attr(entity_id, "supported_color_modes") | default([]) }}'
+                              color_mode_brightness: >-
                                 {{
                                   entity_domain == "light" and
                                   (
                                     supported_features | bitwise_and(1) > 0 or
-                                    enum.ColorMode.BRIGHTNESS in supported_color_modes or
-                                    "brightness" in supported_color_modes or
+                                    supported_color_modes | select("in", ["brightness", "color_temp", "hs", "xy",
+                                                                          "rgb", "rgbw", "rgbww", "white"])
+                                                          | list | length > 0 or
                                     state_attr(entity_id, "brightness") | int(-1) >= 0
                                   )
                                 }}
-                              color_mode_color: >
+                              color_mode_color: >-
                                 {{
                                   entity_domain == "light" and
                                   (
                                     supported_features | bitwise_and(16) > 0 or
-                                    enum.ColorMode.HS in supported_color_modes or
-                                    enum.ColorMode.XY in supported_color_modes or
-                                    enum.ColorMode.RGB in supported_color_modes or
-                                    enum.ColorMode.RGBW in supported_color_modes or
-                                    enum.ColorMode.RGBWW in supported_color_modes or
-                                    "hs" in supported_color_modes or
-                                    "xy" in supported_color_modes or
-                                    "rgb" in supported_color_modes or
-                                    "rgbw" in supported_color_modes or
-                                    "rgbww" in supported_color_modes or
-                                    state_attr(entity_id, "rgb_color") | default("unknown") is list
+                                    supported_color_modes | select("in", ["hs", "xy", "rgb", "rgbw", "rgbww"])
+                                                          | list | length > 0
                                   )
                                 }}
-                              color_mode_color_temp: >
+                              color_mode_color_temp: >-
                                 {{
                                   entity_domain == "light" and
                                   (
                                     supported_features | bitwise_and(2) > 0 or
-                                    enum.ColorMode.COLOR_TEMP in supported_color_modes or
-                                    "color_temp" in supported_color_modes or
+                                    supported_color_modes | select("in", ["color_temp", "rgbww"])
+                                                          | list | length > 0 or
                                     state_attr(entity_id, "color_temp_kelvin") | int(-1) >= 0
                                   )
                                 }}
@@ -7844,39 +7829,6 @@ actions:
                                       else ((min_color_temp_kelvin+max_color_temp_kelvin)/2) | int(4268)
                                     }}
                               - condition: '{{ is_number(curr_color_temp) }}'
-                              - action: 'esphome.{{ action_prefix }}_component_text_list'
-                                data:
-                                  page: light
-                                  id: temp_value
-                                  txt_list:
-                                    - '{{ curr_color_temp }}K'
-                                continue_on_error: true
-                              - *delay_default
-                              - action: 'esphome.{{ action_prefix }}_component_text_list'
-                                data:
-                                  page: light
-                                  id: temp_value_2
-                                  txt_list:
-                                    - '{{ curr_color_temp }}K'
-                                continue_on_error: true
-                              - *delay_default
-                              - action: 'esphome.{{ action_prefix }}_component_val'
-                                data:
-                                  page: light
-                                  id: tempslider
-                                  val: '{{ (min_color_temp_kelvin + max_color_temp_kelvin - curr_color_temp) | int }}'
-                                continue_on_error: true
-                              - *delay_default
-                              - action: 'esphome.{{ action_prefix }}_command'
-                                data:
-                                  cmd: tempslider.minval={{ min_color_temp_kelvin }}
-                                continue_on_error: true
-                              - *delay_default
-                              - action: 'esphome.{{ action_prefix }}_command'
-                                data:
-                                  cmd: tempslider.maxval={{ max_color_temp_kelvin }}
-                                continue_on_error: true
-                              - *delay_default
                               - action: 'esphome.{{ action_prefix }}_component_color'
                                 data:
                                   page: light
@@ -7884,11 +7836,19 @@ actions:
                                   color: [192, 192, 192]
                                 continue_on_error: true
                               - *delay_default
-                              - action: 'esphome.{{ action_prefix }}_components_visibility'
+                              - action: 'esphome.{{ action_prefix }}_component_text_list'
                                 data:
-                                  page: light
-                                  ids: ["temp_button", "temp_value_2", "temp_touch"]
-                                  visible: true
+                                  page: mem
+                                  id: command
+                                  txt_list:
+                                    - 'temp_value.txt="{{ curr_color_temp }}K"'
+                                    - 'temp_value_2.txt="{{ curr_color_temp }}K"'
+                                    - 'tempslider.val={{ (min_color_temp_kelvin + max_color_temp_kelvin - curr_color_temp) | int }}'
+                                    - 'tempslider.minval={{ min_color_temp_kelvin }}'
+                                    - 'tempslider.maxval={{ max_color_temp_kelvin }}'
+                                    - 'vis temp_button,1'
+                                    - 'vis temp_value_2,1'
+                                    - 'vis temp_touch,1'
                                 continue_on_error: true
                               - *delay_default
 
@@ -7901,6 +7861,7 @@ actions:
                                   ids: ["color_button", "color_touch"]
                                   visible: true
                                 continue_on_error: true
+                              - *delay_default
 
                           ##### LIGHT Effects #####
                           - alias: Light effects
@@ -8172,24 +8133,14 @@ actions:
                                 continue_on_error: true
                               - *delay_default
                           - condition: '{{ fan.steps > 0 and fan.supported_features | bitwise_and(1) > 0 }}'  # Set speed
-                          - action: 'esphome.{{ action_prefix }}_component_val'
-                            data:
-                              page: fan
-                              id: fanslider
-                              val: '{{ ((fan.percentage / 100) * fan.steps) | round(0) | int(0) }}'
-                            continue_on_error: true
-                          - *delay_default
-                          - action: 'esphome.{{ action_prefix }}_command'
-                            data:
-                              cmd: fanslider.maxval={{ fan.steps }}
-                            continue_on_error: true
-                          - *delay_default
                           - action: 'esphome.{{ action_prefix }}_component_text_list'
                             data:
-                              page: fan
-                              id: fan_value
+                              page: mem
+                              id: command
                               txt_list:
-                                - '{{ fan.percentage ~ units_separator ~ "%" }}'
+                                - 'fan_value.txt="{{ fan.percentage ~ units_separator }}%"'
+                                - 'fanslider.val={{ ((fan.percentage / 100) * fan.steps) | round(0) | int(0) }}'
+                                - 'fanslider.maxval={{ fan.steps }}'
                             continue_on_error: true
                           - *delay_default
                           - action: 'esphome.{{ action_prefix }}_component_color'
@@ -8589,29 +8540,14 @@ actions:
                                             }}
                                           icon_color: '{{ repeat.item.icon_color_rgb }}'
                                     - *variable_entity
-                                    ### ICON Font Color ###
-                                    - action: 'esphome.{{ action_prefix }}_component_color'
-                                      data:
-                                        page: climate
-                                        id: '{{ repeat.item.component }}'
-                                        color: '{{ entity.icon_color }}'
-                                      continue_on_error: true
-                                    - *delay_default
-                                    ### ICON Font ###
                                     - action: 'esphome.{{ action_prefix }}_component_text_list'
                                       data:
-                                        page: climate
-                                        id: '{{ repeat.item.component }}'
+                                        page: mem
+                                        id: command
                                         txt_list:
-                                          - '{{ entity.icon }}'
-                                      continue_on_error: true
-                                    - *delay_default
-                                    ### Enable button click ###
-                                    - action: 'esphome.{{ action_prefix }}_components_visibility'
-                                      data:
-                                        page: climate
-                                        ids: '{{ [ repeat.item.component ] }}'
-                                        visible: true
+                                          - '{{ repeat.item.component }}.txt="{{ entity.icon }}"'             # Icon
+                                          - '{{ repeat.item.component }}.pco={{ entity.icon_color_rgb565 }}'  # Color
+                                          - 'vis {{ repeat.item.component }},1'                               # Visibility
                                       continue_on_error: true
                                     - *delay_default
 
@@ -8645,9 +8581,12 @@ actions:
                               val: '{{ -1 if is_state(entity_id, "unavailable") else 0 }}'
                             continue_on_error: true
                           - *delay_default
-                          - action: 'esphome.{{ action_prefix }}_command'
+                          - action: 'esphome.{{ action_prefix }}_component_text_list'
                             data:
-                              cmd: 'render.en=1'
+                              page: mem
+                              id: command
+                              txt_list:
+                                - 'render.en=1'
                             continue_on_error: true
 
                       - alias: Switch page
@@ -8680,9 +8619,12 @@ actions:
                                 }}
                             continue_on_error: true
                           - *delay_default
-                          - action: 'esphome.{{ action_prefix }}_command'
+                          - action: 'esphome.{{ action_prefix }}_component_text_list'
                             data:
-                              cmd: 'render.en=1'
+                              page: mem
+                              id: command
+                              txt_list:
+                                - 'render.en=1'
                             continue_on_error: true
 
                       - alias: Water Heater page
@@ -8878,31 +8820,15 @@ actions:
                                     {{ (((10 * target_temp) - temp_offset) / temp_step) | round(0) | int if is_target_temperature else 0 }}
 
                               ##### Slider configuration #####
-                              - action: 'esphome.{{ action_prefix }}_command'
-                                data:
-                                  cmd: 'slider.maxval={{ total_steps }}'
-                                continue_on_error: true
-                              - *delay_default
-                              - action: 'esphome.{{ action_prefix }}_component_val'
-                                data:
-                                  page: water_heater
-                                  id: temp_offset
-                                  val: '{{ temp_offset }}'
-                                continue_on_error: true
-                              - *delay_default
-                              - action: 'esphome.{{ action_prefix }}_component_val'
-                                data:
-                                  page: water_heater
-                                  id: temp_step
-                                  val: '{{ temp_step }}'
-                                continue_on_error: true
-                              - *delay_default
                               - action: 'esphome.{{ action_prefix }}_component_text_list'
                                 data:
-                                  page: water_heater
-                                  id: temp_unit
+                                  page: mem
+                                  id: command
                                   txt_list:
-                                    - '{{ temp_unit }}'
+                                    - 'temp_unit.txt="{{ temp_unit }}"'
+                                    - 'slider.maxval={{ total_steps }}'
+                                    - 'temp_offset.val={{ temp_offset }}'
+                                    - 'temp_step.val={{ temp_step }}'
                                 continue_on_error: true
                               - *delay_default
                               - action: 'esphome.{{ action_prefix }}_component_text_list'
@@ -8972,34 +8898,30 @@ actions:
                                   for_each: '{{ page_water_heater.buttons.operation_mode }}'
                                   sequence:
                                     - condition: '{{ repeat.item.mode in operation_list }}'
-                                    ### ICON Font Color ###
-                                    - action: 'esphome.{{ action_prefix }}_component_color'
-                                      data:
-                                        page: water_heater
-                                        id: '{{ repeat.item.component }}'
-                                        color: >
+                                    - variables:
+                                        color_rgb888: >-
                                           {{
                                             nextion.color[repeat.item.color]
                                             if operation_mode == repeat.item.mode
                                             else nextion.color.disabled
                                           }}
-                                      continue_on_error: true
-                                    - *delay_default
-                                    ### ICON Font ###
+                                        color_rgb565: >-
+                                          {{
+                                            int(
+                                                  ((color_rgb888[0] //(2**3)) *(2**11)) +
+                                                  ((color_rgb888[1] //(2**2)) *(2**5)) +
+                                                  ((color_rgb888[2] //(2**3)))
+                                                )
+                                          }}
+
                                     - action: 'esphome.{{ action_prefix }}_component_text_list'
                                       data:
-                                        page: water_heater
-                                        id: '{{ repeat.item.component }}'
+                                        page: mem
+                                        id: command
                                         txt_list:
-                                          - '{{ all_icons[repeat.item.icon] }}'
-                                      continue_on_error: true
-                                    - *delay_default
-                                    ### Enable button click ###
-                                    - action: 'esphome.{{ action_prefix }}_components_visibility'
-                                      data:
-                                        page: water_heater
-                                        ids: '{{ [ repeat.item.component ] }}'
-                                        visible: true
+                                          - '{{ repeat.item.component }}.txt="{{ all_icons[repeat.item.icon] }}"' # Icon
+                                          - '{{ repeat.item.component }}.pco={{ color_rgb565 }}'                  # Color
+                                          - 'vis {{ repeat.item.component }},1'                                   # Visibility
                                       continue_on_error: true
                                     - *delay_default
 
@@ -9058,18 +8980,16 @@ actions:
                                   then:
                                     - action: 'esphome.{{ action_prefix }}_component_text_list'
                                       data:
-                                        page: '{{ repeat.item.page }}'
-                                        id: '{{ repeat.item.component }}_icon'
+                                        page: mem
+                                        id: command
                                         txt_list:
-                                          - '{{ entity.icon if entitypages_show_entities_icons else "" }}'
-                                      continue_on_error: true
-                                    - *delay_default
-                                    - action: 'esphome.{{ action_prefix }}_component_text_list'
-                                      data:
-                                        page: '{{ repeat.item.page }}'
-                                        id: '{{ repeat.item.component }}_label'
-                                        txt_list:
-                                          - '{{ entity.name }}'
+                                          - >-
+                                            {% if entitypages_show_entities_icons %}
+                                              {{ repeat.item.component }}_icon.txt="{{ entity.icon }}"
+                                            {% else %}
+                                              {{ repeat.item.component }}_icon.txt=""
+                                            {% endif %}
+                                          - '{{ repeat.item.component }}_label.txt="{{ entity.name }}"'
                                       continue_on_error: true
                                     - *delay_default
                                 - alias: Entities pages - Values (with icons)
@@ -9620,22 +9540,13 @@ actions:
                             sequence:
                               - variables:
                                   page_icon: '{{ pages_utilities.title.icon.split("mdi:")[1] if pages_utilities.title.icon is string and pages_utilities.title.icon.split("mdi:") | count == 2 }}'
-
                               - action: 'esphome.{{ action_prefix }}_component_text_list'
                                 data:
-                                  page: utilities
-                                  id: title_icon
+                                  page: mem
+                                  id: command
                                   txt_list:
-                                    - '{{ all_icons[page_icon] if page_icon in all_icons else all_icons.gauge }}'
-                                continue_on_error: true
-                              - *delay_default
-
-                              - action: 'esphome.{{ action_prefix }}_component_text_list'
-                                data:
-                                  page: utilities
-                                  id: title
-                                  txt_list:
-                                    - '{{ pages_utilities.title.label }}'
+                                    - 'title_icon.txt="{{ all_icons[page_icon] if page_icon in all_icons else all_icons.gauge }}"'
+                                    - 'title.txt="{{ pages_utilities.title.label }}"'
                                 continue_on_error: true
                               - *delay_default
 
@@ -9646,6 +9557,9 @@ actions:
                             repeat:
                               for_each: '{{ pages_utilities.groups | list }}'
                               sequence: &refresh_page_utilities_group
+                                - &variable_rgb565_from_repeat_item_color
+                                  variables:
+                                    rgb565: '{{ int(((repeat.item.color[0] //(2**3)) *(2**11))+((repeat.item.color[1] //(2**2)) *(2**5))+(repeat.item.color[2] //(2**3))) }}'
                                 - variables:
                                     utilities_constructor: '{{ utilities_constructor_init is defined and utilities_constructor_init }}'
                                     icon_enabled: >
@@ -9694,24 +9608,12 @@ actions:
                                   then:
                                     - action: 'esphome.{{ action_prefix }}_component_text_list'
                                       data:
-                                        page: utilities
-                                        id: '{{ repeat.item.name }}_label'
+                                        page: mem
+                                        id: command
                                         txt_list:
-                                          - '{{ repeat.item.label }}'
-                                      continue_on_error: true
-                                    - *delay_default
-                                    - action: 'esphome.{{ action_prefix }}_component_color'
-                                      data:
-                                        page: utilities
-                                        id: '{{ repeat.item.name }}_label'
-                                        color: '{{ repeat.item.color }}'
-                                      continue_on_error: true
-                                    - *delay_default
-                                    - action: 'esphome.{{ action_prefix }}_components_visibility'
-                                      data:
-                                        page: utilities
-                                        ids: '{{ [repeat.item.name ~ "_label"] }}'
-                                        visible: true
+                                          - '{{ repeat.item.name }}_label.txt="{{ repeat.item.label }}"'
+                                          - '{{ repeat.item.name }}_label.pco={{ rgb565 }}'
+                                          - 'vis {{ repeat.item.name }}_label,1'
                                       continue_on_error: true
                                     - *delay_default
 
@@ -9765,34 +9667,24 @@ actions:
                                       then:
                                         - if: '{{ value1_enabled }}'
                                           then:
-                                            - action: 'esphome.{{ action_prefix }}_component_color'
+                                            - action: 'esphome.{{ action_prefix }}_component_text_list'
                                               data:
-                                                page: utilities
-                                                id: '{{ repeat.item.name }}'
-                                                color: '{{ repeat.item.color }}'
-                                              continue_on_error: true
-                                            - *delay_default
-                                            - action: 'esphome.{{ action_prefix }}_components_visibility'
-                                              data:
-                                                page: utilities
-                                                ids: '{{ [repeat.item.name] }}'
-                                                visible: true
+                                                page: mem
+                                                id: command
+                                                txt_list:
+                                                  - '{{ repeat.item.name }}.pco={{ rgb565 }}'
+                                                  - 'vis {{ repeat.item.name }},1'
                                               continue_on_error: true
                                             - *delay_default
                                         - if: '{{ value2_enabled }}'
                                           then:
-                                            - action: 'esphome.{{ action_prefix }}_component_color'
+                                            - action: 'esphome.{{ action_prefix }}_component_text_list'
                                               data:
-                                                page: utilities
-                                                id: '{{ repeat.item.name }}b'
-                                                color: '{{ repeat.item.color }}'
-                                              continue_on_error: true
-                                            - *delay_default
-                                            - action: 'esphome.{{ action_prefix }}_components_visibility'
-                                              data:
-                                                page: utilities
-                                                ids: '{{ [repeat.item.name ~ "b"] }}'
-                                                visible: true
+                                                page: mem
+                                                id: command
+                                                txt_list:
+                                                  - '{{ repeat.item.name }}b.pco={{ rgb565 }}'
+                                                  - 'vis {{ repeat.item.name }}b,1'
                                               continue_on_error: true
                                             - *delay_default
                                 - alias: Utilities - Line
@@ -9801,30 +9693,18 @@ actions:
                                     - '{{ repeat.item.name not in ["grid"] }}'
                                     - '{{ utilities_constructor }}'
                                   then:
-                                    - variables:
-                                        rgb565: '{{ int(((repeat.item.color[0] //(2**3)) *(2**11))+((repeat.item.color[1] //(2**2)) *(2**5))+(repeat.item.color[2] //(2**3))) }}'
-                                    - action: 'esphome.{{ action_prefix }}_command'
+                                    - action: 'esphome.{{ action_prefix }}_component_text_list'
                                       data:
-                                        cmd: '{{ repeat.item.name }}_line.bco={{ rgb565 }}'
-                                      continue_on_error: true
-                                    - *delay_default
-                                    - action: 'esphome.{{ action_prefix }}_command'
-                                      data:
-                                        cmd: '{{ repeat.item.name }}_line.bco1={{ rgb565 }}'
-                                      continue_on_error: true
-                                    - *delay_default
-                                    - if: '{{ pages_utilities.cursor.width != 255 }}'
-                                      then:
-                                        - action: 'esphome.{{ action_prefix }}_command'
-                                          data:
-                                            cmd: '{{ repeat.item.name }}_line.wid={{ pages_utilities.cursor.width }}'
-                                          continue_on_error: true
-                                        - *delay_default
-                                    - action: 'esphome.{{ action_prefix }}_components_visibility'
-                                      data:
-                                        page: utilities
-                                        ids: '{{ [repeat.item.name ~ "_line"] }}'
-                                        visible: true
+                                        page: mem
+                                        id: command
+                                        txt_list:
+                                          - '{{ repeat.item.name }}_line.bco={{ rgb565 }}'
+                                          - '{{ repeat.item.name }}_line.bco1={{ rgb565 }}'
+                                          - >-
+                                            {% if pages_utilities.cursor.width != 255 %}
+                                              {{ repeat.item.name }}_line.wid={{ pages_utilities.cursor.width }}
+                                            {% endif %}
+                                          - 'vis {{ repeat.item.name }}_line,1'
                                       continue_on_error: true
                                     - *delay_default
 
@@ -9975,6 +9855,17 @@ actions:
                                           - '{{ entity_domain in ["alarm_control_panel", "button", "climate", "cover",
                                                                   "fan", "input_boolean", "input_button", "input_select",
                                                                   "light", "media_player", "select", "switch", "water_heater"] }}'
+                                          - >-
+                                            {{
+                                              entity_domain != "light" or
+                                              (
+                                                state_attr(entity_id, "supported_color_modes")
+                                                | default([])
+                                                | select("in", ["brightness", "color_temp", "hs", "rgb", "rgbw", "rgbww", "xy", "white"])
+                                                | list
+                                                | length > 0
+                                              )
+                                            }}
                                         sequence:
                                           - *variable_entity
                                           - variables:
@@ -10122,6 +10013,17 @@ actions:
                                   - '{{ entity_domain in ["alarm_control_panel", "button", "climate", "cover", "fan",
                                                           "input_boolean", "input_button", "input_select", "light",
                                                           "media_player", "select", "switch", "water_heater"] }}'
+                                  - >-
+                                    {{
+                                      entity_domain != "light" or
+                                      (
+                                        state_attr(entity_id, "supported_color_modes")
+                                        | default([])
+                                        | select("in", ["brightness", "color_temp", "hs", "rgb", "rgbw", "rgbww", "xy", "white"])
+                                        | list
+                                        | length > 0
+                                      )
+                                    }}
                                 sequence:
                                   - variables:
                                       back_page: '{{ nspanel_event.page }}'

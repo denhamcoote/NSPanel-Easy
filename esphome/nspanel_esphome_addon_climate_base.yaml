@@ -57,7 +57,7 @@ climate:
       then:
         - lambda: |-
             ESP_LOGV("${TAG_ADDON_CLIMATE}", "Climate have a new state");
-            if (current_page_id == get_page_id("climate") and detailed_entity->state == "embedded_climate") {
+            if (current_page_id == get_page_id("climate") and climate_embedded_visible) {
               ESP_LOGV("${TAG_ADDON_CLIMATE}", "Update page 'climate'");
               page_climate->execute();
             }
@@ -119,22 +119,25 @@ script:
     then:
       - lambda: |-
           ESP_LOGV("${TAG_ADDON_CLIMATE}", "Add-on climate code starting");
-          if (!embedded) {
+          if (!climate_embedded_visible) {
             ESP_LOGV("${TAG_ADDON_CLIMATE}", "Not showing the embedded climate");
             return;
           }
 
           auto call = thermostat_embedded->make_call();
-          float temperature;
-
-          ESP_LOGV("${TAG_ADDON_CLIMATE}", "Inform display that is showing embedded climate");
-          disp1->set_component_value("climate.embedded", 1);
 
           if (key == "hvac_mode") {
             ESP_LOGV("${TAG_ADDON_CLIMATE}", "Set 'hvac_mode' to '%s'", value.c_str());
             call.set_mode(value);
-          } else {
-            temperature = stof(value) / 10;
+          } else if (key == "temperature" || key == "target_temp_high" || key == "target_temp_low") {
+            auto parsed = parse_number<float>(value);
+            if (!parsed.has_value()) {
+              ESP_LOGW("${TAG_ADDON_CLIMATE}", "Cannot parse '%s' as number for key '%s'",
+                                                value.c_str(), key.c_str());
+              return;
+            }
+            const float temperature = parsed.value() / 10.0f;
+
             if (key == "temperature") {
               ESP_LOGV("${TAG_ADDON_CLIMATE}", "Set target temperature to %f${temp_units}", temperature);
               #if NSPANEL_EASY_HW_TEMPERATURE_IS_FAHRENHEIT
@@ -149,7 +152,7 @@ script:
               #else  // Celsius
               call.set_target_temperature_high(temperature);
               #endif  // NSPANEL_EASY_HW_TEMPERATURE_IS_FAHRENHEIT
-            } else if (key == "target_temp_low") {
+            } else {  // target_temp_low
               ESP_LOGV("${TAG_ADDON_CLIMATE}", "Set target temperature low to %f${temp_units}", temperature);
               #if NSPANEL_EASY_HW_TEMPERATURE_IS_FAHRENHEIT
               call.set_target_temperature_low(roundf(fahrenheit_to_celsius(temperature) * 1000.0f) / 1000.0f);
@@ -157,6 +160,8 @@ script:
               call.set_target_temperature_low(temperature);
               #endif  // NSPANEL_EASY_HW_TEMPERATURE_IS_FAHRENHEIT
             }
+          } else {
+            ESP_LOGW("${TAG_ADDON_CLIMATE}", "Unhandled climate key '%s' (value: '%s')", key.c_str(), value.c_str());
           }
 
           ESP_LOGV("${TAG_ADDON_CLIMATE}", "Perform action");
@@ -203,13 +208,9 @@ script:
   - id: !extend page_climate
     then:
       - lambda: |-
+          if (!climate_embedded_visible) return;
           if (current_page_id != get_page_id("climate")) return;
-          if (not id(is_embedded_thermostat)) return;
-          if (climate_main_from_home and !api_server->is_connected()) {
-            detailed_entity->publish_state("embedded_climate");  // Fallback to embedded climate when API is out
-          } else if (detailed_entity->state != "embedded_climate") {
-            return;
-          }
+
           ESP_LOGV("${TAG_ADDON_CLIMATE}", "Construct climate page with embedded climate");
 
           // Get climate traits
@@ -441,9 +442,16 @@ script:
           }
 
           if (current_page_id != get_page_id("climate")) return;
-          if (detailed_entity->state != "embedded_climate") return;
+          if (!climate_embedded_visible) return;
 
           // Apply the icon and color to the target icon on climate page
           disp1->set_component_text("target_icon", icon);
           disp1->set_component_font_color("target_icon", static_cast<uint16_t>(color));
+
+text_sensor:
+  - id: !extend detailed_entity  # Defined by hw_display
+    on_raw_value:
+      then:
+        - lambda: |-
+            climate_embedded_visible = (x == "${CLIMATE_EMBEDDED_SENTINEL}");
 ...
