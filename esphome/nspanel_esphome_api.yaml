@@ -241,7 +241,8 @@ script:
           disp1->send_command_printf("%s.%s.pco=%" PRIu16, page.c_str(), component.c_str(), color);
 
   - id: action_component_text
-    mode: single
+    mode: queued
+    max_runs: 25
     parameters:
       page: string       # Send `mem` for a memory var
       component: string  # Identifier of the component. Ensure it matches the component's ID in your display layout.
@@ -281,17 +282,24 @@ script:
           ESP_LOGV("${TAG_API}", "  page:          '%s'", page.c_str());
           ESP_LOGV("${TAG_API}", "  component:     '%s'", component.c_str());
           ESP_LOGV("${TAG_API}", "  txt_list size: %zu", txt_list.size());
-          // Take last element (final state wins), reuse singular script which
-          // handles Nextion dispatch and whose !extend chain handles mem namespaces.
+
+          // For mem/command: every element is a separate Nextion command and all must
+          // execute in order. For everything else: only the final element is observable
+          // (intermediate writes to the same .txt attribute would be overwritten), so
+          // take the last element to avoid wasted UART traffic.
+          if (page == "mem" && component == "command") {
+            for (const auto& cmd : txt_list) {
+              if (cmd.empty()) continue;
+              action_component_text->execute(page, component, cmd);
+            }
+            return;
+          }
+
           std::string txt_str = txt_list.back();
           if      (txt_str == "${SENTINEL_UNAVAILABLE}") txt_str = "${LOCALIZATION[LANG].unavailable}";
           else if (txt_str == "${SENTINEL_UNKNOWN}")     txt_str = "${LOCALIZATION[LANG].unknown}";
           else if (txt_str == "${SENTINEL_NO_NAME}")     txt_str = "${LOCALIZATION[LANG].no_name}";
-          action_component_text->execute(
-            page.c_str(),
-            component.c_str(),
-            txt_str.c_str()
-          );
+          action_component_text->execute(page, component, txt_str);
 
   - id: action_component_val
     mode: single
