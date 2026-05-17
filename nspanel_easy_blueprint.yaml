@@ -6127,11 +6127,14 @@ actions:
 
             icon_color: '{{ entity_icon_color }}'
             icon_color_rgb565: >-
-              {{ int(
+              {{
+                int(
                       ((entity_icon_color[0] //(2**3)) *(2**11)) +
                       ((entity_icon_color[1] //(2**2)) *(2**5)) +
                       ((entity_icon_color[2] //(2**3)))
                     )
+                if entity_icon_color is list and entity_icon_color | count == 3
+                else 0
               }}
 
   - alias: Main choices
@@ -9558,9 +9561,11 @@ actions:
                               for_each: '{{ pages_utilities.groups | list }}'
                               sequence: &refresh_page_utilities_group
                                 - &variable_rgb565_from_repeat_item_color
+                                  alias: Var rgb565
                                   variables:
                                     rgb565: '{{ int(((repeat.item.color[0] //(2**3)) *(2**11))+((repeat.item.color[1] //(2**2)) *(2**5))+(repeat.item.color[2] //(2**3))) }}'
-                                - variables:
+                                - alias: Variables
+                                  variables:
                                     utilities_constructor: '{{ utilities_constructor_init is defined and utilities_constructor_init }}'
                                     icon_enabled: >
                                       {{
@@ -9616,8 +9621,8 @@ actions:
                                           - 'vis {{ repeat.item.name }}_label,1'
                                       continue_on_error: true
                                     - *delay_default
-
-                                - variables:
+                                - alias: Calc lines
+                                  variables:
                                     line_ref_state: >
                                       {{
                                         states(repeat.item.line_ref) | float(0)
