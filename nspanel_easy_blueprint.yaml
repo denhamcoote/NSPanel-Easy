@@ -8173,6 +8173,13 @@ actions:
                           - *get_entity_id_from_event_or_trigger
                           - variables:
                               wait_completed: false
+                              # Cross-iteration state for cheap-refresh logic. last_signature
+                              # is a content fingerprint of every field except media_position
+                              # (which is resynced separately and very cheaply). last_full_refresh
+                              # is the timestamp of the most recent full payload send, used by
+                              # the 60s safety net.
+                              last_signature: ''
+                              last_full_refresh: 0
                           - *variable_entity
                           - *entity_details_title_with_icon
                           - alias: Refresh page in a loop
@@ -8210,13 +8217,9 @@ actions:
                                           if (state_attr(entity_id, "mass_player_type") | default("")) == "group"
                                           else state_attr(entity_id, "supported_features") | int(0)
                                         }}
-                                - action: 'esphome.{{ action_prefix }}_page_media_player'
-                                  data:
-                                    entity: '{{ entity_id }}'
-                                    state: '{{ media_player.state if media_player.state is string else "" }}'
-                                    is_volume_muted: '{{ media_player.is_volume_muted if media_player.is_volume_muted is boolean else false }}'
-                                    volume_level: '{{ media_player.volume_level }}'
-                                    media_title: >
+                                # Sanitize title/artist once for both the signature and the payload.
+                                - variables:
+                                    media_title_clean: >
                                       {{
                                         media_player.media_title
                                         if
@@ -8226,7 +8229,7 @@ actions:
                                           media_player.media_title not in enum.states.unknown
                                         else ""
                                       }}
-                                    media_artist: >
+                                    media_artist_clean: >
                                       {{
                                         media_player.media_artist
                                         if
@@ -8236,8 +8239,6 @@ actions:
                                           media_player.media_artist not in enum.states.unknown
                                         else ""
                                       }}
-                                    media_duration: '{{ media_player.media_duration }}'
-                                    media_position: '{{ media_player.media_position }}'
                                     media_position_delta: >
                                       {{
                                         (((now() | as_timestamp) - (media_player.media_position_updated_at | as_timestamp | default(now() | as_timestamp, true))) | round(0) | int)
@@ -8246,8 +8247,65 @@ actions:
                                           media_player.media_position_updated_at not in [None, none, "", "unknown", "unavailable", false, 0]
                                         else 0
                                       }}
-                                    supported_features: '{{ media_player.supported_features }}'
-                                  continue_on_error: true
+                                    # Content fingerprint covering everything the ESPHome lambda
+                                    # conditions UI writes on, EXCEPT media_position (resynced
+                                    # cheaply between full refreshes). Order is fixed; '|' is a
+                                    # safe separator since none of the fields can contain it
+                                    # except free-text title/artist — and even if they do, a
+                                    # collision only causes a missed cheap-path optimization,
+                                    # not incorrect UI state (the 60s safety net catches it).
+                                    current_signature: >-
+                                      {{
+                                        (media_player.state | string) ~ '|' ~
+                                        (media_player.is_volume_muted | string) ~ '|' ~
+                                        (media_player.volume_level | string) ~ '|' ~
+                                        media_title_clean ~ '|' ~
+                                        media_artist_clean ~ '|' ~
+                                        (media_player.media_duration | string) ~ '|' ~
+                                        (media_player.supported_features | string)
+                                      }}
+                                    now_ts: '{{ now() | as_timestamp | int }}'
+                                    needs_full_refresh: >-
+                                      {{
+                                        current_signature != last_signature or
+                                        (now_ts - last_full_refresh) >= 60
+                                      }}
+                                # Branch: full refresh when content changed or safety-net
+                                # cadence elapsed; otherwise cheap component_val resync of
+                                # prg_current only (skipped entirely when nothing to track).
+                                # NOTE: prg_current clamp here MUST mirror the C++ clamp in
+                                # nspanel_esphome_page_media_player.yaml (capped_pos logic).
+                                # If you change one, change the other.
+                                - choose:
+                                    - conditions: '{{ needs_full_refresh }}'
+                                      sequence:
+                                        - action: 'esphome.{{ action_prefix }}_page_media_player'
+                                          data:
+                                            entity: '{{ entity_id }}'
+                                            state: '{{ media_player.state if media_player.state is string else "" }}'
+                                            is_volume_muted: '{{ media_player.is_volume_muted if media_player.is_volume_muted is boolean else false }}'
+                                            volume_level: '{{ media_player.volume_level }}'
+                                            media_title: '{{ media_title_clean }}'
+                                            media_artist: '{{ media_artist_clean }}'
+                                            media_duration: '{{ media_player.media_duration }}'
+                                            media_position: '{{ media_player.media_position }}'
+                                            media_position_delta: '{{ media_position_delta }}'
+                                            supported_features: '{{ media_player.supported_features }}'
+                                          continue_on_error: true
+                                        - variables:
+                                            last_signature: '{{ current_signature }}'
+                                            last_full_refresh: '{{ now_ts }}'
+                                    - conditions: '{{ media_player.media_duration > 0 and media_player.state == "playing" }}'
+                                      sequence:
+                                        - action: 'esphome.{{ action_prefix }}_component_val'
+                                          data:
+                                            page: media_player
+                                            id: prg_current
+                                            val: >-
+                                              {%- set pos = [[media_player.media_position, 0] | max, media_player.media_duration] | min -%}
+                                              {%- set delta = [media_position_delta, 0] | max -%}
+                                              {{ pos + [delta, media_player.media_duration - pos] | min }}
+                                          continue_on_error: true
                                 - wait_template: '{{ states(currentpage) != pages.media_player }}'
                                   timeout:
                                     milliseconds: '{{ media_player_update_interval }}'
