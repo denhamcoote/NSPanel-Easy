@@ -596,8 +596,7 @@ For detailed descriptions of each feature and its corresponding bitmask value, r
 - `temp_offset` (int): Offset applied to the temperature reading for calibration.
 - `climate_icon` (string): Icon representing the current climate status,
 selected from [HASwitchPlate Material Design Icons](https://htmlpreview.github.io/?https://github.com/jobr99/Generate-HASP-Fonts/blob/master/cheatsheet.html).
-- `embedded_climate` (bool): Flag indicating if climate controls are embedded within the interface.
-- `entity` (string): Entity ID for the climate device.
+- `entity` (string): Entity ID for the climate device. Use the special value "embedded_climate" to control the panel's built-in climate add-on.
 
 **Home Assistant Example:**
 
@@ -613,7 +612,6 @@ data:
   total_steps: 56            # Calculated based on the device's temperature range and step.
   temp_offset: 70            # Applied as a calibration offset.
   climate_icon: "\uE392"     # mdi:thermostat
-  embedded_climate: true
   entity: "climate.living_room"
 ```
 

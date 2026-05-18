@@ -242,8 +242,7 @@ script:
 
           // Calculate static values
           ESP_LOGV("${TAG_ADDON_CLIMATE}", "Calculated static values:");
-          static uint16_t total_steps;
-          total_steps = static_cast<uint16_t>(std::round((temp_max - temp_offset) / temp_step));
+          const uint16_t total_steps = static_cast<uint16_t>(std::round((temp_max - temp_offset) / temp_step));
           ESP_LOGV("${TAG_ADDON_CLIMATE}", "  temp_step: %f${temp_units}", temp_step);
           ESP_LOGV("${TAG_ADDON_CLIMATE}", "  temp_offset: %f${temp_units}", temp_offset);
           ESP_LOGV("${TAG_ADDON_CLIMATE}", "  total_steps: %i", total_steps);
@@ -282,28 +281,27 @@ script:
           // Set vars for set_climate
           ESP_LOGV("${TAG_ADDON_CLIMATE}", "Set vars for set_climate");
 
-          set_climate_current_temp = temp_current;
-          set_climate_supported_features = 0;
-          #ifdef NSPANEL_EASY_ADDON_CLIMATE_DUAL
-          set_climate_target_temp =      -999;
-          set_climate_target_temp_high = temp_target_high;
-          set_climate_target_temp_low =  temp_target_low;
-          #else
-          set_climate_target_temp =      temp_target;
-          set_climate_target_temp_high = -999;
-          set_climate_target_temp_low =  -999;
-          #endif  // NSPANEL_EASY_ADDON_CLIMATE_DUAL
-          set_climate_temp_step =        int(roundf(temp_step*10));
-          set_climate_total_steps =      total_steps;
-          set_climate_temp_offset =      int(roundf(temp_offset*10));
-          set_climate_climate_icon =     "";
-          set_climate_embedded_climate = true;
-
           if (current_page_id != get_page_id("climate")) return;
 
           // Execute set_climate
           ESP_LOGV("${TAG_ADDON_CLIMATE}", "Call set_climate");
-          set_climate->execute();
+          set_climate->execute(
+            temp_current,                 // current_temp
+            0,                            // supported_features
+            #ifdef NSPANEL_EASY_ADDON_CLIMATE_DUAL
+            -999.0f,                      // temp_target
+            temp_target_high,             // temp_target_high
+            temp_target_low,              // temp_target_low
+            #else
+            temp_target,                  // temp_target
+            -999.0f,                      // temp_target_high
+            -999.0f,                      // temp_target_low
+            #endif  // NSPANEL_EASY_ADDON_CLIMATE_DUAL
+            int(roundf(temp_step*10)),    // temp_step
+            total_steps,                  // total_steps
+            int(roundf(temp_offset*10)),  // temp_offset
+            ""                            // climate_icon
+          );
 
           // Update target temp icon
           ESP_LOGV("${TAG_ADDON_CLIMATE}", "Call update_climate_chip");
