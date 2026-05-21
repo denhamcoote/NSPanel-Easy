@@ -7746,6 +7746,7 @@ actions:
                             variables:
                               entity_id_valid: '{{ entity_id is defined and entity_id is string and entity_id.split(".") | count == 2 }}'
                               entity_domain: '{{ entity_id.split(".")[0] if entity_id_valid }}'
+                              entity_domain_is_light: '{{ entity_domain == "light" }}'
                               supported_features: '{{ state_attr(entity_id, "supported_features") | int(0) }}'
                               supported_color_modes: >-
                                 {{
@@ -7756,7 +7757,7 @@ actions:
                                 }}
                               color_mode_brightness: >-
                                 {{
-                                  entity_domain == "light" and
+                                  entity_domain_is_light and
                                   (
                                     supported_features | bitwise_and(1) > 0 or
                                     supported_color_modes | select("in", ["brightness", "color_temp", "hs", "xy",
@@ -7767,16 +7768,16 @@ actions:
                                 }}
                               color_mode_color: >-
                                 {{
-                                  entity_domain == "light" and
+                                  entity_domain_is_light and
                                   (
                                     supported_features | bitwise_and(16) > 0 or
                                     supported_color_modes | select("in", ["hs", "xy", "rgb", "rgbw", "rgbww"])
                                                           | list | length > 0
                                   )
                                 }}
-                              color_mode_color_temp: >-
+                              color_mode_temp: >-
                                 {{
-                                  entity_domain == "light" and
+                                  entity_domain_is_light and
                                   (
                                     supported_features | bitwise_and(2) > 0 or
                                     supported_color_modes | select("in", ["color_temp", "rgbww"])
@@ -7784,23 +7785,54 @@ actions:
                                     state_attr(entity_id, "color_temp_kelvin") | int(-1) >= 0
                                   )
                                 }}
+                              color_mode_onoff: >-
+                                {{
+                                  entity_domain_is_light and
+                                  supported_color_modes | map("string") | list
+                                                        | select("in", ["onoff"])
+                                                        | list | length > 0
+                                }}
+
+                          ##### LIGHT Features mask (construction-only) #####
+                          # Bitmask: bit 0=brightness, bit 1=temp, bit 2=color
+                          - if: '{{ nspanel_event is defined and nspanel_event.type == "page_changed" }}'
+                            then:
+                              - variables:
+                                  light_features_mask: >-
+                                    {{
+                                      (1 if color_mode_brightness else 0) +
+                                      (2 if color_mode_temp       else 0) +
+                                      (4 if color_mode_color      else 0) +
+                                      (8 if color_mode_onoff      else 0)
+                                    }}
+                              - action: 'esphome.{{ action_prefix }}_component_text_list'
+                                data:
+                                  page: mem
+                                  id: command
+                                  txt_list:
+                                    - 'light_features_mask={{ light_features_mask }}'
+                                continue_on_error: true
+                              - *delay_default
+
                           ##### LIGHT State #####
-                          - variables:
-                              curr_brightness: '{{ (state_attr(entity_id, "brightness") | int(0) * 100 / 255) | round(0) }}'
-                          - action: 'esphome.{{ action_prefix }}_component_text_list'
-                            data:
-                              page: mem
-                              id: command
-                              txt_list:
-                                - 'lightslider.val={{ curr_brightness }}'
-                                - 'light_value.txt="{{ curr_brightness ~ units_separator }}%"'
-                                - 'light_value_2.txt="{{ curr_brightness ~ units_separator }}%"'
-                                - 'power_button.pco=50712'  # [192, 192, 192]
-                            continue_on_error: true
-                          - *delay_default
+                          - if: '{{ color_mode_brightness }}'
+                            then:
+                              - variables:
+                                  curr_brightness: '{{ (state_attr(entity_id, "brightness") | int(0) * 100 / 255) | round(0) }}'
+                              - action: 'esphome.{{ action_prefix }}_component_text_list'
+                                data:
+                                  page: mem
+                                  id: command
+                                  txt_list:
+                                    - 'lightslider.val={{ curr_brightness }}'
+                                    - 'light_value.txt="{{ curr_brightness ~ units_separator }}%"'
+                                    - 'light_value_2.txt="{{ curr_brightness ~ units_separator }}%"'
+                                    - 'power_button.pco=50712'  # [192, 192, 192]
+                                continue_on_error: true
+                              - *delay_default
 
                           ##### LIGHT Check Color_Temp Value is available when yes send some current Values #####
-                          - if: '{{ color_mode_color_temp }}'
+                          - if: '{{ color_mode_temp }}'
                             then:
                               - variables:
                                   curr_color_temp: '{{ state_attr(entity_id, "color_temp_kelvin") | int(-1) }}'
@@ -8565,18 +8597,11 @@ actions:
                                     ### ICON Font ###
                                     - action: 'esphome.{{ action_prefix }}_component_text_list'
                                       data:
-                                        page: climate
-                                        id: '{{ repeat.item.component }}'
+                                        page: cmd
+                                        id: command
                                         txt_list:
-                                          - '{{ all_icons[repeat.item.icon] }}'
-                                      continue_on_error: true
-                                    - *delay_default
-                                    ### Enable button click ###
-                                    - action: 'esphome.{{ action_prefix }}_components_visibility'
-                                      data:
-                                        page: climate
-                                        ids: '{{ [ repeat.item.component ] }}'
-                                        visible: true
+                                          - '{{ repeat.item.component }}.txt="{{ all_icons[repeat.item.icon] }}"'
+                                          - 'vis {{ repeat.item.component }},1'
                                       continue_on_error: true
                                     - *delay_default
 
@@ -9920,8 +9945,7 @@ actions:
                                               (
                                                 state_attr(entity_id, "supported_color_modes")
                                                 | default([], true)
-                                                | map(attribute='value')
-                                                | list
+                                                | map("string") | list
                                                 | select("in", ["brightness", "color_temp", "hs", "rgb", "rgbw", "rgbww", "xy", "white"])
                                                 | list
                                                 | length > 0
@@ -10085,8 +10109,7 @@ actions:
                                       (
                                         state_attr(entity_id, "supported_color_modes")
                                         | default([], true)
-                                        | map(attribute='value')
-                                        | list
+                                        | map("string") | list
                                         | select("in", ["brightness", "color_temp", "hs", "rgb", "rgbw", "rgbww", "xy", "white"])
                                         | list
                                         | length > 0

@@ -27,21 +27,19 @@ Page light
             vis sub_calc,0
             vis sub_hsv,0
             vis sub_send,0
-            // Brightness control components (shown by default)
-            vis light_button,1
-            vis lightslider,1
-            vis light_value,1
-            vis light_value_2,1
+            // All tab controls hidden by default; mask-driven logic below sets visibility
+            vis light_button,0
+            vis lightslider,0
+            vis light_value,0
+            vis light_value_2,0
             light_value.pco=color_pco_main
             light_value_2.pco=color_pco_main
-            // Temp control components (hidden by default)
             vis temp_button,0
             vis tempslider,0
             vis temp_value,0
             vis temp_value_2,0
             temp_value.pco=color_pco_main
             temp_value_2.pco=color_pco_main
-            // Color control components (hidden by default)
             vis color_button,0
             vis colorwheel,0
             // Effect button (hidden by default)
@@ -91,8 +89,47 @@ Page light
                 icon_state.picc=pic_background_main
                 page_label.picc=pic_background_main
             }
+            // Feature mask: bit0=brightness, bit1=temp, bit2=color, bit3=onoff
+            // Show tab buttons for supported features only; activate highest-priority tab
+            sys0=light_features_mask&1
+            sys1=0
+            if(sys0>0)
+            {
+                vis light_button,1
+                light_button.val=1
+                vis lightslider,1
+                vis light_value,1
+                vis light_value_2,1
+                sys1=1
+            }
+            sys0=light_features_mask&2
+            if(sys0>0)
+            {
+                vis temp_button,1
+                if(sys1==0)
+                {
+                    temp_button.val=1
+                    vis tempslider,1
+                    vis temp_value,1
+                    vis temp_value_2,1
+                    sys1=1
+                }
+            }
+            sys0=light_features_mask&4
+            if(sys0>0)
+            {
+                vis color_button,1
+                if(sys1==0)
+                {
+                    color_button.val=1
+                    vis colorwheel,1
+                }
+            }
             dim=brightness
             sendme
+        
+        Page Exit Event
+            light_features_mask=0
         
 Variable (int32) rgb565
     Attributes
