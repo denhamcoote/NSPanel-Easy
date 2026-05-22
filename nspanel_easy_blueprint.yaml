@@ -7744,6 +7744,7 @@ actions:
                           - &variables_light_modes
                             alias: variables_light_modes
                             variables:
+                              page_constructor: '{{ nspanel_event is defined and nspanel_event.type == "page_changed" }}'
                               entity_id_valid: '{{ entity_id is defined and entity_id is string and entity_id.split(".") | count == 2 }}'
                               entity_domain: '{{ entity_id.split(".")[0] if entity_id_valid }}'
                               entity_domain_is_light: '{{ entity_domain == "light" }}'
@@ -7785,17 +7786,12 @@ actions:
                                     state_attr(entity_id, "color_temp_kelvin") | int(-1) >= 0
                                   )
                                 }}
-                              color_mode_onoff: >-
-                                {{
-                                  entity_domain_is_light and
-                                  supported_color_modes | map("string") | list
-                                                        | select("in", ["onoff"])
-                                                        | list | length > 0
-                                }}
+                              effects_available: '{{ supported_features | bitwise_and(4) > 0 }}'
 
                           ##### LIGHT Features mask (construction-only) #####
-                          # Bitmask: bit 0=brightness, bit 1=temp, bit 2=color
-                          - if: '{{ nspanel_event is defined and nspanel_event.type == "page_changed" }}'
+                          # Bitmask: bit 0=brightness, bit 1=temp, bit 2=color, bit 3=effects
+                          - alias: Light features mask
+                            if: '{{ page_constructor }}'
                             then:
                               - variables:
                                   light_features_mask: >-
@@ -7803,7 +7799,7 @@ actions:
                                       (1 if color_mode_brightness else 0) +
                                       (2 if color_mode_temp       else 0) +
                                       (4 if color_mode_color      else 0) +
-                                      (8 if color_mode_onoff      else 0)
+                                      (8 if effects_available     else 0)
                                     }}
                               - action: 'esphome.{{ action_prefix }}_component_text_list'
                                 data:
@@ -7815,7 +7811,8 @@ actions:
                               - *delay_default
 
                           ##### LIGHT State #####
-                          - if: '{{ color_mode_brightness }}'
+                          - alias: Light brightness
+                            if: '{{ color_mode_brightness }}'
                             then:
                               - variables:
                                   curr_brightness: '{{ (state_attr(entity_id, "brightness") | int(0) * 100 / 255) | round(0) }}'
@@ -7832,7 +7829,8 @@ actions:
                               - *delay_default
 
                           ##### LIGHT Check Color_Temp Value is available when yes send some current Values #####
-                          - if: '{{ color_mode_temp }}'
+                          - alias: Light temperature
+                            if: '{{ color_mode_temp }}'
                             then:
                               - variables:
                                   curr_color_temp: '{{ state_attr(entity_id, "color_temp_kelvin") | int(-1) }}'
@@ -7856,28 +7854,17 @@ actions:
                                     - 'tempslider.val={{ (min_color_temp_kelvin + max_color_temp_kelvin - curr_color_temp) | int }}'
                                     - 'tempslider.minval={{ min_color_temp_kelvin }}'
                                     - 'tempslider.maxval={{ max_color_temp_kelvin }}'
-                                    - 'vis temp_button,1'
-                                    - 'vis temp_value_2,1'
-                                    - 'vis temp_touch,1'
-                                continue_on_error: true
-                              - *delay_default
-
-                          ##### Hide color button when not supported #####
-                          - if: '{{ color_mode_color }}'
-                            then:
-                              - action: 'esphome.{{ action_prefix }}_components_visibility'
-                                data:
-                                  page: light
-                                  ids:
-                                    - color_button
-                                    - color_touch
-                                  visible: true
                                 continue_on_error: true
                               - *delay_default
 
                           ##### LIGHT Effects #####
                           - alias: Light effects
-                            if: '{{ supported_features | bitwise_and(4) > 0 }}'
+                            if:
+                              - '{{ effects_available }}'
+                              ##### Construction-only: push options + show effect button #####
+                              - '{{ nspanel_event is defined }}'
+                              - '{{ nspanel_event.type is defined }}'
+                              - '{{ nspanel_event.type == "page_changed" }}'
                             then:
                               - variables:
                                   current_effect_raw: '{{ state_attr(entity_id, "effect") }}'
@@ -7887,68 +7874,55 @@ actions:
                                       if current_effect_raw is defined and current_effect_raw is string and current_effect_raw | length > 0
                                       else ""
                                     }}
+                                  effect_list_raw_attr: '{{ state_attr(entity_id, "effect_list") }}'
+                                  effect_list_raw: >
+                                    {{
+                                      effect_list_raw_attr
+                                      if
+                                        effect_list_raw_attr is defined and
+                                        effect_list_raw_attr is iterable and
+                                        effect_list_raw_attr is not string
+                                      else []
+                                    }}
 
-                              ##### Construction-only: push options + show effect button #####
-                              - if: '{{ nspanel_event is defined and nspanel_event.type == "page_changed" }}'
-                                then:
-                                  - action: 'esphome.{{ action_prefix }}_components_visibility'
-                                    data:
-                                      page: light
-                                      ids:
-                                        - effect_button
-                                      visible: true
-                                    continue_on_error: true
-                                  - *delay_default
-                                  - variables:
-                                      effect_list_raw_attr: '{{ state_attr(entity_id, "effect_list") }}'
-                                      effect_list_raw: >
-                                        {{
-                                          effect_list_raw_attr
-                                          if
-                                            effect_list_raw_attr is defined and
-                                            effect_list_raw_attr is iterable and
-                                            effect_list_raw_attr is not string
-                                          else []
-                                        }}
-
-                                      # Truncation rule: current always included.
-                                      # If <=8: send all in HA order.
-                                      # If >8 and current in first 8: send first 8.
-                                      # If >8 and current in positions 8+: send [current] + first 7 excluding current.
-                                      effect_list_truncated: >
-                                        {%- if effect_list_raw | length <= 8 -%}
-                                          {%- if current_effect | length == 0 or current_effect in effect_list_raw -%}
-                                            {{ effect_list_raw }}
-                                          {%- else -%}
-                                            {{ ([current_effect] + (effect_list_raw | list))[:8] }}
-                                          {%- endif -%}
-                                        {%- elif current_effect | length == 0 or current_effect in effect_list_raw[:8] -%}
-                                          {{ effect_list_raw[:8] }}
-                                        {%- else -%}
-                                          {{ [current_effect] + (effect_list_raw[:7] | reject("equalto", current_effect) | list) }}
-                                        {%- endif -%}
-                                  - action: 'esphome.{{ action_prefix }}_component_text_list'
-                                    data:
-                                      page: mem
-                                      id: popup_select_context
-                                      txt_list:
-                                        - 'light_effect'
-                                    continue_on_error: true
-                                  - *delay_default
-                                  - action: 'esphome.{{ action_prefix }}_component_val'
-                                    data:
-                                      page: mem
-                                      id: popup_select_mode
-                                      val: 0
-                                    continue_on_error: true
-                                  - *delay_default
-                                  - action: 'esphome.{{ action_prefix }}_component_text_list'
-                                    data:
-                                      page: mem
-                                      id: popup_select_options
-                                      txt_list: '{{ effect_list_truncated }}'
-                                    continue_on_error: true
-                                  - *delay_default
+                                  # Truncation rule: current always included.
+                                  # If <=8: send all in HA order.
+                                  # If >8 and current in first 8: send first 8.
+                                  # If >8 and current in positions 8+: send [current] + first 7 excluding current.
+                                  effect_list_truncated: >
+                                    {%- if effect_list_raw | length <= 8 -%}
+                                      {%- if current_effect | length == 0 or current_effect in effect_list_raw -%}
+                                        {{ effect_list_raw }}
+                                      {%- else -%}
+                                        {{ ([current_effect] + (effect_list_raw | list))[:8] }}
+                                      {%- endif -%}
+                                    {%- elif current_effect | length == 0 or current_effect in effect_list_raw[:8] -%}
+                                      {{ effect_list_raw[:8] }}
+                                    {%- else -%}
+                                      {{ [current_effect] + (effect_list_raw[:7] | reject("equalto", current_effect) | list) }}
+                                    {%- endif -%}
+                              - action: 'esphome.{{ action_prefix }}_component_text_list'
+                                data:
+                                  page: mem
+                                  id: popup_select_context
+                                  txt_list:
+                                    - 'light_effect'
+                                continue_on_error: true
+                              - *delay_default
+                              - action: 'esphome.{{ action_prefix }}_component_val'
+                                data:
+                                  page: mem
+                                  id: popup_select_mode
+                                  val: 0
+                                continue_on_error: true
+                              - *delay_default
+                              - action: 'esphome.{{ action_prefix }}_component_text_list'
+                                data:
+                                  page: mem
+                                  id: popup_select_options
+                                  txt_list: '{{ effect_list_truncated }}'
+                                continue_on_error: true
+                              - *delay_default
 
                               ##### Always (construction and updates): push current effect #####
                               - action: 'esphome.{{ action_prefix }}_component_text_list'
@@ -8148,7 +8122,7 @@ actions:
                                     }}
 
                               ##### Construction-only: push options + show mode button #####
-                              - if: '{{ nspanel_event is defined and nspanel_event.type == "page_changed" }}'
+                              - if: '{{ page_constructor }}'
                                 then:
                                   - variables:
                                       preset_modes_raw_attr: '{{ state_attr(entity_id, "preset_modes") }}'
