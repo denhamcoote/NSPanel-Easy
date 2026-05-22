@@ -7877,7 +7877,7 @@ actions:
                                   effect_list_raw_attr: '{{ state_attr(entity_id, "effect_list") }}'
                                   effect_list_raw: >
                                     {{
-                                      effect_list_raw_attr
+                                      effect_list_raw_attr | list
                                       if
                                         effect_list_raw_attr is defined and
                                         effect_list_raw_attr is iterable and
