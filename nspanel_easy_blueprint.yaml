@@ -7754,7 +7754,11 @@ actions:
                                   entity_domain_is_light and
                                   (
                                     supported_features | bitwise_and(1) > 0 or
-                                    state_attr(entity_id, "supported_color_modes") | default([], true) | map(attribute="value") | list | select("in", ["brightness"]) | list | length > 0 or
+                                    state_attr(entity_id, "supported_color_modes")
+                                      | default([], true)
+                                      | map(attribute="value") | list
+                                      | select("in", ["brightness"])
+                                      | list | length > 0 or
                                     state_attr(entity_id, "brightness") | int(-1) >= 0
                                   )
                                 }}
@@ -7763,7 +7767,11 @@ actions:
                                   entity_domain_is_light and
                                   (
                                     supported_features | bitwise_and(16) > 0 or
-                                    state_attr(entity_id, "supported_color_modes") | default([], true) | map(attribute="value") | list | select("in", ["hs", "xy", "rgb", "rgbw", "rgbww"]) | list | length > 0
+                                    state_attr(entity_id, "supported_color_modes")
+                                      | default([], true)
+                                      | map(attribute="value") | list
+                                      | select("in", ["hs", "xy", "rgb", "rgbw", "rgbww"])
+                                      | list | length > 0
                                   )
                                 }}
                               color_mode_temp: >-
@@ -7771,7 +7779,11 @@ actions:
                                   entity_domain_is_light and
                                   (
                                     supported_features | bitwise_and(2) > 0 or
-                                    state_attr(entity_id, "supported_color_modes") | default([], true) | map(attribute="value") | list | select("in", ["color_temp", "rgbww"]) | list | length > 0 or
+                                    state_attr(entity_id, "supported_color_modes")
+                                      | default([], true)
+                                      | map(attribute="value") | list
+                                      | select("in", ["color_temp"])
+                                      | list | length > 0 or
                                     state_attr(entity_id, "color_temp_kelvin") | int(-1) >= 0
                                   )
                                 }}
