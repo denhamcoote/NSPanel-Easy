@@ -8567,7 +8567,7 @@ actions:
                                     ### ICON Font ###
                                     - action: 'esphome.{{ action_prefix }}_component_text_list'
                                       data:
-                                        page: cmd
+                                        page: mem
                                         id: command
                                         txt_list:
                                           - '{{ repeat.item.component }}.txt="{{ all_icons[repeat.item.icon] }}"'
