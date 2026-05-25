@@ -5179,9 +5179,9 @@ actions:
             snowy_rainy: 7
             snowy-rainy: 7
             fog: 8
-            windy: 9
-            windy_variant: 9
-            windy-variant: 9
+            windy: 8
+            windy_variant: 8
+            windy-variant: 8
             lightning: 10
             partlycloudy: '{{ 11 if sun_is_up else 12}}'
             lightning_rainy: '{{ 13 if sun_is_up else 14}}'
