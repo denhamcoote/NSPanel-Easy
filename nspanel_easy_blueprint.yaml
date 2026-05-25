@@ -7510,13 +7510,20 @@ actions:
                                         # No value (unavailable/unknown): show localized marker and keep icon visible
                                         - action: 'esphome.{{ action_prefix }}_component_text_list'
                                           data:
-                                            page: mem
-                                            id: command
+                                            page: '{{ repeat.item.page }}'
+                                            id: '{{ repeat.item.component }}'
                                             txt_list:
-                                              - '{{ repeat.item.component }}.txt="_{_unavailable_}_"'
-                                              # Ensure both value and icon are visible (recovery from hide-if-zero)
-                                              - 'vis {{ repeat.item.component }},1'
-                                              - 'vis {{ repeat.item.component }}_icon,1'
+                                              - "_{_unavailable_}_"
+                                          continue_on_error: true
+                                        - *delay_default
+                                        # Ensure both value and icon are visible (recovery from hide-if-zero)
+                                        - action: 'esphome.{{ action_prefix }}_components_visibility'
+                                          data:
+                                            page: '{{ repeat.item.page }}'
+                                            ids:
+                                              - '{{ repeat.item.component }}'
+                                              - '{{ repeat.item.component }}_icon'
+                                            visible: true
                                           continue_on_error: true
                                     - *delay_default
 
@@ -8423,7 +8430,7 @@ actions:
                               page: mem
                               id: command
                               txt_list:
-                                - 'page_label.txt="{{ friendly_name }}"'
+                                - 'page_label.txt="{{ friendly_name | replace("\\", "\\\\") | replace("\"", "\\\"") }}"'
                             continue_on_error: true
                           - *delay_default
 
