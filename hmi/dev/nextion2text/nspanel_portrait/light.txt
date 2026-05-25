@@ -1201,7 +1201,7 @@ Timer features
         ID         : 45
         Scope      : local
         Period (ms): 50
-        Enabled    : yes
+        Enabled    : no
     
     Events
         Timer Event
@@ -1249,6 +1249,5 @@ Timer features
                 {
                     vis effect_button,1
                 }
-                light_features_mask=0
             }
         

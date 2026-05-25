@@ -390,12 +390,175 @@
   copy: true
 
 # -----------------------------------------------------------------------------
-# Weather icons
+# Weather icons - dark theme
 # -----------------------------------------------------------------------------
-- id: weather_unknown
-  src: weather/weather_unknown.png
+- id: weather_unknown_dark
+  src: weather/dark/weather_unknown.png
   note: "Fallback / unknown weather condition"
   dark: 1
+  light: null
+  landscape:
+    coordinates: "20,45"
+    dimensions: "100x100"
+  portrait:
+    coordinates: "20,154"
+    dimensions: "100x100"
+- id: weather_clear_night_dark
+  src: weather/dark/weather_clear_night.png
+  note: "Clear sky - night"
+  dark: 15
+  light: null
+  landscape:
+    coordinates: "20,45"
+    dimensions: "100x100"
+  portrait:
+    coordinates: "20,154"
+    dimensions: "100x100"
+- id: weather_cloudy_dark
+  src: weather/dark/weather_cloudy.png
+  note: "Cloudy"
+  dark: 3
+  light: null
+  landscape:
+    coordinates: "20,45"
+    dimensions: "100x100"
+  portrait:
+    coordinates: "20,154"
+    dimensions: "100x100"
+- id: weather_fog_dark
+  src: weather/dark/weather_fog.png
+  note: "Fog"
+  dark: 8
+  light: null
+  landscape:
+    coordinates: "20,45"
+    dimensions: "100x100"
+  portrait:
+    coordinates: "20,154"
+    dimensions: "100x100"
+- id: weather_lightning_dark
+  src: weather/dark/weather_lightning.png
+  note: "Lightning / thunderstorm"
+  dark: 10
+  light: null
+  landscape:
+    coordinates: "20,45"
+    dimensions: "100x100"
+  portrait:
+    coordinates: "20,154"
+    dimensions: "100x100"
+- id: weather_lightning_rainy_day_dark
+  src: weather/dark/weather_lightning_rainy_day.png
+  note: "Lightning with rain - daytime"
+  dark: 13
+  light: null
+  landscape:
+    coordinates: "20,45"
+    dimensions: "100x100"
+  portrait:
+    coordinates: "20,154"
+    dimensions: "100x100"
+- id: weather_lightning_rainy_night_dark
+  src: weather/dark/weather_lightning_rainy_night.png
+  note: "Lightning with rain - night"
+  dark: 14
+  light: null
+  landscape:
+    coordinates: "20,45"
+    dimensions: "100x100"
+  portrait:
+    coordinates: "20,154"
+    dimensions: "100x100"
+- id: weather_partly_cloudy_day_dark
+  src: weather/dark/weather_partly_cloudy_day.png
+  note: "Partly cloudy - daytime"
+  dark: 11
+  light: null
+  landscape:
+    coordinates: "20,45"
+    dimensions: "100x100"
+  portrait:
+    coordinates: "20,154"
+    dimensions: "100x100"
+- id: weather_partly_cloudy_night_dark
+  src: weather/dark/weather_partly_cloudy_night.png
+  note: "Partly cloudy - night"
+  dark: 12
+  light: null
+  landscape:
+    coordinates: "20,45"
+    dimensions: "100x100"
+  portrait:
+    coordinates: "20,154"
+    dimensions: "100x100"
+- id: weather_pouring_dark
+  src: weather/dark/weather_pouring.png
+  note: "Heavy rain / pouring"
+  dark: 5
+  light: null
+  landscape:
+    coordinates: "20,45"
+    dimensions: "100x100"
+  portrait:
+    coordinates: "20,154"
+    dimensions: "100x100"
+- id: weather_rainy_dark
+  src: weather/dark/weather_rainy.png
+  note: "Rainy"
+  dark: 4
+  light: null
+  landscape:
+    coordinates: "20,45"
+    dimensions: "100x100"
+  portrait:
+    coordinates: "20,154"
+    dimensions: "100x100"
+- id: weather_snowy_dark
+  src: weather/dark/weather_snowy.png
+  note: "Snowy"
+  dark: 6
+  light: null
+  landscape:
+    coordinates: "20,45"
+    dimensions: "100x100"
+  portrait:
+    coordinates: "20,154"
+    dimensions: "100x100"
+- id: weather_snowy_rainy_dark
+  src: weather/dark/weather_snowy_rainy.png
+  note: "Snowy with rain"
+  dark: 7
+  light: null
+  landscape:
+    coordinates: "20,45"
+    dimensions: "100x100"
+  portrait:
+    coordinates: "20,154"
+    dimensions: "100x100"
+- id: weather_sunny_dark
+  src: weather/dark/weather_sunny.png
+  note: "Clear sky - daytime"
+  dark: 2
+  light: null
+  landscape:
+    coordinates: "20,45"
+    dimensions: "100x100"
+  portrait:
+    coordinates: "20,154"
+    dimensions: "100x100"
+- id: weather_windy_dark_DEPRECATED
+  note: "Windy (Unused - replaced with 1x1 placeholder to reclaim HMI flash space)"
+  dark: 9
+  light: null
+  copy: true
+  placeholder: true
+# -----------------------------------------------------------------------------
+# Weather icons - light theme
+# -----------------------------------------------------------------------------
+- id: weather_unknown_light
+  src: weather/light/weather_unknown.png
+  note: "Fallback / unknown weather condition"
+  dark: null
   light: 49
   landscape:
     coordinates: "20,45"
@@ -403,10 +566,10 @@
   portrait:
     coordinates: "20,154"
     dimensions: "100x100"
-- id: weather_clear_night
-  src: weather/weather_clear_night.png
+- id: weather_clear_night_light
+  src: weather/light/weather_clear_night.png
   note: "Clear sky - night"
-  dark: 15
+  dark: null
   light: 63
   landscape:
     coordinates: "20,45"
@@ -414,10 +577,10 @@
   portrait:
     coordinates: "20,154"
     dimensions: "100x100"
-- id: weather_cloudy
-  src: weather/weather_cloudy.png
+- id: weather_cloudy_light
+  src: weather/light/weather_cloudy.png
   note: "Cloudy"
-  dark: 3
+  dark: null
   light: 51
   landscape:
     coordinates: "20,45"
@@ -425,10 +588,10 @@
   portrait:
     coordinates: "20,154"
     dimensions: "100x100"
-- id: weather_fog
-  src: weather/weather_fog.png
+- id: weather_fog_light
+  src: weather/light/weather_fog.png
   note: "Fog"
-  dark: 8
+  dark: null
   light: 56
   landscape:
     coordinates: "20,45"
@@ -436,10 +599,10 @@
   portrait:
     coordinates: "20,154"
     dimensions: "100x100"
-- id: weather_lightning
-  src: weather/weather_lightning.png
+- id: weather_lightning_light
+  src: weather/light/weather_lightning.png
   note: "Lightning / thunderstorm"
-  dark: 10
+  dark: null
   light: 58
   landscape:
     coordinates: "20,45"
@@ -447,10 +610,10 @@
   portrait:
     coordinates: "20,154"
     dimensions: "100x100"
-- id: weather_lightning_rainy_day
-  src: weather/weather_lightning_rainy_day.png
+- id: weather_lightning_rainy_day_light
+  src: weather/light/weather_lightning_rainy_day.png
   note: "Lightning with rain - daytime"
-  dark: 13
+  dark: null
   light: 61
   landscape:
     coordinates: "20,45"
@@ -458,10 +621,10 @@
   portrait:
     coordinates: "20,154"
     dimensions: "100x100"
-- id: weather_lightning_rainy_night
-  src: weather/weather_lightning_rainy_night.png
+- id: weather_lightning_rainy_night_light
+  src: weather/light/weather_lightning_rainy_night.png
   note: "Lightning with rain - night"
-  dark: 14
+  dark: null
   light: 62
   landscape:
     coordinates: "20,45"
@@ -469,10 +632,10 @@
   portrait:
     coordinates: "20,154"
     dimensions: "100x100"
-- id: weather_partly_cloudy_day
-  src: weather/weather_partly_cloudy_day.png
+- id: weather_partly_cloudy_day_light
+  src: weather/light/weather_partly_cloudy_day.png
   note: "Partly cloudy - daytime"
-  dark: 11
+  dark: null
   light: 59
   landscape:
     coordinates: "20,45"
@@ -480,10 +643,10 @@
   portrait:
     coordinates: "20,154"
     dimensions: "100x100"
-- id: weather_partly_cloudy_night
-  src: weather/weather_partly_cloudy_night.png
+- id: weather_partly_cloudy_night_light
+  src: weather/light/weather_partly_cloudy_night.png
   note: "Partly cloudy - night"
-  dark: 12
+  dark: null
   light: 60
   landscape:
     coordinates: "20,45"
@@ -491,10 +654,10 @@
   portrait:
     coordinates: "20,154"
     dimensions: "100x100"
-- id: weather_pouring
-  src: weather/weather_pouring.png
+- id: weather_pouring_light
+  src: weather/light/weather_pouring.png
   note: "Heavy rain / pouring"
-  dark: 5
+  dark: null
   light: 53
   landscape:
     coordinates: "20,45"
@@ -502,10 +665,10 @@
   portrait:
     coordinates: "20,154"
     dimensions: "100x100"
-- id: weather_rainy
-  src: weather/weather_rainy.png
+- id: weather_rainy_light
+  src: weather/light/weather_rainy.png
   note: "Rainy"
-  dark: 4
+  dark: null
   light: 52
   landscape:
     coordinates: "20,45"
@@ -513,10 +676,10 @@
   portrait:
     coordinates: "20,154"
     dimensions: "100x100"
-- id: weather_snowy
-  src: weather/weather_snowy.png
+- id: weather_snowy_light
+  src: weather/light/weather_snowy.png
   note: "Snowy"
-  dark: 6
+  dark: null
   light: 54
   landscape:
     coordinates: "20,45"
@@ -524,10 +687,10 @@
   portrait:
     coordinates: "20,154"
     dimensions: "100x100"
-- id: weather_snowy_rainy
-  src: weather/weather_snowy_rainy.png
+- id: weather_snowy_rainy_light
+  src: weather/light/weather_snowy_rainy.png
   note: "Snowy with rain"
-  dark: 7
+  dark: null
   light: 55
   landscape:
     coordinates: "20,45"
@@ -535,10 +698,10 @@
   portrait:
     coordinates: "20,154"
     dimensions: "100x100"
-- id: weather_sunny
-  src: weather/weather_sunny.png
+- id: weather_sunny_light
+  src: weather/light/weather_sunny.png
   note: "Clear sky - daytime"
-  dark: 2
+  dark: null
   light: 50
   landscape:
     coordinates: "20,45"
@@ -546,17 +709,12 @@
   portrait:
     coordinates: "20,154"
     dimensions: "100x100"
-- id: weather_windy
-  src: weather/weather_windy.png
-  note: "Windy"
-  dark: 9
+- id: weather_windy_light_DEPRECATED
+  note: "Windy (Unused - replaced with 1x1 placeholder to reclaim HMI flash space)"
+  dark: null
   light: 57
-  landscape:
-    coordinates: "20,45"
-    dimensions: "100x100"
-  portrait:
-    coordinates: "20,154"
-    dimensions: "100x100"
+  copy: true
+  placeholder: true
 
 # -----------------------------------------------------------------------------
 # Unused / placeholders

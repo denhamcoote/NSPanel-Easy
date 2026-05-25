@@ -333,6 +333,14 @@ Used for all UI icons displayed alongside text on the panel.
 - License: [Apache License 2.0](licenses/MDI-Apache-2.0.mdx)
 - Copyright: Pictogrammers and contributors
 
+### Yr Weather Symbols
+
+Used for weather condition icons displayed on the weather pages.
+
+- Source: [nrkno/yr-weather-symbols](https://github.com/nrkno/yr-weather-symbols)
+- License: [Creative Commons Attribution 4.0 International](https://creativecommons.org/licenses/by/4.0/)
+- Copyright: Yr/NRK
+
 ## Donations
 
 This project is built with love and maintained in my spare time.
