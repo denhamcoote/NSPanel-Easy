@@ -19,6 +19,20 @@ substitutions:
   GPIO_DISPLAY_NEXTION_RX_PIN: 17
   GPIO_DISPLAY_NEXTION_TX_PIN: 16
   TAG_HW_UART: nspanel.hw.uart
+  uart_debug: false
+  _pk_uart_debug:
+    uart:
+      - id: !extend tf_uart
+        debug:
+          direction: BOTH
+          dummy_receiver: false
+          after:
+            delimiter: 0xff, 0xff, 0xff
+          sequence:
+            - lambda: UARTDebug::log_string(direction, bytes);
+
+packages:
+  uart_debug: ${ _pk_uart_debug if uart_debug else {} }
 
 esphome:
   platformio_options:

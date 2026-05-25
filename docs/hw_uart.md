@@ -25,6 +25,7 @@ The following keys are available to be used in your `substitutions`:
 | `BAUD_RATE_TIMEOUT` | Optional | ESPHome duration string | `41s` | Time the panel waits for the display to respond at `BAUD_RATE` before triggering the [boot baud rate scan](#boot-baud-rate-scan). Also applied between retries in the reboot loop when the scan finds no responsive rate. |
 | `BAUD_RATE_DELAY_AFTER_POWER_ON` | Optional | ESPHome duration string | `2s` | Delay between powering the display on and starting the first probe inside the baud rate scan. Increase if your hardware needs longer to initialize before responding. |
 | `BAUD_RATE_PROBE_MS` | Optional | Positive integer (milliseconds) | `1500` | Per-rate probe window during the [boot baud rate scan](#boot-baud-rate-scan) and the diagnostic [Scan baud rate button](addon_upload_tft.md#include_button_scan_baud_rate-behaviour). Increase only if your hardware shows marginal UART timing on a given rate. |
+| `uart_debug` | Optional | `true`/`false` | `false` | Logs detailed UART traffic. |
 <!-- markdownlint-enable MD013 -->
 
 ### `BAUD_RATE` behaviour
