@@ -7836,24 +7836,32 @@ actions:
                                 continue_on_error: true
                               - *delay_default
 
-                          ##### Page constructor #####
-                          - alias: Page constructor
-                            if: '{{ page_constructor }}'
+                          ##### LIGHT Effects #####
+                          - alias: Light effects
+                            if:
+                              - '{{ effects_available }}'
                             then:
+                              - variables:
+                                  current_effect_raw: '{{ state_attr(entity_id, "effect") }}'
+                                  current_effect: >-
+                                    {{
+                                      current_effect_raw | trim
+                                      if current_effect_raw is defined and current_effect_raw is string and current_effect_raw | length > 0
+                                      else ""
+                                    }}
+                              ##### Always (construction and updates): push current effect #####
+                              - action: 'esphome.{{ action_prefix }}_component_text_list'
+                                data:
+                                  page: mem
+                                  id: popup_select_current
+                                  txt_list:
+                                    - '{{ current_effect }}'
+                                continue_on_error: true
+                              - *delay_default
 
-                              ##### LIGHT Effects #####
-                              - alias: Light effects
-                                if:
-                                  - '{{ effects_available }}'
+                              - if: '{{ page_constructor }}'
                                 then:
                                   - variables:
-                                      current_effect_raw: '{{ state_attr(entity_id, "effect") }}'
-                                      current_effect: >-
-                                        {{
-                                          current_effect_raw | trim
-                                          if current_effect_raw is defined and current_effect_raw is string and current_effect_raw | length > 0
-                                          else ""
-                                        }}
                                       effect_list_raw_attr: '{{ state_attr(entity_id, "effect_list") }}'
                                       effect_list_raw: >
                                         {{
@@ -7904,37 +7912,28 @@ actions:
                                     continue_on_error: true
                                   - *delay_default
 
-                                  ##### Always (construction and updates): push current effect #####
-                                  - action: 'esphome.{{ action_prefix }}_component_text_list'
-                                    data:
-                                      page: mem
-                                      id: popup_select_current
-                                      txt_list:
-                                        - '{{ current_effect }}'
-                                    continue_on_error: true
-                                  - *delay_default
-
-                              ##### LIGHT Features mask (construction-only) #####
-                              # Bitmask: bit 0=brightness, bit 1=temp, bit 2=color, bit 3=effects
-                              - alias: Light features mask
-                                sequence:
-                                  - variables:
-                                      light_features_mask: >-
-                                        {{
-                                          (1 if color_mode_brightness else 0) +
-                                          (2 if color_mode_temp       else 0) +
-                                          (4 if color_mode_color      else 0) +
-                                          (8 if effects_available     else 0)
-                                        }}
-                                  - action: 'esphome.{{ action_prefix }}_component_text_list'
-                                    data:
-                                      page: mem
-                                      id: command
-                                      txt_list:
-                                        - 'light_features_mask={{ light_features_mask }}'
-                                        - 'features.en=1'
-                                    continue_on_error: true
-                                  - *delay_default
+                          ##### LIGHT Features mask (construction-only) #####
+                          # Bitmask: bit 0=brightness, bit 1=temp, bit 2=color, bit 3=effects
+                          - alias: Light features mask
+                            if: '{{ page_constructor }}'
+                            then:
+                              - variables:
+                                  light_features_mask: >-
+                                    {{
+                                      (1 if color_mode_brightness else 0) +
+                                      (2 if color_mode_temp       else 0) +
+                                      (4 if color_mode_color      else 0) +
+                                      (8 if effects_available     else 0)
+                                    }}
+                              - action: 'esphome.{{ action_prefix }}_component_text_list'
+                                data:
+                                  page: mem
+                                  id: command
+                                  txt_list:
+                                    - 'light_features_mask={{ light_features_mask }}'
+                                    - 'features.en=1'
+                                continue_on_error: true
+                              - *delay_default
 
                       - alias: Cover settings page
                         conditions: '{{ nspanel_event.page == pages.cover }}'
