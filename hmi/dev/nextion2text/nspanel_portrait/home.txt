@@ -240,7 +240,7 @@ Text left_bt_text
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 16
-        y coordinate            : 443
+        y coordinate            : 448
         Width                   : 120
         Height                  : 20
         Effect                  : load
@@ -267,7 +267,7 @@ Text right_bt_text
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 184
-        y coordinate            : 443
+        y coordinate            : 448
         Width                   : 120
         Height                  : 20
         Effect                  : load
