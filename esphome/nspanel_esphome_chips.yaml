@@ -8,6 +8,9 @@
 ---
 substitutions:
   TAG_CHIPS: nspanel.chips
+  chips_page_boot: true
+  chips_page_home: true
+  chips_page_screensaver: true
 
 esphome:
   platformio_options:
@@ -140,9 +143,18 @@ script:
   - id: !extend page_change
     then:
       - lambda: |-
-          is_chips_page = (new_page_id == get_page_id("boot")
-                        || new_page_id == get_page_id("home")
-                        || new_page_id == get_page_id("screensaver"));
+          is_chips_page = ( false ||
+                            #if ${1 if chips_page_boot else 0}
+                            new_page_id == get_page_id("boot") ||
+                            #endif  // chips_page_boot
+                            #if ${1 if chips_page_home else 0}
+                            new_page_id == get_page_id("home") ||
+                            #endif  // chips_page_home
+                            #if ${1 if chips_page_screensaver else 0}
+                            new_page_id == get_page_id("screensaver") ||
+                            #endif  // chips_page_screensaver
+                            false
+                        );
           if (!is_chips_page) return;
 
           ESP_LOGV("${TAG_CHIPS}", "Rendering chips");
