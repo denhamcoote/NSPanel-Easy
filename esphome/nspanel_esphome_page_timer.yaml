@@ -20,6 +20,10 @@ script:
     then:
       - lambda: |-
           if (params[0] != "timer") return;
+          if (detailed_entity->state.empty()) {
+            ESP_LOGW("${TAG_PAGE_TIMER}", "No detailed entity");
+            return;
+          }
 
           // CSV Format: timer,<action>
           // params[0]=page, params[1]=action
