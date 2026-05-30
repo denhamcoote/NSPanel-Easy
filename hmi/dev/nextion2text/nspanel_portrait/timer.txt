@@ -58,7 +58,7 @@ Variable (int32) timer_state
     Attributes
         ID   : 5
         Scope: local
-        Value: 0
+        Value: 4294967294
     
 Variable (int32) dur_secs
     Attributes
@@ -169,7 +169,7 @@ Text countdown
         Horizontal Alignment    : center
         Vertical Alignment      : center
         Input Type              : character
-        Text                    : 00\r\n00\r\n00
+        Text                    : 
         Max. Text Size          : 16
         Word wrap               : disabled
         Horizontal Spacing      : 0
@@ -196,7 +196,7 @@ Text duration_label
         Horizontal Alignment    : center
         Vertical Alignment      : center
         Input Type              : character
-        Text                    : 00:00:00
+        Text                    : 
         Max. Text Size          : 10
         Word wrap               : disabled
         Horizontal Spacing      : 0
@@ -457,7 +457,7 @@ Timer tick
     Events
         Timer Event
             // Decrement
-            if(remaining.val>0)
+            if(timer_state.val==1&&remaining.val>0)
             {
                 remaining.val--
             }
@@ -510,6 +510,41 @@ Timer tick
                 tick.en=0
                 timer_state.val=0
                 bt_play_icon.txt=icon_play.txt
+                vis bt_cancel_pic,0
+                vis bt_cancel_icon,0
+                vis bt_cancel_hs,0
+                vis bt_finish_pic,0
+                vis bt_finish_icon,0
+                vis bt_finish_hs,0
+            }
+        
+Timer refresh_bts
+    Attributes
+        ID         : 23
+        Scope      : local
+        Period (ms): 50
+        Enabled    : no
+    
+    Events
+        Timer Event
+            refresh_bts.en=0
+            if(timer_state.val==1)  // Active
+            {
+                bt_play_icon.txt=icon_pause.txt
+            }else
+            {
+                bt_play_icon.txt=icon_play.txt
+            }
+            if(timer_state.val>0)  // Active or paused
+            {
+                vis bt_cancel_pic,1
+                vis bt_cancel_icon,1
+                vis bt_cancel_hs,1
+                vis bt_finish_pic,1
+                vis bt_finish_icon,1
+                vis bt_finish_hs,1
+            }else // Idle
+            {
                 vis bt_cancel_pic,0
                 vis bt_cancel_icon,0
                 vis bt_cancel_hs,0

@@ -3934,6 +3934,7 @@ trigger_variables:
 variables:
   # Version will be following release version defined automatically when merging to main
   blueprint_version: 9999.99.9
+
   pages:
     current: '{{ states(currentpage) }}'
     alarm: "alarm"
@@ -3973,6 +3974,17 @@ variables:
       - "weather03"
       - "weather04"
       - "weather05"
+    detailed_entity:
+      - alarm
+      - button
+      - climate
+      - cover
+      - fan
+      - light
+      - media_player
+      - switch
+      - timer
+      - water_heater
 
   home_page_background_update: !input home_page_background_update
 
@@ -4835,8 +4847,7 @@ conditions:
       trigger.id != "trigger_buttonpage_state" or
       pages.current in pages.buttonpages or
       (
-        pages.current in [pages.alarm, pages.button, pages.climate, pages.cover, pages.fan,
-                          pages.light, pages.switch, pages.water_heater] and
+        pages.current in pages.detailed_entity and
         trigger.entity_id is defined and
         detailed_entity | length > 0 and
         trigger.entity_id == states(detailed_entity)
@@ -4890,6 +4901,8 @@ actions:
           }}
         {%- endif %}
       nspanel_name: '{{ action_prefix }}'
+
+      page_constructor: false
 
       esphome_version: >
         {%
@@ -5765,7 +5778,7 @@ actions:
           RGBWW: "[<ColorMode.RGBWW: 'rgbww'>]"
           WHITE: "[<ColorMode.WHITE: ''>]"
         states:
-          "on": ["on", "open", "opening", "true", "True", true, True, "playing", "heat", "cold", "dry", "armed_home", "armed_away", "armed_vacation", "armed_custom_bypass", "triggered", "pending", "arming", "unlocked", 1]
+          "on": ["on", "open", "opening", "true", "True", true, True, "active", "playing", "heat", "cold", "dry", "armed_home", "armed_away", "armed_vacation", "armed_custom_bypass", "triggered", "pending", "arming", "unlocked", 1]
           "off": ["off", "closed", "closing", "false", "False", false, False, "standby", "paused", "idle", "disarmed", "disarming", "locked"]
           unknown: ["unknown", "unavailable", None, none, ""]
           climate:
@@ -6991,12 +7004,12 @@ actions:
                   - '{{ nspanel_event.type == "page_changed"}}'
                   - '{{ nspanel_event.page is defined }}'
                 sequence:
+                  - variables:
+                      page_constructor: true
                   - choose:
                       - alias: Home page
                         conditions: '{{ nspanel_event.page == pages.home }}'
                         sequence: &refresh_page_home
-                          - variables:
-                              page_constructor: true
                           ##### Weather Icon Home Page #####
                           - &refresh-page_home-weather_pic
                             action: 'esphome.{{ action_prefix }}_component_val'
@@ -7091,8 +7104,7 @@ actions:
                             sequence:
                               - variables:
                                   home_indoor_temp_visible: !input home_indoor_temp_visible
-                              - if:
-                                  - '{{ page_constructor is defined and page_constructor }}'
+                              - if: '{{ page_constructor }}'
                                 then:
                                   - action: 'esphome.{{ action_prefix }}_components_visibility'
                                     data:
@@ -7154,7 +7166,6 @@ actions:
                               sequence: &display_home_page_custom_buttons
                                 - variables:
                                     custom_button_entity_id_is_valid: '{{ repeat.item.entity is defined and repeat.item.entity is string and repeat.item.entity.split(".") | count == 2 }}'
-                                    page_constructor: '{{ page_constructor is defined and page_constructor }}'
                                 - condition: '{{ custom_button_entity_id_is_valid or page_constructor }}'
                                 - if: '{{ custom_button_entity_id_is_valid }}'
                                   then:
@@ -7508,13 +7519,12 @@ actions:
                                     - *variable_entity
                                     - variables:
                                         current_entity_state_available: '{{ entity_state not in ["unavailable"] }}'
-                                        is_page_render: '{{ trigger.id != "trigger_buttonpage_state" }}'
                                         btn_state: >  # Button state (on = true or off = false)
                                           {{
                                             (entity_state in enum.states.on and entity_domain not in ["automation"])
                                             or (entity_domain == "climate" and entity_state != "off")
                                             or (entity_domain in ["automation", "button", "input_button", "remote", "scene", "script"]
-                                                and not is_page_render
+                                                and not page_constructor
                                                 and trigger.entity_id == repeat.item.entity)
                                           }}
                                         btn_bri_txt: >  # Buttons value (brightness, temperature, etc.)
@@ -7572,13 +7582,13 @@ actions:
                                           }}
                                         icon_font: '{{ btn_icon_font }}'
                                         bri: '{{ btn_bri }}'
-                                        label: '{{ btn_label if is_page_render else "" }}'
-                                        is_page_render: '{{ is_page_render }}'
+                                        label: '{{ btn_label if page_constructor else "" }}'
+                                        is_page_render: '{{ page_constructor }}'
                                       continue_on_error: true
                                     - if:
                                         - '{{ btn_state }}'
                                         - '{{ entity_domain in ["automation", "button", "input_button", "remote", "scene", "script"] }}'
-                                        - '{{ not is_page_render }}'
+                                        - '{{ not page_constructor }}'
                                         - '{{ trigger.entity_id == repeat.item.entity }}'
                                       then:
                                         - delay:
@@ -7673,7 +7683,6 @@ actions:
                           - &variables_light_modes
                             alias: variables_light_modes
                             variables:
-                              page_constructor: '{{ nspanel_event is defined and nspanel_event.type == "page_changed" }}'
                               entity_id_valid: '{{ entity_id is defined and entity_id is string and entity_id.split(".") | count == 2 }}'
                               entity_domain: '{{ entity_id.split(".")[0] if entity_id_valid else "" }}'
                               entity_domain_is_light: '{{ entity_id_valid and entity_domain == "light" }}'
@@ -8005,7 +8014,6 @@ actions:
                         sequence: &refresh_page_fan
                           - *get_entity_id_from_event_or_trigger
                           - variables:
-                              page_constructor: '{{ nspanel_event is defined and nspanel_event.type == "page_changed" }}'
                               fan:
                                 supported_features: '{{ state_attr(entity_id, "supported_features") | int(0) }}'
                                 percentage: >
@@ -8941,7 +8949,6 @@ actions:
                         sequence: &refresh_entity_pages
                           - &variables-entity_pages
                             variables:
-                              event_page_constructor: true
                               event_page: '{{ nspanel_event.page if nspanel_event is defined and nspanel_event.page is defined else pages.current }}'
                               entitypages_show_entities_icons: !input entitypages_show_entities_icons
                           ##### Entity page - Label #####
@@ -8987,7 +8994,7 @@ actions:
                                     unit_of_measurement: '{{ state_attr(entity_id, "unit_of_measurement") | default("") }}'
                                 - *variable_entity
                                 - alias: Entities pages - Constructor
-                                  if: '{{ event_page_constructor is defined and event_page_constructor }}'
+                                  if: '{{ page_constructor }}'
                                   then:
                                     - action: 'esphome.{{ action_prefix }}_component_text_list'
                                       data:
@@ -9839,27 +9846,7 @@ actions:
                                   else (2 if timer_state_raw == "paused"
                                   else -1))
                                 }}
-                              remaining_raw: '{{ state_attr(entity_id, "remaining") }}'
                               duration_raw: '{{ state_attr(entity_id, "duration") }}'
-                              remaining_str: >
-                                {{
-                                  remaining_raw
-                                  if remaining_raw is string and remaining_raw | length > 0
-                                  else duration_raw
-                                }}
-                              remaining_secs: >
-                                {%- if remaining_str is string and remaining_str | length > 0 -%}
-                                  {%- set parts = remaining_str.split(":") -%}
-                                  {%- if parts | count == 3 -%}
-                                    {{ (parts[0] | int) * 3600 + (parts[1] | int) * 60 + (parts[2] | int) }}
-                                  {%- elif parts | count == 2 -%}
-                                    {{ (parts[0] | int) * 60 + (parts[1] | int) }}
-                                  {%- else -%}
-                                    0
-                                  {%- endif -%}
-                                {%- else -%}
-                                  0
-                                {%- endif -%}
                               duration_secs: >
                                 {%- if duration_raw is string and duration_raw | length > 0 -%}
                                   {%- set parts = duration_raw.split(":") -%}
@@ -9884,15 +9871,30 @@ actions:
                                 {%- else -%}
                                   {{ s }}
                                 {%- endif -%}
+                              remaining_raw: '{{ state_attr(entity_id, "remaining") }}'
+                              remaining_secs: >
+                                {%- if timer_state > 0 and remaining_raw is string and remaining_raw | length > 0 -%}
+                                  {%- set parts = remaining_raw.split(":") -%}
+                                  {%- if parts | count == 3 -%}
+                                    {{ (parts[0] | int) * 3600 + (parts[1] | int) * 60 + (parts[2] | int) }}
+                                  {%- elif parts | count == 2 -%}
+                                    {{ (parts[0] | int) * 60 + (parts[1] | int) }}
+                                  {%- else -%}
+                                    0
+                                  {%- endif -%}
+                                {%- else -%}
+                                  0
+                                {%- endif -%}
                           - action: 'esphome.{{ action_prefix }}_component_text_list'
                             data:
                               page: mem
                               id: command
                               txt_list:
                                 - 'timer_state.val={{ timer_state }}'
+                                - 'refresh_bts.en=1'
                                 - 'remaining.val={{ remaining_secs }}'
                                 - 'duration_label.txt="{{ duration_label }}"'
-                                - 'render.en=1'
+                                - 'tick.en=1'
                             continue_on_error: true
 
               - alias: Button click
@@ -10599,7 +10601,7 @@ actions:
           - condition: or
             conditions:
               - '{{ pages.current in pages.buttonpages }}'
-              - '{{ pages.current in [pages.light, pages.cover, pages.climate, pages.fan, pages.alarm] }}'
+              - '{{ pages.current in pages.detailed_entity }}'
               - '{{ detailed_entity | length > 0 and trigger.entity_id == states(detailed_entity) }}'
         sequence:
           - variables:
