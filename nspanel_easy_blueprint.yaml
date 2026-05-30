@@ -6026,10 +6026,21 @@ actions:
               - alias: Boot init
                 conditions:
                   - '{{ nspanel_event.type == "boot"}}'
-                  - '{{ nspanel_event.step is defined and nspanel_event.step in ["start", "timeout"]}}'
+                  - '{{ nspanel_event.step is defined and nspanel_event.step in ["setup", "start", "timeout"] }}'
                 sequence:
                   - &global_settings
                     sequence:
+                      - variables:
+                          global_settings_setup: >-
+                            {{
+                              not (
+                                nspanel_event is defined and
+                                nspanel_event.step is defined and
+                                nspanel_event.step == "start"
+                              )
+                            }}
+                          home_indoor_temp_icon: !input home_indoor_temp_icon
+
                       - alias: Blueprint version
                         sequence:
                           - action: 'esphome.{{ action_prefix }}_component_text_list'
@@ -6042,6 +6053,9 @@ actions:
                           - &delay_boot
                             delay:
                               milliseconds: !input delay_boot
+
+                      # Stop here if this is initial boot as Nextion may not be ready
+                      - condition: '{{ global_settings_setup }}'
 
                       - &variables_hardware
                         variables:
@@ -6069,9 +6083,6 @@ actions:
                                 name: !input 'right_button_name'
                                 hold_select: !input 'right_button_hold_select'
                                 bar_always_visible: !input hw_button_bar_right_always_show
-
-                      - variables:
-                          home_indoor_temp_icon: !input home_indoor_temp_icon
 
                       - alias: DateTime
                         sequence:
