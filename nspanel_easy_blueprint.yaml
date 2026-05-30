@@ -5724,6 +5724,17 @@ actions:
 
       # yamllint disable rule:truthy rule:line-length rule:comments-indentation
       enum:
+        ColorMode:  # Possible light color modes. - https://github.com/home-assistant/core/blob/dev/homeassistant/components/light/__init__.py
+          UNKNOWN: "[<ColorMode.UNKNOWN: 'unknown'>]"
+          ONOFF: "[<ColorMode.ONOFF: 'onoff'>]"
+          BRIGHTNESS: "[<ColorMode.BRIGHTNESS: 'brightness'>]"
+          COLOR_TEMP: "[<ColorMode.COLOR_TEMP: 'color_temp'>]"
+          HS: "[<ColorMode.HS: 'hs'>]"
+          XY: "[<ColorMode.XY: 'xy'>]"
+          RGB: "[<ColorMode.RGB: 'rgb'>]"
+          RGBW: "[<ColorMode.RGBW: 'rgbw'>]"
+          RGBWW: "[<ColorMode.RGBWW: 'rgbww'>]"
+          WHITE: "[<ColorMode.WHITE: ''>]"
         states:
           "on": ["on", "open", "opening", "true", "True", true, True, "playing", "heat", "cold", "dry", "armed_home", "armed_away", "armed_vacation", "armed_custom_bypass", "triggered", "pending", "arming", "unlocked", 1]
           "off": ["off", "closed", "closing", "false", "False", false, False, "standby", "paused", "idle", "disarmed", "disarming", "locked"]
@@ -7630,13 +7641,20 @@ actions:
                               entity_domain: '{{ entity_id.split(".")[0] if entity_id_valid else "" }}'
                               entity_domain_is_light: '{{ entity_id_valid and entity_domain == "light" }}'
                               supported_features: '{{ state_attr(entity_id, "supported_features") | int(0) if entity_domain_is_light else 0 }}'
+                              supported_color_modes: >-
+                                {{
+                                  state_attr(entity_id, "supported_color_modes") | default([], true)
+                                  if entity_domain_is_light
+                                  else []
+                                }}
                               color_mode_brightness: >-
                                 {{
                                   entity_domain_is_light and
                                   (
                                     supported_features | bitwise_and(1) > 0 or
-                                    state_attr(entity_id, "supported_color_modes")
-                                      | default([], true)
+                                    enum.ColorMode.BRIGHTNESS in supported_color_modes or
+                                    "brightness" in supported_color_modes or
+                                    supported_color_modes
                                       | map(attribute="value") | list
                                       | select("in", ["brightness"])
                                       | list | length > 0 or
@@ -7648,8 +7666,18 @@ actions:
                                   entity_domain_is_light and
                                   (
                                     supported_features | bitwise_and(16) > 0 or
-                                    state_attr(entity_id, "supported_color_modes")
-                                      | default([], true)
+                                    enum.ColorMode.HS in supported_color_modes or
+                                    enum.ColorMode.XY in supported_color_modes or
+                                    enum.ColorMode.RGB in supported_color_modes or
+                                    enum.ColorMode.RGBW in supported_color_modes or
+                                    enum.ColorMode.RGBWW in supported_color_modes or
+                                    "hs" in supported_color_modes or
+                                    "xy" in supported_color_modes or
+                                    "rgb" in supported_color_modes or
+                                    "rgbw" in supported_color_modes or
+                                    "rgbww" in supported_color_modes or
+                                    state_attr(entity_id, "rgb_color") | default("unknown") is list
+                                    supported_color_modes
                                       | map(attribute="value") | list
                                       | select("in", ["hs", "xy", "rgb", "rgbw", "rgbww"])
                                       | list | length > 0
@@ -7660,8 +7688,9 @@ actions:
                                   entity_domain_is_light and
                                   (
                                     supported_features | bitwise_and(2) > 0 or
-                                    state_attr(entity_id, "supported_color_modes")
-                                      | default([], true)
+                                    enum.ColorMode.COLOR_TEMP in supported_color_modes or
+                                    "color_temp" in supported_color_modes or
+                                    supported_color_modes
                                       | map(attribute="value") | list
                                       | select("in", ["color_temp"])
                                       | list | length > 0 or
@@ -9881,14 +9910,7 @@ actions:
                                           - >-
                                             {{
                                               entity_domain != "light" or
-                                              (
-                                                state_attr(entity_id, "supported_color_modes")
-                                                | default([], true)
-                                                | map(attribute="value") | list
-                                                | select("in", ["brightness", "color_temp", "hs", "rgb", "rgbw", "rgbww", "xy", "white"])
-                                                | list
-                                                | length > 0
-                                              )
+                                              state_attr(entity_id, "supported_color_modes") | default([], true) != enum.ColorMode.ONOFF
                                             }}
                                           - >-
                                             {{
@@ -10053,14 +10075,7 @@ actions:
                                   - >-
                                     {{
                                       entity_domain != "light" or
-                                      (
-                                        state_attr(entity_id, "supported_color_modes")
-                                        | default([], true)
-                                        | map(attribute="value") | list
-                                        | select("in", ["brightness", "color_temp", "hs", "rgb", "rgbw", "rgbww", "xy", "white"])
-                                        | list
-                                        | length > 0
-                                      )
+                                      state_attr(entity_id, "supported_color_modes") | default([], true) != enum.ColorMode.ONOFF
                                     }}
                                   - >-
                                     {{
