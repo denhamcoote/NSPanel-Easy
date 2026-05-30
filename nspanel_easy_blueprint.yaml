@@ -10396,10 +10396,6 @@ actions:
 
                                 5. Select the "**Re-import**" button.
 
-                                6. Navigate to [YAML configuration reloading dashboard](/developer-tools/yaml).
-
-                                7. Select "**Automations**" to reload the automations.
-
 
                                 *For more detailed instructions, please refer to the online documentation: [How to Update Blueprint](https://github.com/edwardtfn/NSPanel-Easy/blob/main/docs/howto.md#update-blueprint).*
                             continue_on_error: true
