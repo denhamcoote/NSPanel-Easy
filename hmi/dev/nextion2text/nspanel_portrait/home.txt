@@ -1319,14 +1319,18 @@ Timer click_timer
     Events
         Timer Event
             short_click_tm.en=0
-            lastclick.txt="home,long_click,"+click_comp.txt
-            printh 92
-            prints "localevent",0
-            printh 00
-            prints lastclick.txt,0
-            printh 00
-            printh FF FF FF
             click_timer.en=0
+            if(click_comp.txt!="")
+            {
+                lastclick.txt="home,long_click,"+click_comp.txt
+                printh 92
+                prints "localevent",0
+                printh 00
+                prints lastclick.txt,0
+                printh 00
+                printh FF FF FF
+                click_comp.txt=""
+            }
         
 Timer short_click_tm
     Attributes
@@ -1338,14 +1342,18 @@ Timer short_click_tm
     Events
         Timer Event
             click_timer.en=0
-            lastclick.txt="home,short_click,"+click_comp.txt
-            printh 92
-            prints "localevent",0
-            printh 00
-            prints lastclick.txt,0
-            printh 00
-            printh FF FF FF
             short_click_tm.en=0
+            if(click_comp.txt!="")
+            {
+                lastclick.txt="home,short_click,"+click_comp.txt
+                printh 92
+                prints "localevent",0
+                printh 00
+                prints lastclick.txt,0
+                printh 00
+                printh FF FF FF
+                click_comp.txt=""
+            }
         
 TouchCap swipe
     Attributes
