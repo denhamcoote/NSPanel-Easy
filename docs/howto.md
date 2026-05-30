@@ -322,7 +322,7 @@ More information: <https://esphome.io/components/rtttl/#common-beeps>
 
 Although the NSPanel can execute scripts directly over the buttons, there is also the possibility of starting automations directly by the means of Input_Boolean.
 
-For this, a helper must first be created under ***Settings --> Devices & services --> Helpers***
+For this, a helper must first be created under _**Settings --> Devices & services --> Helpers**_
 
 Now add the created Input_Boolean as a trigger in the desired automation under State.
 
