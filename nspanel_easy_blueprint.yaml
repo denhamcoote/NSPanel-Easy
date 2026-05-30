@@ -7676,7 +7676,7 @@ actions:
                                     "rgb" in supported_color_modes or
                                     "rgbw" in supported_color_modes or
                                     "rgbww" in supported_color_modes or
-                                    state_attr(entity_id, "rgb_color") | default("unknown") is list
+                                    state_attr(entity_id, "rgb_color") | default("unknown") is list or
                                     supported_color_modes
                                       | map(attribute="value") | list
                                       | select("in", ["hs", "xy", "rgb", "rgbw", "rgbww"])
