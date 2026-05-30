@@ -5722,6 +5722,35 @@ actions:
       ##### GENERAL SETTINGS #####
       hide_if_zero: !input value_hide_when_zero
 
+      domains_functionality:
+        detailed:
+          - alarm_control_panel
+          - button
+          - climate
+          - cover
+          - fan
+          - input_boolean
+          - input_button
+          - input_select
+          - light
+          - media_player
+          - select
+          - switch
+          - timer
+          - water_heater
+        detailed_not_supported:
+          - binary_sensor
+          - person
+          - sensor
+          - unknown
+        detailed_only:
+          - alarm_control_panel
+          - climate
+          - input_select
+          - media_player
+          - select
+          - water_heater
+
       # yamllint disable rule:truthy rule:line-length rule:comments-indentation
       enum:
         ColorMode:  # Possible light color modes. - https://github.com/home-assistant/core/blob/dev/homeassistant/components/light/__init__.py
@@ -9905,16 +9934,14 @@ actions:
                                 conditions: >-
                                   {{
                                     nspanel_event.command == "long_click" or
-                                    entity_domain in ["alarm_control_panel", "climate", "input_select", "media_player", "select", "water_heater"]
+                                    entity_domain in domains_functionality.detailed_only
                                   }}
                                 sequence:
                                   - choose:
                                       - alias: Default
                                         conditions:
                                           - '{{ last_click_button.hold_select == "Default" }}'
-                                          - '{{ entity_domain in ["alarm_control_panel", "button", "climate", "cover",
-                                                                  "fan", "input_boolean", "input_button", "input_select",
-                                                                  "light", "media_player", "select", "switch", "water_heater"] }}'
+                                          - '{{ entity_domain in domains_functionality.detailed }}'
                                           - >-
                                             {{
                                               entity_domain != "light" or
@@ -9956,7 +9983,7 @@ actions:
                               - alias: Short click
                                 conditions:
                                   - '{{ nspanel_event.command == "short_click" }}'
-                                  - '{{ entity_domain not in ["alarm_control_panel", "climate", "media_player", "water_heater"] }}'
+                                  - '{{ entity_domain not in domains_functionality.detailed_only }}'
                                 sequence:
                                   - alias: Custom click action - Left
                                     if: '{{ nspanel_event.component == "hw_bt_left" }}'
@@ -10079,11 +10106,8 @@ actions:
                               - alias: Long click
                                 conditions:
                                   - '{{ nspanel_event.command == "long_click" or
-                                        entity_domain in ["alarm_control_panel", "climate", "input_select", "media_player",
-                                                          "select", "water_heater"] }}'
-                                  - '{{ entity_domain in ["alarm_control_panel", "button", "climate", "cover", "fan",
-                                                          "input_boolean", "input_button", "input_select", "light",
-                                                          "media_player", "select", "switch", "timer", "water_heater"] }}'
+                                        entity_domain in domains_functionality.detailed_only }}'
+                                  - '{{ entity_domain in domains_functionality.detailed }}'
                                   - >-
                                     {{
                                       entity_domain != "light" or
@@ -10101,9 +10125,8 @@ actions:
                               - alias: Short click
                                 conditions:
                                   - '{{ nspanel_event.command == "short_click" and
-                                        entity_domain not in ["alarm_control_panel", "climate", "input_select",
-                                                              "media_player", "select", "water_heater"] }}'
-                                  - '{{ entity_domain not in ["unknown", "person", "binary_sensor", "sensor"] }}'
+                                        entity_domain not in domains_functionality.detailed_only }}'
+                                  - '{{ entity_domain not in domains_functionality.detailed_not_supported }}'
                                 sequence:
                                   - *short_press_action_call
 
@@ -10146,7 +10169,7 @@ actions:
                               - alias: Short click
                                 conditions:
                                   - '{{ nspanel_event.command == "short_click" }}'
-                                  - '{{ entity_domain not in ["unknown", "person", "binary_sensor", "sensor"] }}'
+                                  - '{{ entity_domain not in domains_functionality.detailed_not_supported }}'
                                 sequence:
                                   - *short_press_action_call
 
@@ -10183,7 +10206,7 @@ actions:
                           - condition: '{{ entity_id_valid }}'
                           - if: >
                               {{
-                                entity_domain in ["alarm_control_panel", "climate", "input_select", "media_player", "select", "water_heater"] or
+                                entity_domain in domains_functionality.detailed_only or
                                 (entity_domain == "cover" and supported_features | bitwise_and(4) > 0) or
                                 (entity_domain == "fan" and (supported_features | bitwise_and(1) > 0 or supported_features | bitwise_and(2) > 0)) or
                                 (entity_domain == "light" and (color_mode_brightness or color_mode_color or color_mode_temp))
