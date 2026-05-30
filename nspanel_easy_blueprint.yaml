@@ -5887,6 +5887,14 @@ actions:
                   {%- else -%}
                     {{ entity_icon_color_tmp }}
                   {%- endif -%}
+                {%- elif entity_domain == "timer" -%}
+                  {%- if entity_state == "active" -%}
+                    {{ nextion.color.green }}
+                  {%- elif entity_state == "paused" -%}
+                    {{ nextion.color.amber }}
+                  {%- else -%}
+                    {{ entity_icon_color_tmp }}
+                  {%- endif -%}
                 {%- elif entity_domain == "water_heater" -%}
                   {%- set wh_mode = state_attr(entity_id, "operation_mode") | default(entity_state) -%}
                   {%- set wh_color_map = {
@@ -9964,39 +9972,43 @@ actions:
                                   - condition: '{{ last_click_button.entity | length > 2 }}'
                                   - condition: '{{ nspanel_event.component != "hw_bt_left" or hardware.buttons.left.entity != relay01_entity }}'
                                   - condition: '{{ nspanel_event.component != "hw_bt_right" or hardware.buttons.right.entity != relay02_entity }}'
-                                  - &short_press-service_call
-                                    alias: "short_press-service_call"
+                                  - &short_press_action_call
+                                    alias: "short_press_action_call"
                                     sequence:
                                       - variables:
                                           last_click_button_entity_state: '{{ states(last_click_button.entity) }}'
-                                      - action: >
-                                          {% if entity_domain in ["cover"]
-                                                and last_click_button_entity_state in ["opening", "closing"]
-                                                and state_attr(last_click_button.entity, "supported_features") | int(0) | bitwise_and(4) == 0 %}
-                                            {{ entity_domain }}.stop_cover
-                                          {% elif entity_domain in ["light", "switch", "cover", "input_boolean", "fan", "remote"] %}
-                                            {{ entity_domain }}.toggle
-                                          {% elif entity_domain in ["automation"] %}
-                                            {{ entity_domain }}.{{ domain_automation_button_action if domain_automation_button_action is string else "toggle"}}
-                                          {% elif entity_domain in ["button", "input_button"] %}
-                                            {{ entity_domain }}.press
-                                          {% elif entity_domain in ["lock"] and last_click_button_entity_state in ["locked"] %}
-                                            {{ entity_domain }}.unlock
-                                          {% elif entity_domain in ["lock"] and last_click_button_entity_state in ["unlocked"] %}
-                                            {{ entity_domain }}.lock
-                                          {% elif entity_domain in ["scene", "script"] %}
-                                            {{ entity_domain }}.turn_on
-                                          {% elif entity_domain in ["media_player"] %}
-                                            {{ entity_domain }}.media_play_pause
-                                          {% elif entity_domain in ["timer"] %}
-                                            {% if last_click_button_entity_state == "active" %}
-                                              timer.pause
+                                          action_to_call: >-
+                                            {% if entity_domain == "cover"
+                                                  and last_click_button_entity_state in ["opening", "closing"]
+                                                  and state_attr(last_click_button.entity, "supported_features") | int(0) | bitwise_and(4) == 0 %}
+                                              cover.stop_cover
+                                            {% elif entity_domain in ["cover", "fan", "input_boolean", "light", "remote", "switch"] %}
+                                              {{ entity_domain }}.toggle
+                                            {% elif entity_domain == "automation" %}
+                                              automation.{{ domain_automation_button_action if domain_automation_button_action is string else "toggle"}}
+                                            {% elif entity_domain in ["button", "input_button"] %}
+                                              {{ entity_domain }}.press
+                                            {% elif entity_domain == "lock" %}
+                                              {% if last_click_button_entity_state == "locked" %}
+                                                lock.unlock
+                                              {% else %}
+                                                lock.lock
+                                              {% endif %}
+                                            {% elif entity_domain in ["scene", "script"] %}
+                                              {{ entity_domain }}.turn_on
+                                            {% elif entity_domain == "media_player" %}
+                                              media_player.media_play_pause
+                                            {% elif entity_domain == "timer" %}
+                                              {% if last_click_button_entity_state == "active" %}
+                                                timer.pause
+                                              {% else %}
+                                                timer.start
+                                              {% endif %}
                                             {% else %}
-                                              timer.start
+                                              homeassistant.update_entity
                                             {% endif %}
-                                          {% else %}
-                                            homeassistant.update_entity
-                                          {% endif %}
+                                      - alias: call_an_action
+                                        action: '{{ action_to_call }}'
                                         data:
                                           entity_id: '{{ last_click_button.entity }}'
                                         continue_on_error: true
@@ -10071,7 +10083,7 @@ actions:
                                                           "select", "water_heater"] }}'
                                   - '{{ entity_domain in ["alarm_control_panel", "button", "climate", "cover", "fan",
                                                           "input_boolean", "input_button", "input_select", "light",
-                                                          "media_player", "select", "switch", "water_heater"] }}'
+                                                          "media_player", "select", "switch", "timer", "water_heater"] }}'
                                   - >-
                                     {{
                                       entity_domain != "light" or
@@ -10093,7 +10105,7 @@ actions:
                                                               "media_player", "select", "water_heater"] }}'
                                   - '{{ entity_domain not in ["unknown", "person", "binary_sensor", "sensor"] }}'
                                 sequence:
-                                  - *short_press-service_call
+                                  - *short_press_action_call
 
                       - alias: Climate page
                         conditions:
@@ -10136,7 +10148,7 @@ actions:
                                   - '{{ nspanel_event.command == "short_click" }}'
                                   - '{{ entity_domain not in ["unknown", "person", "binary_sensor", "sensor"] }}'
                                 sequence:
-                                  - *short_press-service_call
+                                  - *short_press_action_call
 
                       - alias: Home page custom buttons
                         conditions:
@@ -10182,7 +10194,7 @@ actions:
                               - *variable_entity
                               - *entity_details_show
                             else:
-                              - *short_press-service_call
+                              - *short_press_action_call
 
               - alias: Versions mismatch
                 conditions:
