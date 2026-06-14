@@ -10211,7 +10211,7 @@ actions:
                                 entity_domain in domains_functionality.detailed_only or
                                 (entity_domain == "cover" and supported_features | bitwise_and(4) > 0) or
                                 (entity_domain == "fan" and (supported_features | bitwise_and(1) > 0 or supported_features | bitwise_and(2) > 0)) or
-                                (entity_domain == "light" and (color_mode_brightness or color_mode_color or color_mode_temp))
+                                (entity_domain == "light" and (color_mode_brightness or color_mode_color or color_mode_temp)) or
                                 (entity_domain == "timer")
                               }}
                             then:
