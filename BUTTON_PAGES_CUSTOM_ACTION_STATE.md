@@ -14,14 +14,18 @@ These fields are entirely optional.  Existing configurations are unaffected; all
 
 Hardware Buttons already support Custom Action and State Indicator Entity.  Button Pages did not, limiting what users could do with the 32 configurable buttons across 4 pages.
 
-A key use case is **scene tracking**: showing which Hue/HA scene is currently active.  HA scenes are stateless ("fire and forget"), so there is no built-in way to show a scene button as "on".  The combination of Custom Action + State Indicator Entity + State Value enables this with minimal HA-side configuration and zero binary sensor helpers.
+A key use case is **scene tracking**: showing which Hue/HA scene is currently
+active.  HA scenes are stateless ("fire and forget"), so there is no built-in
+way to show a scene button as "on".  The combination of Custom Action + State
+Indicator Entity + State Value enables this with minimal HA-side configuration
+and zero binary sensor helpers.
 
 ## What Changed
 
 ### New Blueprint Inputs (per button, x32)
 
 | Input | Type | Default | Description |
-|-------|------|---------|-------------|
+| ----- | ---- | ------- | ----------- |
 | `entityNN_custom_action` | `action` | `[]` | Additional action(s) to run when the button is clicked |
 | `entityNN_state_entity` | `entity` | `""` | Entity whose state drives the button indicator |
 | `entityNN_state_value` | `text` | `""` | When set, button is "on" when state entity's state matches this value |
@@ -56,7 +60,11 @@ state_value: !input 'entityNN_state_value'
 
 A 32-branch `choose` block runs the corresponding `!input entityNN_custom_action` before the standard `*short_press_action_call` toggle.  Empty custom actions (the default) are no-ops.
 
-After the standard action completes, the click handler re-renders all buttons on the current page (with a 300ms delay to allow state changes to propagate).  This ensures immediate visual feedback for custom actions that modify a state indicator entity (e.g., setting an `input_select` for scene tracking), without relying solely on parallel state trigger instances.
+After the standard action completes, the click handler re-renders all buttons on
+the current page (with a 300ms delay to allow state changes to propagate).  This
+ensures immediate visual feedback for custom actions that modify a state indicator
+entity (e.g., setting an `input_select` for scene tracking), without relying
+solely on parallel state trigger instances.
 
 ### State Update Handler
 
@@ -84,7 +92,7 @@ You have scene buttons on a Button Page and want the active scene to show as "on
 **Settings > Devices & Services > Helpers > Create Helper > Dropdown**
 
 | Field | Value |
-|-------|-------|
+| ----- | ----- |
 | Name | Dining Room Active Scene |
 | Entity ID | `input_select.dining_room_active_scene` |
 | Options | `scene.dining_room_savanna_sunset`, `scene.dining_room_island_warmth`, `none` |
@@ -115,7 +123,7 @@ automation:
 For **Savanna Sunset** (e.g., Button Page 1, Button 1):
 
 | Blueprint Field | Value |
-|-----------------|-------|
+| --------------- | ----- |
 | Entity | `scene.dining_room_savanna_sunset` |
 | Custom Action | *(see below)* |
 | State Indicator Entity | `input_select.dining_room_active_scene` |
@@ -133,7 +141,7 @@ For **Savanna Sunset** (e.g., Button Page 1, Button 1):
 For **Island Warmth** (e.g., Button Page 1, Button 2):
 
 | Blueprint Field | Value |
-|-----------------|-------|
+| --------------- | ----- |
 | Entity | `scene.dining_room_island_warmth` |
 | Custom Action | *(same steps, different option value)* |
 | State Indicator Entity | `input_select.dining_room_active_scene` |
@@ -161,7 +169,7 @@ For **Island Warmth** (e.g., Button Page 1, Button 2):
 ### HA Objects Summary
 
 | Type | Count | Purpose |
-|------|-------|---------|
+| ---- | ----- | ------- |
 | `input_select` | 1 per room | Tracks the last-activated scene |
 | Automation | 1 per room | Clears tracker when lights turn off |
 

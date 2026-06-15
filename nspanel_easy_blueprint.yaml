@@ -8458,7 +8458,14 @@ actions:
                                     - variables:
                                         current_entity_state_available: '{{ entity_state not in ["unavailable"] }}'
                                         state_entity_state: '{{ states(state_entity_id) if state_entity_id != entity_id else entity_state }}'
-                                        state_value: '{{ repeat.item.state_value if repeat.item.state_value is defined and repeat.item.state_value is string and repeat.item.state_value | length > 0 else "" }}'
+                                        state_value: >
+                                          {{
+                                            repeat.item.state_value
+                                            if repeat.item.state_value is defined
+                                                and repeat.item.state_value is string
+                                                and repeat.item.state_value | length > 0
+                                            else ""
+                                          }}
                                         btn_state: >  # Button state (on = true or off = false)
                                           {% if state_value | length > 0 %}
                                             {{ state_entity_state == state_value }}
@@ -11077,166 +11084,166 @@ actions:
                                 sequence:
                                   - alias: Custom click action
                                     choose:
-                                          - alias: Custom action - Button 01
-                                            conditions:
-                                              - '{{ nspanel_event.page == "buttonpage01" }}'
-                                              - '{{ nspanel_event.component == "button01" }}'
-                                            sequence: !input entity01_custom_action
-                                          - alias: Custom action - Button 02
-                                            conditions:
-                                              - '{{ nspanel_event.page == "buttonpage01" }}'
-                                              - '{{ nspanel_event.component == "button02" }}'
-                                            sequence: !input entity02_custom_action
-                                          - alias: Custom action - Button 03
-                                            conditions:
-                                              - '{{ nspanel_event.page == "buttonpage01" }}'
-                                              - '{{ nspanel_event.component == "button03" }}'
-                                            sequence: !input entity03_custom_action
-                                          - alias: Custom action - Button 04
-                                            conditions:
-                                              - '{{ nspanel_event.page == "buttonpage01" }}'
-                                              - '{{ nspanel_event.component == "button04" }}'
-                                            sequence: !input entity04_custom_action
-                                          - alias: Custom action - Button 05
-                                            conditions:
-                                              - '{{ nspanel_event.page == "buttonpage01" }}'
-                                              - '{{ nspanel_event.component == "button05" }}'
-                                            sequence: !input entity05_custom_action
-                                          - alias: Custom action - Button 06
-                                            conditions:
-                                              - '{{ nspanel_event.page == "buttonpage01" }}'
-                                              - '{{ nspanel_event.component == "button06" }}'
-                                            sequence: !input entity06_custom_action
-                                          - alias: Custom action - Button 07
-                                            conditions:
-                                              - '{{ nspanel_event.page == "buttonpage01" }}'
-                                              - '{{ nspanel_event.component == "button07" }}'
-                                            sequence: !input entity07_custom_action
-                                          - alias: Custom action - Button 08
-                                            conditions:
-                                              - '{{ nspanel_event.page == "buttonpage01" }}'
-                                              - '{{ nspanel_event.component == "button08" }}'
-                                            sequence: !input entity08_custom_action
-                                          - alias: Custom action - Button 09
-                                            conditions:
-                                              - '{{ nspanel_event.page == "buttonpage02" }}'
-                                              - '{{ nspanel_event.component == "button01" }}'
-                                            sequence: !input entity09_custom_action
-                                          - alias: Custom action - Button 10
-                                            conditions:
-                                              - '{{ nspanel_event.page == "buttonpage02" }}'
-                                              - '{{ nspanel_event.component == "button02" }}'
-                                            sequence: !input entity10_custom_action
-                                          - alias: Custom action - Button 11
-                                            conditions:
-                                              - '{{ nspanel_event.page == "buttonpage02" }}'
-                                              - '{{ nspanel_event.component == "button03" }}'
-                                            sequence: !input entity11_custom_action
-                                          - alias: Custom action - Button 12
-                                            conditions:
-                                              - '{{ nspanel_event.page == "buttonpage02" }}'
-                                              - '{{ nspanel_event.component == "button04" }}'
-                                            sequence: !input entity12_custom_action
-                                          - alias: Custom action - Button 13
-                                            conditions:
-                                              - '{{ nspanel_event.page == "buttonpage02" }}'
-                                              - '{{ nspanel_event.component == "button05" }}'
-                                            sequence: !input entity13_custom_action
-                                          - alias: Custom action - Button 14
-                                            conditions:
-                                              - '{{ nspanel_event.page == "buttonpage02" }}'
-                                              - '{{ nspanel_event.component == "button06" }}'
-                                            sequence: !input entity14_custom_action
-                                          - alias: Custom action - Button 15
-                                            conditions:
-                                              - '{{ nspanel_event.page == "buttonpage02" }}'
-                                              - '{{ nspanel_event.component == "button07" }}'
-                                            sequence: !input entity15_custom_action
-                                          - alias: Custom action - Button 16
-                                            conditions:
-                                              - '{{ nspanel_event.page == "buttonpage02" }}'
-                                              - '{{ nspanel_event.component == "button08" }}'
-                                            sequence: !input entity16_custom_action
-                                          - alias: Custom action - Button 17
-                                            conditions:
-                                              - '{{ nspanel_event.page == "buttonpage03" }}'
-                                              - '{{ nspanel_event.component == "button01" }}'
-                                            sequence: !input entity17_custom_action
-                                          - alias: Custom action - Button 18
-                                            conditions:
-                                              - '{{ nspanel_event.page == "buttonpage03" }}'
-                                              - '{{ nspanel_event.component == "button02" }}'
-                                            sequence: !input entity18_custom_action
-                                          - alias: Custom action - Button 19
-                                            conditions:
-                                              - '{{ nspanel_event.page == "buttonpage03" }}'
-                                              - '{{ nspanel_event.component == "button03" }}'
-                                            sequence: !input entity19_custom_action
-                                          - alias: Custom action - Button 20
-                                            conditions:
-                                              - '{{ nspanel_event.page == "buttonpage03" }}'
-                                              - '{{ nspanel_event.component == "button04" }}'
-                                            sequence: !input entity20_custom_action
-                                          - alias: Custom action - Button 21
-                                            conditions:
-                                              - '{{ nspanel_event.page == "buttonpage03" }}'
-                                              - '{{ nspanel_event.component == "button05" }}'
-                                            sequence: !input entity21_custom_action
-                                          - alias: Custom action - Button 22
-                                            conditions:
-                                              - '{{ nspanel_event.page == "buttonpage03" }}'
-                                              - '{{ nspanel_event.component == "button06" }}'
-                                            sequence: !input entity22_custom_action
-                                          - alias: Custom action - Button 23
-                                            conditions:
-                                              - '{{ nspanel_event.page == "buttonpage03" }}'
-                                              - '{{ nspanel_event.component == "button07" }}'
-                                            sequence: !input entity23_custom_action
-                                          - alias: Custom action - Button 24
-                                            conditions:
-                                              - '{{ nspanel_event.page == "buttonpage03" }}'
-                                              - '{{ nspanel_event.component == "button08" }}'
-                                            sequence: !input entity24_custom_action
-                                          - alias: Custom action - Button 25
-                                            conditions:
-                                              - '{{ nspanel_event.page == "buttonpage04" }}'
-                                              - '{{ nspanel_event.component == "button01" }}'
-                                            sequence: !input entity25_custom_action
-                                          - alias: Custom action - Button 26
-                                            conditions:
-                                              - '{{ nspanel_event.page == "buttonpage04" }}'
-                                              - '{{ nspanel_event.component == "button02" }}'
-                                            sequence: !input entity26_custom_action
-                                          - alias: Custom action - Button 27
-                                            conditions:
-                                              - '{{ nspanel_event.page == "buttonpage04" }}'
-                                              - '{{ nspanel_event.component == "button03" }}'
-                                            sequence: !input entity27_custom_action
-                                          - alias: Custom action - Button 28
-                                            conditions:
-                                              - '{{ nspanel_event.page == "buttonpage04" }}'
-                                              - '{{ nspanel_event.component == "button04" }}'
-                                            sequence: !input entity28_custom_action
-                                          - alias: Custom action - Button 29
-                                            conditions:
-                                              - '{{ nspanel_event.page == "buttonpage04" }}'
-                                              - '{{ nspanel_event.component == "button05" }}'
-                                            sequence: !input entity29_custom_action
-                                          - alias: Custom action - Button 30
-                                            conditions:
-                                              - '{{ nspanel_event.page == "buttonpage04" }}'
-                                              - '{{ nspanel_event.component == "button06" }}'
-                                            sequence: !input entity30_custom_action
-                                          - alias: Custom action - Button 31
-                                            conditions:
-                                              - '{{ nspanel_event.page == "buttonpage04" }}'
-                                              - '{{ nspanel_event.component == "button07" }}'
-                                            sequence: !input entity31_custom_action
-                                          - alias: Custom action - Button 32
-                                            conditions:
-                                              - '{{ nspanel_event.page == "buttonpage04" }}'
-                                              - '{{ nspanel_event.component == "button08" }}'
-                                            sequence: !input entity32_custom_action
+                                      - alias: Custom action - Button 01
+                                        conditions:
+                                          - '{{ nspanel_event.page == "buttonpage01" }}'
+                                          - '{{ nspanel_event.component == "button01" }}'
+                                        sequence: !input entity01_custom_action
+                                      - alias: Custom action - Button 02
+                                        conditions:
+                                          - '{{ nspanel_event.page == "buttonpage01" }}'
+                                          - '{{ nspanel_event.component == "button02" }}'
+                                        sequence: !input entity02_custom_action
+                                      - alias: Custom action - Button 03
+                                        conditions:
+                                          - '{{ nspanel_event.page == "buttonpage01" }}'
+                                          - '{{ nspanel_event.component == "button03" }}'
+                                        sequence: !input entity03_custom_action
+                                      - alias: Custom action - Button 04
+                                        conditions:
+                                          - '{{ nspanel_event.page == "buttonpage01" }}'
+                                          - '{{ nspanel_event.component == "button04" }}'
+                                        sequence: !input entity04_custom_action
+                                      - alias: Custom action - Button 05
+                                        conditions:
+                                          - '{{ nspanel_event.page == "buttonpage01" }}'
+                                          - '{{ nspanel_event.component == "button05" }}'
+                                        sequence: !input entity05_custom_action
+                                      - alias: Custom action - Button 06
+                                        conditions:
+                                          - '{{ nspanel_event.page == "buttonpage01" }}'
+                                          - '{{ nspanel_event.component == "button06" }}'
+                                        sequence: !input entity06_custom_action
+                                      - alias: Custom action - Button 07
+                                        conditions:
+                                          - '{{ nspanel_event.page == "buttonpage01" }}'
+                                          - '{{ nspanel_event.component == "button07" }}'
+                                        sequence: !input entity07_custom_action
+                                      - alias: Custom action - Button 08
+                                        conditions:
+                                          - '{{ nspanel_event.page == "buttonpage01" }}'
+                                          - '{{ nspanel_event.component == "button08" }}'
+                                        sequence: !input entity08_custom_action
+                                      - alias: Custom action - Button 09
+                                        conditions:
+                                          - '{{ nspanel_event.page == "buttonpage02" }}'
+                                          - '{{ nspanel_event.component == "button01" }}'
+                                        sequence: !input entity09_custom_action
+                                      - alias: Custom action - Button 10
+                                        conditions:
+                                          - '{{ nspanel_event.page == "buttonpage02" }}'
+                                          - '{{ nspanel_event.component == "button02" }}'
+                                        sequence: !input entity10_custom_action
+                                      - alias: Custom action - Button 11
+                                        conditions:
+                                          - '{{ nspanel_event.page == "buttonpage02" }}'
+                                          - '{{ nspanel_event.component == "button03" }}'
+                                        sequence: !input entity11_custom_action
+                                      - alias: Custom action - Button 12
+                                        conditions:
+                                          - '{{ nspanel_event.page == "buttonpage02" }}'
+                                          - '{{ nspanel_event.component == "button04" }}'
+                                        sequence: !input entity12_custom_action
+                                      - alias: Custom action - Button 13
+                                        conditions:
+                                          - '{{ nspanel_event.page == "buttonpage02" }}'
+                                          - '{{ nspanel_event.component == "button05" }}'
+                                        sequence: !input entity13_custom_action
+                                      - alias: Custom action - Button 14
+                                        conditions:
+                                          - '{{ nspanel_event.page == "buttonpage02" }}'
+                                          - '{{ nspanel_event.component == "button06" }}'
+                                        sequence: !input entity14_custom_action
+                                      - alias: Custom action - Button 15
+                                        conditions:
+                                          - '{{ nspanel_event.page == "buttonpage02" }}'
+                                          - '{{ nspanel_event.component == "button07" }}'
+                                        sequence: !input entity15_custom_action
+                                      - alias: Custom action - Button 16
+                                        conditions:
+                                          - '{{ nspanel_event.page == "buttonpage02" }}'
+                                          - '{{ nspanel_event.component == "button08" }}'
+                                        sequence: !input entity16_custom_action
+                                      - alias: Custom action - Button 17
+                                        conditions:
+                                          - '{{ nspanel_event.page == "buttonpage03" }}'
+                                          - '{{ nspanel_event.component == "button01" }}'
+                                        sequence: !input entity17_custom_action
+                                      - alias: Custom action - Button 18
+                                        conditions:
+                                          - '{{ nspanel_event.page == "buttonpage03" }}'
+                                          - '{{ nspanel_event.component == "button02" }}'
+                                        sequence: !input entity18_custom_action
+                                      - alias: Custom action - Button 19
+                                        conditions:
+                                          - '{{ nspanel_event.page == "buttonpage03" }}'
+                                          - '{{ nspanel_event.component == "button03" }}'
+                                        sequence: !input entity19_custom_action
+                                      - alias: Custom action - Button 20
+                                        conditions:
+                                          - '{{ nspanel_event.page == "buttonpage03" }}'
+                                          - '{{ nspanel_event.component == "button04" }}'
+                                        sequence: !input entity20_custom_action
+                                      - alias: Custom action - Button 21
+                                        conditions:
+                                          - '{{ nspanel_event.page == "buttonpage03" }}'
+                                          - '{{ nspanel_event.component == "button05" }}'
+                                        sequence: !input entity21_custom_action
+                                      - alias: Custom action - Button 22
+                                        conditions:
+                                          - '{{ nspanel_event.page == "buttonpage03" }}'
+                                          - '{{ nspanel_event.component == "button06" }}'
+                                        sequence: !input entity22_custom_action
+                                      - alias: Custom action - Button 23
+                                        conditions:
+                                          - '{{ nspanel_event.page == "buttonpage03" }}'
+                                          - '{{ nspanel_event.component == "button07" }}'
+                                        sequence: !input entity23_custom_action
+                                      - alias: Custom action - Button 24
+                                        conditions:
+                                          - '{{ nspanel_event.page == "buttonpage03" }}'
+                                          - '{{ nspanel_event.component == "button08" }}'
+                                        sequence: !input entity24_custom_action
+                                      - alias: Custom action - Button 25
+                                        conditions:
+                                          - '{{ nspanel_event.page == "buttonpage04" }}'
+                                          - '{{ nspanel_event.component == "button01" }}'
+                                        sequence: !input entity25_custom_action
+                                      - alias: Custom action - Button 26
+                                        conditions:
+                                          - '{{ nspanel_event.page == "buttonpage04" }}'
+                                          - '{{ nspanel_event.component == "button02" }}'
+                                        sequence: !input entity26_custom_action
+                                      - alias: Custom action - Button 27
+                                        conditions:
+                                          - '{{ nspanel_event.page == "buttonpage04" }}'
+                                          - '{{ nspanel_event.component == "button03" }}'
+                                        sequence: !input entity27_custom_action
+                                      - alias: Custom action - Button 28
+                                        conditions:
+                                          - '{{ nspanel_event.page == "buttonpage04" }}'
+                                          - '{{ nspanel_event.component == "button04" }}'
+                                        sequence: !input entity28_custom_action
+                                      - alias: Custom action - Button 29
+                                        conditions:
+                                          - '{{ nspanel_event.page == "buttonpage04" }}'
+                                          - '{{ nspanel_event.component == "button05" }}'
+                                        sequence: !input entity29_custom_action
+                                      - alias: Custom action - Button 30
+                                        conditions:
+                                          - '{{ nspanel_event.page == "buttonpage04" }}'
+                                          - '{{ nspanel_event.component == "button06" }}'
+                                        sequence: !input entity30_custom_action
+                                      - alias: Custom action - Button 31
+                                        conditions:
+                                          - '{{ nspanel_event.page == "buttonpage04" }}'
+                                          - '{{ nspanel_event.component == "button07" }}'
+                                        sequence: !input entity31_custom_action
+                                      - alias: Custom action - Button 32
+                                        conditions:
+                                          - '{{ nspanel_event.page == "buttonpage04" }}'
+                                          - '{{ nspanel_event.component == "button08" }}'
+                                        sequence: !input entity32_custom_action
                                   - *short_press_action_call
                                   - alias: Re-render current page buttons after click
                                     sequence:
